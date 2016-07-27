@@ -20,8 +20,13 @@
  * IN THE SOFTWARE.
  */
 
+var extend = require('extend');
 
-var PatternlabToNode = module.exports = function() {
+/**
+ * @param {Object} opt_options
+ * @constructor
+ */
+var PatternlabToNode = function(opt_options) {
 
   /**
    * @type {{
@@ -29,7 +34,9 @@ var PatternlabToNode = module.exports = function() {
    * }}
    * @private
    */
-  this.config_ = {
+  this.config_ = extend({
     patternlabUrl: 'http://localhost:3000'
-  }
+  }, opt_options);
 };
+
+module.exports = PatternlabToNode;

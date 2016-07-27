@@ -32,6 +32,10 @@ describe('main - ', () => {
         defaultPatternlabUrlShouldPointToLocalhostOnPort3000
     );
 
+    it('should overwrite the configuration with a given config object',
+        shouldOverwriteTheConfigurationWithAGivenConfigObject
+    );
+
   });
 
 
@@ -41,4 +45,9 @@ describe('main - ', () => {
     assert.equal('http://localhost:3000', instanceToTest.config_['patternlabUrl']);
   }
 
+  function shouldOverwriteTheConfigurationWithAGivenConfigObject() {
+    var config = require('../example.config.json');
+    var instanceToTest = new patternlabToNode(config);
+    assert.deepEqual(instanceToTest.config_, config);
+  }
 });
