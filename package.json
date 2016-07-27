@@ -1,0 +1,42 @@
+{
+  "name": "patternlab-to-gemini",
+  "version": "0.1.0~alpha",
+  "description": "Automatic tranformation of your patternlab into testcases for gemini",
+  "engines": {
+    "node": ">= 4.4.3"
+  },
+  "author": {
+    "name": "Lars Haßler",
+    "email": "mail@larshassler.com",
+    "url": "https://larshassler.com"
+  },
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LarsHassler/patternlab-to-gemini.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LarsHassler/patternlab-to-gemini/issues"
+  },
+  "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "gemini": "^4.4.0"
+  },
+  "keywords": [
+    "test",
+    "testing",
+    "regression",
+    "screenshot",
+    "selenium",
+    "patternlab",
+    "atomic design",
+    "gemini",
+    "layout"
+  ]
+}
