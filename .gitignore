@@ -1,0 +1,18 @@
+# OS X specific files
+.DS_Store
+
+# IDEs (WebStorm, PhpStorm, Eclipse etc.)
+*.iml
+*.ipr
+*.iws
+.idea/
+.project
+
+# Generated files
+
+# Dependencies
+bower_components
+node_modules
+
+# temp
+.tmp/
