@@ -24,9 +24,15 @@
   "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
   "private": true,
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  },
   "peerDependencies": {
     "gemini": "^4.4.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter dot test/"
   },
   "keywords": [
     "test",
