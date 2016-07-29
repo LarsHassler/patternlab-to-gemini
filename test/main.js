@@ -36,6 +36,10 @@ describe('main - ', () => {
         shouldOverwriteTheConfigurationWithAGivenConfigObject
     );
 
+    it('should overwrite the configuration with a given filename',
+        shouldOverwriteTheConfigurationWithAGivenFilename
+    );
+
   });
 
 
@@ -48,6 +52,12 @@ describe('main - ', () => {
   function shouldOverwriteTheConfigurationWithAGivenConfigObject() {
     var config = require('../example.config.json');
     var instanceToTest = new patternlabToNode(config);
+    assert.deepEqual(instanceToTest.config_, config);
+  }
+
+  function shouldOverwriteTheConfigurationWithAGivenFilename() {
+    var config = require('../example.config.json');
+    var instanceToTest = new patternlabToNode('../example.config.json');
     assert.deepEqual(instanceToTest.config_, config);
   }
 });

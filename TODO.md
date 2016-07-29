@@ -3,8 +3,8 @@
 * Move to Github
 * Template for test case structure
 * Skipping screen sizes for specific pattern
-    * move browserSize into npm dependency
-* Add "Scope" classes to specific pattern
+    * move browserSize into npm dependency (or maybe not??)
+* Add "Scope" css classes to specific pattern
 * CLI mode
 * README
 * Publish NPM Package
@@ -12,10 +12,8 @@
 * Warning when pattern has been removed
 
 ##USER STORIES:
-* [x] Protocol, Domain and port for patternlab styleguid.html should be read from config
 * Basic screensizes should be set in config file
 
 ##TODOS:
-* [x] create default config
-* constructor should accept config object
-* constructor should accept path to config.json
+* define config structure for screen sizes
+* add defaults

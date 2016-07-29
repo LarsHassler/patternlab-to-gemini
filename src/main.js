@@ -21,12 +21,19 @@
  */
 
 var extend = require('extend');
+var path = require('path');
+var fs = require('fs');
 
 /**
- * @param {Object} opt_options
+ * @param {Object|string} opt_options
+ *    Either an options object or a path to a config json file
  * @constructor
  */
 var PatternlabToNode = function(opt_options) {
+
+  if (typeof opt_options == 'string') {
+    opt_options = require(opt_options);
+  }
 
   /**
    * @type {{
