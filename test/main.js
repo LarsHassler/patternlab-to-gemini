@@ -63,6 +63,10 @@ describe('main - ', () => {
         shouldRejectIfThereIsAPatternWithoutAnId
     );
 
+    it('should return all pattern within the html',
+        shouldReturnAllPatternWithinTheHTML
+    );
+
   });
 
 
@@ -101,6 +105,30 @@ describe('main - ', () => {
               'PatternlabToNode - scraping error - pattern without an id found',
               error.message
           );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldReturnAllPatternWithinTheHTML(done) {
+    var dummyHtml = fs.readFileSync(
+            path.resolve(__dirname, 'dummyhtml/patterns.html')
+        ).toString();
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    instanceToTest.scrapePatternlab_(dummyHtml)
+        .then((patterns) => {
+          assert.deepEqual([
+            {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            {
+              id: "pattern-2",
+              name: "Pattern Name 2"
+            }
+          ], patterns)
         })
         .then(done, done);
   }
