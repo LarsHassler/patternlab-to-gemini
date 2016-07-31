@@ -57,12 +57,16 @@ describe('main - ', () => {
     
     it('should reject if there were no pattern in the given html',
         shouldRejectIfThereWereNoPatternInTheGivenHTML
-    );    
+    );
+
+    it('should reject if there is a pattern without an id',
+        shouldRejectIfThereIsAPatternWithoutAnId
+    );
+
   });
 
 
   function shouldRejectIfThereWereNoPatternInTheGivenHTML(done) {
-    console.log();
     var dummyHtml = fs.readFileSync(
             path.resolve(__dirname, 'dummyhtml/noPatters.html')
         ).toString();
@@ -75,6 +79,26 @@ describe('main - ', () => {
         }, (error) => {
           assert.equal(
               'PatternlabToNode - scraping error - no pattern found',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldRejectIfThereIsAPatternWithoutAnId(done) {
+    var dummyHtml = fs.readFileSync(
+            path.resolve(__dirname, 'dummyhtml/noPatternId.html')
+        ).toString();
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    instanceToTest.scrapePatternlab_(dummyHtml)
+        .then(() => {
+          throw new Error('should not have resolved');
+        }, (error) => {
+          assert.equal(
+              'PatternlabToNode - scraping error - pattern without an id found',
               error.message
           );
         })

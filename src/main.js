@@ -90,9 +90,16 @@ PatternlabToNode.
           );
         }
     );
-    if (patterns.length == 0) {
+    var patternWithoutAnId = patterns.filter((pattern) => {
+      return !pattern.id || pattern.id == ''
+    });
+    if (patternWithoutAnId.length != 0) {
+      var error = new Error('PatternlabToNode - scraping error - pattern without an id found');
+      reject(error);
+    }
+    else if (patterns.length == 0) {
       var error = new Error('PatternlabToNode - scraping error - no pattern found');
-      reject(error)
+      reject(error);
     } else {
       resolve(patterns);
     }
