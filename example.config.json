@@ -1,3 +1,25 @@
 {
-  "patternlabUrl": "https://domainForPatternLab:1337"
+  "patternlabUrl": "https://domainForPatternLab:1337",
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    },
+    "tabletLandscape": {
+      "width": 1024,
+      "height": 768
+    },
+    "tabletPortrait": {
+      "width": 768,
+      "height": 1024
+    },
+    "phoneLandscape": {
+      "width": 667,
+      "height": 375
+    },
+    "phonePortrait": {
+      "width": 375,
+      "height": 667
+    }
+  }
 }

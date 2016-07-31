@@ -22,6 +22,7 @@
 
 var patternlabToNode = require('../src/main');
 var assert = require('chai').assert;
+var exampleConfig = require('../example.config.json');
 
 
 describe('main - ', () => {
@@ -40,24 +41,38 @@ describe('main - ', () => {
         shouldOverwriteTheConfigurationWithAGivenFilename
     );
 
+    it('should fail if there are no screen sizes defined',
+        shouldFailIfThereAreNoScreenSizesDefined
+    );
+
   });
 
 
 
   function defaultPatternlabUrlShouldPointToLocalhostOnPort3000() {
-    var instanceToTest = new patternlabToNode();
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    delete config['patternlabUrl'];
+    var instanceToTest = new patternlabToNode(config);
     assert.equal('http://localhost:3000', instanceToTest.config_['patternlabUrl']);
   }
 
   function shouldOverwriteTheConfigurationWithAGivenConfigObject() {
-    var config = require('../example.config.json');
+    var config = JSON.parse(JSON.stringify(exampleConfig));
     var instanceToTest = new patternlabToNode(config);
     assert.deepEqual(instanceToTest.config_, config);
   }
 
   function shouldOverwriteTheConfigurationWithAGivenFilename() {
-    var config = require('../example.config.json');
+    var config = JSON.parse(JSON.stringify(exampleConfig));
     var instanceToTest = new patternlabToNode('../example.config.json');
     assert.deepEqual(instanceToTest.config_, config);
+  }
+
+  function shouldFailIfThereAreNoScreenSizesDefined() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    delete config['screenSizes'];
+    assert.throws(() => {
+      new patternlabToNode(config);
+    }, null, /missing screenSizes/);
   }
 });

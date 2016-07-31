@@ -44,6 +44,10 @@ var PatternlabToNode = function(opt_options) {
   this.config_ = extend({
     patternlabUrl: 'http://localhost:3000'
   }, opt_options);
+
+  if (!this.config_['screenSizes']) {
+    throw new Error('PatternlabToNode - config error - missing screenSizes')
+  }
 };
 
 module.exports = PatternlabToNode;
