@@ -20,7 +20,8 @@ The domain where the patternlab styleguide is located.
 
 #### screenSizes
 
-A collection of screen sizes with will be used for the screen shots. The key will be used for the filename of the screen shot.
+A collection of screen sizes with will be used for the responsive screen shots. The key will be used for the filename of the screen shot.
+Beware that the screen shot might be smaller due to the captured html element.
 
 ```json
 "screenSizes": {
