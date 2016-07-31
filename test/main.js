@@ -20,9 +20,11 @@
  * IN THE SOFTWARE.
  */
 
-var patternlabToNode = require('../src/main');
-var assert = require('chai').assert;
-var exampleConfig = require('../example.config.json');
+const patternlabToNode = require('../src/main');
+const path = require('path');
+const fs = require('fs');
+const assert = require('chai').assert;
+const exampleConfig = require('../example.config.json');
 
 
 describe('main - ', () => {
@@ -50,8 +52,34 @@ describe('main - ', () => {
     );
 
   });
+  
+  describe('scrapePatternlab_ - ', function() {
+    
+    it('should reject if there were no pattern in the given html',
+        shouldRejectIfThereWereNoPatternInTheGivenHTML
+    );    
+  });
 
 
+  function shouldRejectIfThereWereNoPatternInTheGivenHTML(done) {
+    console.log();
+    var dummyHtml = fs.readFileSync(
+            path.resolve(__dirname, 'dummyhtml/noPatters.html')
+        ).toString();
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    instanceToTest.scrapePatternlab_(dummyHtml)
+        .then(() => {
+          throw new Error('should not have resolved');
+        }, (error) => {
+          assert.equal(
+              'PatternlabToNode - scraping error - no pattern found',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
 
   function defaultPatternlabUrlShouldPointToLocalhostOnPort3000() {
     var config = JSON.parse(JSON.stringify(exampleConfig));

@@ -20,12 +20,14 @@
  * IN THE SOFTWARE.
  */
 
-var extend = require('extend');
-var path = require('path');
-var fs = require('fs');
+const extend = require('extend');
+const path = require('path');
+const fs = require('fs');
+const request = require('request');
+const cheerio = require('cheerio');
 
 /**
- * @param {Object|string} opt_options
+ * @param {(Object|string)=} opt_options
  *    Either an options object or a path to a config json file
  * @constructor
  */
@@ -38,7 +40,7 @@ var PatternlabToNode = function(opt_options) {
   /**
    * @type {{
    *    patternlabUrl: string,
-   *    excludePatterns: Array.<string>
+   *    excludePatterns: Array.<string|RegExp>
    * }}
    * @private
    */
@@ -51,5 +53,54 @@ var PatternlabToNode = function(opt_options) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
   }
 };
+
+/**
+ * @private
+ */
+PatternlabToNode.
+    prototype.init_ = function() {
+
+  // transform all strings in excludePatterns config to regular expressions
+  this.config_.excludePatterns.forEach((pattern, index) => {
+    this.config_.excludePatterns[index] = new RegExp(pattern);
+  })
+};
+
+
+
+/**
+ * @param {string} html
+ * @return {Promise.<Array.<{id: string, name: string}>>}
+ * @private
+ */
+PatternlabToNode.
+    prototype.scrapePatternlab_ = function(html) {
+  return new Promise((resolve, reject) => {
+    const $ = cheerio.load(html);
+    const patterns = [];
+    $('.sg-pattern').each(
+        (index, element) => {
+          var patternId = $(element).attr('id');
+          var header = $(element).find('.sg-pattern-title > a');
+          patterns.push(
+              {
+                id: patternId,
+                name: header.html().trim()
+              }
+          );
+        }
+    );
+    if (patterns.length == 0) {
+      var error = new Error('PatternlabToNode - scraping error - no pattern found');
+      reject(error)
+    } else {
+      resolve(patterns);
+    }
+  });
+};
+
+
+
+
 
 module.exports = PatternlabToNode;
