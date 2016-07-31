@@ -1,5 +1,6 @@
 ##EPICS:
-* [x] Config file
+* [x] scrapping of patternlab
+* write pattern config into config file
 * Template for test case structure
 * Skipping screen sizes for specific pattern
     * move browserSize into npm dependency (or maybe not??)
@@ -10,5 +11,8 @@
 * Warning when pattern has been removed
 
 ##USER STORIES:
+* [x] patternlab styleguide should be read and parsed into patterns with their id and name
 
 ##TODOS:
+* [x] get all pattern out of the styleguide.html
+* read styleguide.html content from config domain
