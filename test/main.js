@@ -23,11 +23,25 @@
 const patternlabToNode = require('../src/main');
 const path = require('path');
 const fs = require('fs');
+const nock = require('nock');
 const assert = require('chai').assert;
 const exampleConfig = require('../example.config.json');
 
 
 describe('main - ', () => {
+
+  before(() => {
+    nock.disableNetConnect();
+  });
+
+  afterEach(() => {
+    nock.cleanAll();
+    nock.disableNetConnect();
+  });
+
+  after(() => {
+    nock.enableNetConnect();
+  });
 
   describe('config - ', () => {
 
@@ -52,8 +66,29 @@ describe('main - ', () => {
     );
 
   });
+
+
+  describe('getStyleguide - ', () => {
+
+    it('should reject if the request was not successfull',
+        shouldRejectIfTheRequestWasNotSuccessfull
+    );
+
+    it('should reject if the styleguid could not be found',
+        shouldRejectIfTheStyleguidCouldNotBeFound
+    );
+
+    it('should reject for all unkown status codes',
+        shouldRejectForAllUnkownStatusCodes
+    );
+
+    it('should resolve with the body of the response',
+        shouldResolveWithTheBodyOfTheResponse
+    );
+
+  });
   
-  describe('scrapePatternlab_ - ', function() {
+  describe('scrapePatternlab_ - ', () => {
     
     it('should reject if there were no pattern in the given html',
         shouldRejectIfThereWereNoPatternInTheGivenHTML
@@ -68,6 +103,91 @@ describe('main - ', () => {
     );
 
   });
+
+
+  function shouldRejectIfTheRequestWasNotSuccessfull(done) {
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    instanceToTest.getStyleguide_()
+        .then(() => {
+          throw new Error('should not have resolved');
+        }, (error) => {
+          // We just test if execptions from nock are properly bubbled up.
+          // This would normally be an underlying layer exception.
+          assert.equal(
+              'Nock: Not allow net connect ' +
+              'for "localhost:3000"',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldRejectIfTheStyleguidCouldNotBeFound(done) {
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    var nockScope = nock('http://localhost:3000')
+        .get('/styleguide/html/styleguide.html')
+        .reply(404, 'Not found', {'content-type': 'text/html'});
+    instanceToTest.getStyleguide_()
+        .then(() => {
+          throw new Error('should not have resolved');
+        }, (error) => {
+          // We just test if execptions from nock are properly bubbled up.
+          // This would normally be an underlying layer exception.
+          assert.equal(
+              'PatternlabToNode - scraping error - ' +
+              '"http://localhost:3000/styleguide/html/styleguide.html" could not be found',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldRejectForAllUnkownStatusCodes(done) {
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    var nockScope = nock('http://localhost:3000')
+        .get('/styleguide/html/styleguide.html')
+        .reply(999);
+    instanceToTest.getStyleguide_()
+        .then(() => {
+          throw new Error('should not have resolved');
+        }, (error) => {
+          // We just test if execptions from nock are properly bubbled up.
+          // This would normally be an underlying layer exception.
+          assert.equal(
+              'PatternlabToNode - scraping error - ' +
+              'unknown error (statusCode was: 999)',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldResolveWithTheBodyOfTheResponse(done) {
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {}
+    });
+    var randomBody = 'bodyContent' + new Date().getTime();
+    var nockScope = nock('http://localhost:3000')
+        .get('/styleguide/html/styleguide.html')
+        .reply(200, randomBody);
+    instanceToTest.getStyleguide_()
+        .then((bodyHtml) => {
+          assert.equal(
+              randomBody,
+              bodyHtml
+          );
+        })
+        .then(done, done);
+  }
 
 
   function shouldRejectIfThereWereNoPatternInTheGivenHTML(done) {

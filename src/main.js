@@ -69,6 +69,40 @@ PatternlabToNode.
 
 
 /**
+ * @return {Promise.<string>}
+ * @private
+ */
+PatternlabToNode.
+    prototype.getStyleguide_ = function() {
+  return new Promise((resolve, reject) => {
+    request.get(
+        this.config_['patternlabUrl'] + '/styleguide/html/styleguide.html',
+        (err, request, body) => {
+          if (err) {
+            reject(err);
+          }
+          else if (request.statusCode === 200) {
+            resolve(body);
+          }
+          else {
+            var error;
+            switch (request.statusCode) {
+              case 404:
+                error = new Error('PatternlabToNode - scraping error - "' + (this.config_['patternlabUrl'] + '/styleguide/html/styleguide.html') + '" could not be found');
+                break;
+              default:
+                error = new Error('PatternlabToNode - scraping error - unknown error (statusCode was: ' + request.statusCode + ')');
+            }
+            reject(error);
+          }
+        }
+    );
+  });
+};
+
+
+
+/**
  * @param {string} html
  * @return {Promise.<Array.<{id: string, name: string}>>}
  * @private
