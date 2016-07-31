@@ -30,3 +30,13 @@ A collection of screen sizes with will be used for the screen shots. The key wil
   }
 }
 ```
+
+### excludePatterns
+
+An array containing regular expressions to exclude patterns for the tests.
+
+```json
+"excludePatterns": [
+  "^templates"
+]
+```

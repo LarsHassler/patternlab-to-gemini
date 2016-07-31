@@ -38,11 +38,13 @@ var PatternlabToNode = function(opt_options) {
   /**
    * @type {{
    *    patternlabUrl: string,
+   *    excludePatterns: Array.<string>
    * }}
    * @private
    */
   this.config_ = extend({
-    patternlabUrl: 'http://localhost:3000'
+    patternlabUrl: 'http://localhost:3000',
+    excludePatterns: []
   }, opt_options);
 
   if (!this.config_['screenSizes']) {

@@ -45,6 +45,10 @@ describe('main - ', () => {
         shouldFailIfThereAreNoScreenSizesDefined
     );
 
+    it('should exclude no pattern by default',
+        shouldExcludeNoPatternByDefault
+    );
+
   });
 
 
@@ -54,6 +58,13 @@ describe('main - ', () => {
     delete config['patternlabUrl'];
     var instanceToTest = new patternlabToNode(config);
     assert.equal('http://localhost:3000', instanceToTest.config_['patternlabUrl']);
+  }
+
+  function shouldExcludeNoPatternByDefault() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    delete config['excludePatterns'];
+    var instanceToTest = new patternlabToNode(config);
+    assert.equal(0, instanceToTest.config_['excludePatterns'].length);
   }
 
   function shouldOverwriteTheConfigurationWithAGivenConfigObject() {
