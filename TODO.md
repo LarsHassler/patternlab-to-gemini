@@ -7,8 +7,20 @@
 * CLI mode
 * Publish NPM Package
 * Test for molecules and organisms should not run if an included pattern broke
-* Warning when pattern has been removed
+    * get dependency tree out of patternlab
 
 ##USER STORIES:
+* [x] users should be able to provide a path to the config file 
+* config for new patterns should be added
+* old configs patterns should not be overwritten
+* Warning when pattern has been removed
 
 ##TODOS:
+* [x] create default (patterns.config.json in pwd)
+    * update readme
+* filesystem stubs for tests
+* relative filepath should be relative to config file
+* handle dir not created yet
+* handle empty file
+* error: files is not json
+* error: json files, but does not contain configs
