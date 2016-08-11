@@ -65,6 +65,10 @@ describe('main - ', () => {
         shouldExcludeNoPatternByDefault
     );
 
+    it('should transform all exclude configs in regexp',
+        shouldTransformAllExcludeConfigsInRegexp
+    );
+
   });
 
 
@@ -109,6 +113,7 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+    // TODO: replace with public api call
     instanceToTest.getStyleguide_()
         .then(() => {
           throw new Error('should not have resolved');
@@ -125,6 +130,28 @@ describe('main - ', () => {
   }
 
 
+  function shouldTransformAllExcludeConfigsInRegexp() {
+    var randomString = 'string' + new Date().getTime();
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {},
+      "excludePatterns": [
+        '^' + randomString,
+        randomString + '$'
+      ]
+    });
+    // TODO: replace with public api call
+    instanceToTest.init_();
+    assert.equal(
+        '/^' + randomString + '/',
+        instanceToTest.config_.excludePatterns[0]
+    );
+    assert.equal(
+        '/' + randomString + '$/',
+        instanceToTest.config_.excludePatterns[1]
+    );
+  }
+
+
   function shouldRejectIfTheStyleguidCouldNotBeFound(done) {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
@@ -132,6 +159,7 @@ describe('main - ', () => {
     var nockScope = nock('http://localhost:3000')
         .get('/styleguide/html/styleguide.html')
         .reply(404, 'Not found', {'content-type': 'text/html'});
+    // TODO: replace with public api call
     instanceToTest.getStyleguide_()
         .then(() => {
           throw new Error('should not have resolved');
@@ -155,6 +183,7 @@ describe('main - ', () => {
     var nockScope = nock('http://localhost:3000')
         .get('/styleguide/html/styleguide.html')
         .reply(999);
+    // TODO: replace with public api call
     instanceToTest.getStyleguide_()
         .then(() => {
           throw new Error('should not have resolved');
@@ -179,6 +208,7 @@ describe('main - ', () => {
     var nockScope = nock('http://localhost:3000')
         .get('/styleguide/html/styleguide.html')
         .reply(200, randomBody);
+    // TODO: replace with public api call
     instanceToTest.getStyleguide_()
         .then((bodyHtml) => {
           assert.equal(
@@ -197,6 +227,7 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+    // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
         .then(() => {
           throw new Error('should not have resolved');
@@ -217,6 +248,7 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+    // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
         .then(() => {
           throw new Error('should not have resolved');
@@ -237,6 +269,7 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+    // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
         .then((patterns) => {
           assert.deepEqual([
