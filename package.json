@@ -27,13 +27,14 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "extend": "^3.0.0",
+    "istanbul": "^0.4.4",
     "mocha": "^2.5.3"
   },
   "peerDependencies": {
     "gemini": "^4.4.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter dot test/"
+    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -R spec test/"
   },
   "keywords": [
     "test",
