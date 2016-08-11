@@ -45,9 +45,17 @@ describe('main - ', () => {
 
   describe('config - ', () => {
 
-    it('default pattern lab url should point to local host on port 3000',
-        defaultPatternlabUrlShouldPointToLocalhostOnPort3000
-    );
+    describe('defaults - ', function() {
+
+      it('default pattern lab url should point to local host on port 3000',
+          defaultPatternlabUrlShouldPointToLocalhostOnPort3000
+      );
+
+      it('default patter config file shout point to file',
+          defaultPatterConfigFileShoutPointToFile
+      );
+
+    });
 
     it('should overwrite the configuration with a given config object',
         shouldOverwriteTheConfigurationWithAGivenConfigObject
@@ -294,6 +302,13 @@ describe('main - ', () => {
     delete config['patternlabUrl'];
     var instanceToTest = new patternlabToNode(config);
     assert.equal('http://localhost:3000', instanceToTest.config_['patternlabUrl']);
+  }
+
+  function defaultPatterConfigFileShoutPointToFile() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    delete config['patternConfigFile'];
+    var instanceToTest = new patternlabToNode(config);
+    assert.equal('./pattern.config.json', instanceToTest.config_['patternConfigFile']);
   }
 
   function shouldExcludeNoPatternByDefault() {

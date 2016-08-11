@@ -16,9 +16,7 @@
 * Warning when pattern has been removed
 
 ##TODOS:
-* [x] create default (patterns.config.json in pwd)
-    * update readme
-* filesystem stubs for tests
+* [x] filesystem stubs for tests
 * relative filepath should be relative to config file
 * handle dir not created yet
 * handle empty file

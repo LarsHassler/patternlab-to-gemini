@@ -40,12 +40,14 @@ var PatternlabToNode = function(opt_options) {
   /**
    * @type {{
    *    patternlabUrl: string,
+   *    patternConfigFile: string,
    *    excludePatterns: Array.<string|RegExp>
    * }}
    * @private
    */
   this.config_ = extend({
     patternlabUrl: 'http://localhost:3000',
+    patternConfigFile: './pattern.config.json',
     excludePatterns: []
   }, opt_options);
 

@@ -1,5 +1,6 @@
 {
   "patternlabUrl": "https://domainForPatternLab:1337",
+  "patternConfigFile": "./patternConfigFile.config.json",
   "screenSizes": {
     "desktop": {
       "width": 1440,
