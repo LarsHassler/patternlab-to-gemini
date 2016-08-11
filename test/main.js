@@ -65,14 +65,17 @@ describe('main - ', () => {
         shouldExcludeNoPatternByDefault
     );
 
+  });
+
+  describe('init_ - ', function() {
+
     it('should transform all exclude configs in regexp',
         shouldTransformAllExcludeConfigsInRegexp
     );
 
   });
 
-
-  describe('getStyleguide - ', () => {
+  describe('getStyleguide_ - ', () => {
 
     it('should reject if the request was not successfull',
         shouldRejectIfTheRequestWasNotSuccessfull
