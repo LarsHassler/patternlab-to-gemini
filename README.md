@@ -20,14 +20,15 @@ The domain where the patternlab styleguide is located.
 
 #### screenSizes
 
-A collection of screen sizes with will be used for the responsive screen shots. The key will be used for the filename of the screen shot.
+A collection of screen sizes with will be used for the responsive screen shots. 
+The key will be used for the filename of the screen shot.
 Beware that the screen shot might be smaller due to the captured html element.
 
 ```json
 "screenSizes": {
   "yourScreenSize": {
     "width": 999,
-    "height: 666
+    "height": 666
   }
 }
 ```
@@ -40,4 +41,13 @@ An array containing regular expressions to exclude patterns for the tests.
 "excludePatterns": [
   "^templates"
 ]
+```
+
+### patternConfigFile (default: ./pattern.config.json)
+
+The path to the file where the pattern config will be stored. Relative paths will
+be resolve in relation to the main config file. 
+
+```json
+"patternConfigFile": "./pattern.config.json"
 ```
