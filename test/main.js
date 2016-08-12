@@ -138,8 +138,8 @@ describe('main - ', () => {
 
   describe('getPatternsConfiguration - ', () => {
 
-    it.skip('should not return patters that match one of the exclude regexps',
-        function() {} // shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
+    it('should not return patters that match one of the exclude regexps',
+        shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
 
   });
@@ -148,6 +148,34 @@ describe('main - ', () => {
   /* ------------------------------------------------------------------
    * Test case implementation
    * --------------------------------------------------------------- */
+
+  function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {},
+      "excludePatterns": [
+          'exclude'
+      ]
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        __dirname + '/dummyhtml/patternsToExclude.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+        .then((patterns) => {
+          assert.deepEqual([
+            {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            {
+              id: "pattern-2",
+              name: "Pattern Name 2"
+            }
+          ], patterns);
+        })
+        .then(done, done);
+
+  }
 
   function shouldRejectIfTheRequestWasNotSuccessfull(done) {
     var instanceToTest = new patternlabToNode({
@@ -374,4 +402,15 @@ describe('main - ', () => {
    * Helpers
    * --------------------------------------------------------------- */
 
+  /**
+   * @param {string} domain
+   *    the domain including protocol & port
+   * @param responseBodyFileName
+   *    the path to the file which will be the body of the response
+   */
+  function setUpPatternlabResponse(domain, responseBodyFileName) {
+    var scope = nock(domain)
+        .get('/styleguide/html/styleguide.html')
+        .replyWithFile(200, responseBodyFileName);
+  }
 });

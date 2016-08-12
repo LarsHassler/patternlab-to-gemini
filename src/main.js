@@ -120,12 +120,18 @@ PatternlabToNode.
         (index, element) => {
           var patternId = $(element).attr('id');
           var header = $(element).find('.sg-pattern-title > a');
-          patterns.push(
-              {
-                id: patternId,
-                name: header.html().trim()
-              }
-          );
+          var shouldBeExcluded = this.config_.excludePatterns.reduce(
+              (previousValue, currentValue, currentIndex) => {
+                return previousValue || currentValue.test(patternId);
+              }, false);
+          if (!shouldBeExcluded) {
+            patterns.push(
+                {
+                  id: patternId,
+                  name: header.html().trim()
+                }
+            );
+          }
         }
     );
     var patternWithoutAnId = patterns.filter((pattern) => {
@@ -145,6 +151,17 @@ PatternlabToNode.
 };
 
 
+
+PatternlabToNode.
+    prototype.getPatternsConfiguration = function() {
+  return this.init_()
+      .then(() => {
+        return this.getStyleguide_();
+      })
+      .then((html) => {
+        return this.scrapePatternlab_(html);
+      })
+};
 
 
 
