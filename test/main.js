@@ -20,6 +20,10 @@
  * IN THE SOFTWARE.
  */
 
+/* ------------------------------------------------------------------
+ * dependency
+ * --------------------------------------------------------------- */
+
 const patternlabToNode = require('../src/main');
 const path = require('path');
 const fs = require('fs');
@@ -29,6 +33,10 @@ const exampleConfig = require('../example.config.json');
 
 
 describe('main - ', () => {
+
+  /* ------------------------------------------------------------------
+   * Setup & Tear down
+   * --------------------------------------------------------------- */
 
   before(() => {
     nock.disableNetConnect();
@@ -43,9 +51,13 @@ describe('main - ', () => {
     nock.enableNetConnect();
   });
 
+  /* ------------------------------------------------------------------
+   * Test cases
+   * --------------------------------------------------------------- */
+
   describe('config - ', () => {
 
-    describe('defaults - ', function() {
+    describe('defaults - ', () => {
 
       it('default pattern lab url should point to local host on port 3000',
           defaultPatternlabUrlShouldPointToLocalhostOnPort3000
@@ -75,50 +87,67 @@ describe('main - ', () => {
 
   });
 
-  describe('init_ - ', function() {
+  describe('internals - ', () => {
 
-    it('should transform all exclude configs in regexp',
-        shouldTransformAllExcludeConfigsInRegexp
+    describe('init_ - ', () => {
+
+      it('should transform all exclude configs in regexp',
+          shouldTransformAllExcludeConfigsInRegexp
+      );
+
+    });
+
+    describe('getStyleguide_ - ', () => {
+
+      it('should reject if the request was not successfull',
+          shouldRejectIfTheRequestWasNotSuccessfull
+      );
+
+      it('should reject if the styleguid could not be found',
+          shouldRejectIfTheStyleguidCouldNotBeFound
+      );
+
+      it('should reject for all unkown status codes',
+          shouldRejectForAllUnkownStatusCodes
+      );
+
+      it('should resolve with the body of the response',
+          shouldResolveWithTheBodyOfTheResponse
+      );
+
+    });
+
+    describe('scrapePatternlab_ - ', () => {
+
+      it('should reject if there were no pattern in the given html',
+          shouldRejectIfThereWereNoPatternInTheGivenHTML
+      );
+
+      it('should reject if there is a pattern without an id',
+          shouldRejectIfThereIsAPatternWithoutAnId
+      );
+
+      it('should return all pattern within the html',
+          shouldReturnAllPatternWithinTheHTML
+      );
+
+    });
+
+  });
+
+
+  describe('getPatternsConfiguration - ', () => {
+
+    it.skip('should not return patters that match one of the exclude regexps',
+        function() {} // shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
 
   });
 
-  describe('getStyleguide_ - ', () => {
 
-    it('should reject if the request was not successfull',
-        shouldRejectIfTheRequestWasNotSuccessfull
-    );
-
-    it('should reject if the styleguid could not be found',
-        shouldRejectIfTheStyleguidCouldNotBeFound
-    );
-
-    it('should reject for all unkown status codes',
-        shouldRejectForAllUnkownStatusCodes
-    );
-
-    it('should resolve with the body of the response',
-        shouldResolveWithTheBodyOfTheResponse
-    );
-
-  });
-  
-  describe('scrapePatternlab_ - ', () => {
-    
-    it('should reject if there were no pattern in the given html',
-        shouldRejectIfThereWereNoPatternInTheGivenHTML
-    );
-
-    it('should reject if there is a pattern without an id',
-        shouldRejectIfThereIsAPatternWithoutAnId
-    );
-
-    it('should return all pattern within the html',
-        shouldReturnAllPatternWithinTheHTML
-    );
-
-  });
-
+  /* ------------------------------------------------------------------
+   * Test case implementation
+   * --------------------------------------------------------------- */
 
   function shouldRejectIfTheRequestWasNotSuccessfull(done) {
     var instanceToTest = new patternlabToNode({
@@ -337,4 +366,9 @@ describe('main - ', () => {
       new patternlabToNode(config);
     }, null, /missing screenSizes/);
   }
+
+  /* ------------------------------------------------------------------
+   * Helpers
+   * --------------------------------------------------------------- */
+
 });
