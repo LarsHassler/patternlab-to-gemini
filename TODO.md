@@ -1,6 +1,6 @@
 ##EPICS:
-* [x] write pattern config into config file
-* Template for test case structure
+* [x] generate json file with all pattern
+* Template for test case structure. maybe http://ejs.co/
 * Skipping screen sizes for specific pattern
     * move browserSize into npm dependency (or maybe not??)
 * Add "Scope" css classes to specific pattern (maybe should be a feature inside patternlab ?)
