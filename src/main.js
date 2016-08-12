@@ -61,11 +61,13 @@ var PatternlabToNode = function(opt_options) {
  */
 PatternlabToNode.
     prototype.init_ = function() {
-
-  // transform all strings in excludePatterns config to regular expressions
-  this.config_.excludePatterns.forEach((pattern, index) => {
-    this.config_.excludePatterns[index] = new RegExp(pattern);
-  })
+  return new Promise((resolve, reject) => {
+    // transform all strings in excludePatterns config to regular expressions
+    this.config_.excludePatterns.forEach((pattern, index) => {
+      this.config_.excludePatterns[index] = new RegExp(pattern);
+    });
+    resolve();
+  });
 };
 
 

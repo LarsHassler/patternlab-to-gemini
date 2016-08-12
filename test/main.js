@@ -170,7 +170,7 @@ describe('main - ', () => {
   }
 
 
-  function shouldTransformAllExcludeConfigsInRegexp() {
+  function shouldTransformAllExcludeConfigsInRegexp(done) {
     var randomString = 'string' + new Date().getTime();
     var instanceToTest = new patternlabToNode({
       "screenSizes": {},
@@ -180,15 +180,18 @@ describe('main - ', () => {
       ]
     });
     // TODO: replace with public api call
-    instanceToTest.init_();
-    assert.equal(
-        '/^' + randomString + '/',
-        instanceToTest.config_.excludePatterns[0]
-    );
-    assert.equal(
-        '/' + randomString + '$/',
-        instanceToTest.config_.excludePatterns[1]
-    );
+    instanceToTest.init_()
+        .then(() => {
+          assert.equal(
+              '/^' + randomString + '/',
+              instanceToTest.config_.excludePatterns[0]
+          );
+          assert.equal(
+              '/' + randomString + '$/',
+              instanceToTest.config_.excludePatterns[1]
+          );
+        })
+        .then(done, done);
   }
 
 
