@@ -142,6 +142,14 @@ describe('main - ', () => {
         shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
 
+    it('should reject if the config file does not exist',
+        shouldRejectIfTheConfigFileDoesNotExist
+    );
+
+    it('should reject if the config file is a directory',
+        shouldRejectIfTheConfigFileIsADirectory
+    );
+
   });
 
 
@@ -149,8 +157,64 @@ describe('main - ', () => {
    * Test case implementation
    * --------------------------------------------------------------- */
 
-  function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
+  function shouldRejectIfTheConfigFileDoesNotExist(done) {
+    // @TODO: add mock for fs
     var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "./noExtits",
+      "screenSizes": {},
+      "excludePatterns": [
+        'exclude'
+      ]
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        __dirname + '/dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+        .then(() => {
+          throw new Error('should not resolve');
+        }, (error) => {
+          assert.equal(
+              'PatternlabToNode - config error - could not find config file ' +
+              '"./noExtits"',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldRejectIfTheConfigFileIsADirectory(done) {
+    // @TODO: add mock for fs
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../test/dummyConfigs/",
+      "screenSizes": {},
+      "excludePatterns": [
+        'exclude'
+      ]
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        __dirname + '/dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+        .then(() => {
+          throw new Error('should not resolve');
+        }, (error) => {
+          assert.equal(
+              'PatternlabToNode - config error - could not find config file ' +
+              '"../test/dummyConfigs/"',
+              error.message
+          );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
+    // @TODO: add mock for fs
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../test/dummyConfigs/emptyConfig.json",
       "screenSizes": {},
       "excludePatterns": [
           'exclude'

@@ -151,9 +151,39 @@ PatternlabToNode.
 };
 
 
+/**
+ * @return {Promise.<patternsReturn>}
+ */
+PatternlabToNode.
+    prototype.loadOldPatternConfig_ = function() {
+  return new Promise((resolve, reject) => {
+    var configFilePath = path.resolve(__dirname, this.config_.patternConfigFile);
+    try {
+      var statConfigFile = fs.statSync(configFilePath);
+    } catch(err) {
+      var error = new Error('PatternlabToNode - config error - ' +
+          'could not find config file "' + this.config_.patternConfigFile + '"');
+      reject(error);
+    }
 
+    if (statConfigFile.isFile()) {
+      var oldConfig = require(configFilePath);
+      resolve(oldConfig);
+    } else {
+      var error = new Error('PatternlabToNode - config error - ' +
+          'could not find config file "' + this.config_.patternConfigFile + '"');
+      reject(error);
+    }
+  })
+};
+
+
+/**
+ * @return {Promise.<patternsReturn>}
+ */
 PatternlabToNode.
     prototype.getPatternsConfiguration = function() {
+  var newPatterns = null;
   return this.init_()
       .then(() => {
         return this.getStyleguide_();
@@ -161,8 +191,24 @@ PatternlabToNode.
       .then((html) => {
         return this.scrapePatternlab_(html);
       })
+      .then((patterns) => {
+        newPatterns = patterns;
+        return this.loadOldPatternConfig_();
+      })
+      .then((oldPatternConfig) => {
+        // newPatterns = extend(oldPatternConfig, newPatterns);
+      })
+      .then(() => {
+        return newPatterns;
+      });
 };
 
 
 
 module.exports = PatternlabToNode;
+
+/** @typedef {Array.<{
+ *    id: string,
+ *    name: string
+ * }>} */
+var patternsReturn;
