@@ -1,6 +1,6 @@
 {
   "patternlabUrl": "http://localhost:3000",
-  "patternConfigFile": "../dummyConfigs/emptyConfig.json",
+  "patternConfigFile": "emptyConfig.json",
   "screenSizes": {
     "desktop": {
       "width": 1440,

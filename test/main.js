@@ -27,6 +27,7 @@
 const patternlabToNode = require('../src/main');
 const path = require('path');
 const fs = require('fs');
+const mock_fs = require('mock-fs');
 const nock = require('nock');
 const assert = require('chai').assert;
 const exampleConfig = require('../example.config.json');
@@ -45,6 +46,7 @@ describe('main - ', () => {
   afterEach(() => {
     nock.cleanAll();
     nock.disableNetConnect();
+    mock_fs.restore();
   });
 
   after(() => {
@@ -162,7 +164,10 @@ describe('main - ', () => {
    * --------------------------------------------------------------- */
 
   function shouldRejectIfTheConfigFileDoesNotExist(done) {
-    // @TODO: add mock for fs
+    setUpFsMock({
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+
     var instanceToTest = new patternlabToNode({
       "patternConfigFile": "./noExtits",
       "screenSizes": {},
@@ -172,7 +177,7 @@ describe('main - ', () => {
     });
     setUpPatternlabResponse(
         'http://localhost:3000',
-        __dirname + '/dummyhtml/patterns.html'
+        'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
         .then(() => {
@@ -189,7 +194,6 @@ describe('main - ', () => {
 
 
   function shouldRejectIfTheConfigFileIsADirectory(done) {
-    // @TODO: add mock for fs
     var instanceToTest = new patternlabToNode({
       "patternConfigFile": "../test/dummyConfigs/",
       "screenSizes": {},
@@ -216,13 +220,17 @@ describe('main - ', () => {
 
 
   function shouldReadThePatterconfigRelativeToTheConfigFile(done) {
-    // @TODO: add mock for fs
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
+      "emptyConfig.json": [],
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
     var instanceToTest = new patternlabToNode(
-        path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json')
+        'config.json'
     );
     setUpPatternlabResponse(
         'http://localhost:3000',
-        __dirname + '/dummyhtml/patterns.html'
+        'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
@@ -242,9 +250,12 @@ describe('main - ', () => {
 
 
   function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
-    // @TODO: add mock for fs
+    setUpFsMock({
+      "emptyConfig.json": [],
+      'dummyhtml/patternsToExclude.html': __dirname + '/dummyhtml/patternsToExclude.html'
+    });
     var instanceToTest = new patternlabToNode({
-      "patternConfigFile": "../test/dummyConfigs/emptyConfig.json",
+      "patternConfigFile": "../emptyConfig.json",
       "screenSizes": {},
       "excludePatterns": [
           'exclude'
@@ -252,7 +263,7 @@ describe('main - ', () => {
     });
     setUpPatternlabResponse(
         'http://localhost:3000',
-        __dirname + '/dummyhtml/patternsToExclude.html'
+        'dummyhtml/patternsToExclude.html'
     );
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
@@ -480,7 +491,7 @@ describe('main - ', () => {
 
   function shouldOverwriteTheConfigurationWithAGivenFilename() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    var instanceToTest = new patternlabToNode('../example.config.json');
+    var instanceToTest = new patternlabToNode(__dirname + '/../example.config.json');
     assert.deepEqual(instanceToTest.config_, config);
   }
 
@@ -506,5 +517,16 @@ describe('main - ', () => {
     var scope = nock(domain)
         .get('/styleguide/html/styleguide.html')
         .replyWithFile(200, responseBodyFileName);
+  }
+
+  function setUpFsMock(options) {
+    for(var key in options) {
+      if (typeof options[key] == 'string') {
+        options[key] = fs.readFileSync(options[key]).toString();
+      } else {
+        options[key] = JSON.stringify(options[key]);
+      }
+    }
+    mock_fs(options);
   }
 });

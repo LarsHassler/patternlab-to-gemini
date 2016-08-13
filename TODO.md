@@ -17,6 +17,4 @@
 * Skipping browsers for specific patterns
 
 ##TODOS:
-* relative filepath should be relative to config file
 * error: json files, but does not contain configs
-* [x] filesystem stubs for tests

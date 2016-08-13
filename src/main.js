@@ -40,7 +40,7 @@ var PatternlabToNode = function(opt_options) {
 
   if (typeof opt_options == 'string') {
     this.wasLoadedFromConfigFile_ = opt_options;
-    opt_options = require(opt_options);
+    opt_options = JSON.parse(fs.readFileSync(opt_options).toString());
   }
 
   /**
@@ -180,7 +180,7 @@ PatternlabToNode.
     }
 
     if (statConfigFile.isFile()) {
-      var oldConfig = require(configFilePath);
+      var oldConfig = fs.readFileSync(configFilePath).toString();
       resolve(oldConfig);
     } else {
       var error = new Error('PatternlabToNode - config error - ' +
