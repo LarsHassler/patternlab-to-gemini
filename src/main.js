@@ -180,7 +180,7 @@ PatternlabToNode.
     }
 
     if (statConfigFile.isFile()) {
-      var oldConfig = fs.readFileSync(configFilePath).toString();
+      var oldConfig = JSON.parse(fs.readFileSync(configFilePath).toString());
       resolve(oldConfig);
     } else {
       var error = new Error('PatternlabToNode - config error - ' +
@@ -196,7 +196,7 @@ PatternlabToNode.
  */
 PatternlabToNode.
     prototype.getPatternsConfiguration = function() {
-  var newPatterns = null;
+  var newPatterns = {};
   return this.init_()
       .then(() => {
         return this.getStyleguide_();
@@ -205,14 +205,18 @@ PatternlabToNode.
         return this.scrapePatternlab_(html);
       })
       .then((patterns) => {
-        newPatterns = patterns;
+        patterns.forEach((pattern) => {
+          newPatterns[pattern['id']] = pattern;
+        });
         return this.loadOldPatternConfig_();
       })
       .then((oldPatternConfig) => {
-        // newPatterns = extend(oldPatternConfig, newPatterns);
-      })
-      .then(() => {
-        return newPatterns;
+        for(var patternId in oldPatternConfig['patterns']) {
+          newPatterns[patternId] = oldPatternConfig['patterns'][patternId];
+        }
+        return {
+          patterns: newPatterns
+        };
       });
 };
 
@@ -220,8 +224,10 @@ PatternlabToNode.
 
 module.exports = PatternlabToNode;
 
-/** @typedef {Array.<{
- *    id: string,
- *    name: string
- * }>} */
+/** @typedef {{
+ *     patterns: Object.<string, {
+ *       id: string,
+ *       name: string
+ *     }
+ * }} */
 var patternsReturn;

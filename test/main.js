@@ -140,10 +140,6 @@ describe('main - ', () => {
 
   describe('getPatternsConfiguration - ', () => {
 
-    it('should not return patters that match one of the exclude regexps',
-        shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
-    );
-
     it('should reject if the config file does not exist',
         shouldRejectIfTheConfigFileDoesNotExist
     );
@@ -154,6 +150,14 @@ describe('main - ', () => {
 
     it('should read the patterconfig relative to the config file',
         shouldReadThePatterconfigRelativeToTheConfigFile
+    );
+
+    it('should not return patters that match one of the exclude regexps',
+        shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
+    );
+
+    it('should merge old and new patterns',
+        shouldMergeOldAndNewPatterns
     );
 
   });
@@ -222,7 +226,9 @@ describe('main - ', () => {
   function shouldReadThePatterconfigRelativeToTheConfigFile(done) {
     setUpFsMock({
       "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
-      "emptyConfig.json": [],
+      "emptyConfig.json": {
+        patterns: {}
+      },
       'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
     });
     var instanceToTest = new patternlabToNode(
@@ -234,16 +240,18 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
-          assert.deepEqual([
-            {
-              id: "pattern-1",
-              name: "Pattern Name 1"
-            },
-            {
-              id: "pattern-2",
-              name: "Pattern Name 2"
+          assert.deepEqual({
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1"
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2"
+              }
             }
-          ], patterns);
+          }, patterns);
         })
         .then(done, done);
   }
@@ -251,7 +259,9 @@ describe('main - ', () => {
 
   function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
     setUpFsMock({
-      "emptyConfig.json": [],
+      "emptyConfig.json": {
+        patterns: {}
+      },
       'dummyhtml/patternsToExclude.html': __dirname + '/dummyhtml/patternsToExclude.html'
     });
     var instanceToTest = new patternlabToNode({
@@ -267,19 +277,66 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
-          assert.deepEqual([
-            {
-              id: "pattern-1",
-              name: "Pattern Name 1"
-            },
-            {
-              id: "pattern-2",
-              name: "Pattern Name 2"
+          assert.deepEqual({
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1"
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2"
+              }
             }
-          ], patterns);
+          }, patterns);
         })
         .then(done, done);
+  }
 
+
+  function shouldMergeOldAndNewPatterns(done) {
+    var randomInfo = "some random info" + new Date().getTime();
+    setUpFsMock({
+      "oldConfig.json": {
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1",
+            data: randomInfo
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2"
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "screenSizes": {}
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+        .then((patterns) => {
+          assert.deepEqual({
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                data: randomInfo
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2"
+              }
+            }
+          }, patterns);
+        })
+        .then(done, done);
   }
 
   function shouldRejectIfTheRequestWasNotSuccessfull(done) {
