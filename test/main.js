@@ -150,6 +150,10 @@ describe('main - ', () => {
         shouldRejectIfTheConfigFileIsADirectory
     );
 
+    it('should read the patterconfig relative to the config file',
+        shouldReadThePatterconfigRelativeToTheConfigFile
+    );
+
   });
 
 
@@ -206,6 +210,32 @@ describe('main - ', () => {
               '"../test/dummyConfigs/"',
               error.message
           );
+        })
+        .then(done, done);
+  }
+
+
+  function shouldReadThePatterconfigRelativeToTheConfigFile(done) {
+    // @TODO: add mock for fs
+    var instanceToTest = new patternlabToNode(
+        path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json')
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        __dirname + '/dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+        .then((patterns) => {
+          assert.deepEqual([
+            {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            {
+              id: "pattern-2",
+              name: "Pattern Name 2"
+            }
+          ], patterns);
         })
         .then(done, done);
   }

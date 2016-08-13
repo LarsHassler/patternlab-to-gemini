@@ -32,8 +32,14 @@ const cheerio = require('cheerio');
  * @constructor
  */
 var PatternlabToNode = function(opt_options) {
+  /**
+   * @type {?string}
+   * @private
+   */
+  this.wasLoadedFromConfigFile_ = null;
 
   if (typeof opt_options == 'string') {
+    this.wasLoadedFromConfigFile_ = opt_options;
     opt_options = require(opt_options);
   }
 
@@ -157,7 +163,14 @@ PatternlabToNode.
 PatternlabToNode.
     prototype.loadOldPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
-    var configFilePath = path.resolve(__dirname, this.config_.patternConfigFile);
+    var configFilePath;
+    if (this.wasLoadedFromConfigFile_) {
+      configFilePath = path.resolve(
+          path.dirname(this.wasLoadedFromConfigFile_),
+          this.config_.patternConfigFile);
+    } else {
+      configFilePath = path.resolve(__dirname, this.config_.patternConfigFile);
+    }
     try {
       var statConfigFile = fs.statSync(configFilePath);
     } catch(err) {
