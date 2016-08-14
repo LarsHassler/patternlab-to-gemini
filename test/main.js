@@ -316,7 +316,7 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then((patterns) => {
+        .then(() => {
           assert.deepEqual({
             "_patternOrder": [
               "pattern-1",
@@ -332,7 +332,7 @@ describe('main - ', () => {
                 name: "Pattern Name 2"
               }
             }
-          }, patterns);
+          }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
         })
         .then(done, done);
   }
@@ -363,7 +363,7 @@ describe('main - ', () => {
         'The following Patterns are no longer part of the styleguide: pattern-no-more'
         ]);
     instanceToTest.getPatternsConfiguration()
-        .then((patterns) => {
+        .then(() => {
           assert.deepEqual({
             "_patternOrder": [
               "pattern-1",
@@ -383,7 +383,7 @@ describe('main - ', () => {
                 name: "Pattern which is no longer part of the styleguide"
               }
             }
-          }, patterns);
+          }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
           loggedMessages.check();
         })
         .then(done, done);
@@ -409,7 +409,7 @@ describe('main - ', () => {
         'dummyhtml/patternsToExclude.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then((patterns) => {
+        .then(() => {
           assert.deepEqual({
             "_patternOrder": [
               "pattern-1",
@@ -425,7 +425,7 @@ describe('main - ', () => {
                 name: "Pattern Name 2"
               }
             }
-          }, patterns);
+          }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
         })
         .then(done, done);
   }
@@ -462,7 +462,7 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then((patterns) => {
+        .then(() => {
           assert.deepEqual({
             "_patternOrder": [
               "pattern-1",
@@ -479,7 +479,7 @@ describe('main - ', () => {
                 name: "Pattern Name 2"
               }
             }
-          }, patterns);
+          }, JSON.parse(fs.readFileSync('oldConfig.json').toString()));
         })
         .then(done, done);
   }

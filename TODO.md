@@ -1,6 +1,5 @@
 ##EPICS:
-* [x] generate json file with all pattern
-* Template for test case structure. maybe http://ejs.co/
+* [x] Template for test case structure. maybe http://ejs.co/
 * CLI mode
 * Publish NPM Package
 * Deal with pattern states
@@ -9,16 +8,15 @@
 * Test for molecules and organisms should not run if an included pattern broke
     * get dependency tree out of patternlab
 * Improve display of warnings
+* Should work with not existing pattern config file
 
 ##USER STORIES: 
-* config file should be written
 
 ##TODOS:
-* [x] save new config
 
 
 
 ##CONSIDERATIONS:
 * [?] move browserSize into npm dependency (or maybe not??)
 * [?] Add "Scope" css classes to specific pattern (maybe should be a feature inside patternlab ?)
-* [?] error: json files, but does not contain configs
+* [?] error: pattern config is json file, but does not contain pattern configs

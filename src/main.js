@@ -206,7 +206,7 @@ PatternlabToNode.
 
 
 /**
- * @return {Promise.<patternsReturn>}
+ * @return {Promise.<>}
  */
 PatternlabToNode.
     prototype.getPatternsConfiguration = function() {
@@ -247,13 +247,12 @@ PatternlabToNode.
         var configFilePath = this.getConfigFilePath_();
         fs.writeFileSync(configFilePath + '.bak', JSON.stringify(oldPatternConfig));
       })
-      // backup old file
-      // write new file
       .then(() => {
-        return {
+        var configFilePath = this.getConfigFilePath_();
+        fs.writeFileSync(configFilePath, JSON.stringify({
           _patternOrder: newPatternIds,
           patterns: newPatterns
-        };
+        }));
       });
 };
 
