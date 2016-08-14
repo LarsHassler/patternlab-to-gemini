@@ -279,6 +279,10 @@ describe('main - ', () => {
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
           assert.deepEqual({
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
             "patterns": {
               "pattern-1": {
                 id: "pattern-1",
@@ -322,6 +326,10 @@ describe('main - ', () => {
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
           assert.deepEqual({
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
             "patterns": {
               "pattern-1": {
                 id: "pattern-1",
@@ -364,6 +372,10 @@ describe('main - ', () => {
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
           assert.deepEqual({
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
             "patterns": {
               "pattern-1": {
                 id: "pattern-1",
@@ -384,6 +396,10 @@ describe('main - ', () => {
     var randomInfo = "some random info" + new Date().getTime();
     setUpFsMock({
       "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
         "patterns": {
           "pattern-1" :{
             id: "pattern-1",
@@ -409,6 +425,10 @@ describe('main - ', () => {
     instanceToTest.getPatternsConfiguration()
         .then((patterns) => {
           assert.deepEqual({
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
             "patterns": {
               "pattern-1": {
                 id: "pattern-1",

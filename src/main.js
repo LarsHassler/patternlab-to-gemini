@@ -226,8 +226,12 @@ PatternlabToNode.
         for(var patternId in oldPatternConfig['patterns']) {
           newPatterns[patternId] = oldPatternConfig['patterns'][patternId];
         }
-
+      })
+      // backup old file
+      // write new file
+      .then(() => {
         return {
+          _patternOrder: newPatternIds,
           patterns: newPatterns
         };
       });
