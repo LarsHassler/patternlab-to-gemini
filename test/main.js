@@ -192,6 +192,18 @@ describe('main - ', () => {
 
   });
 
+  describe('generateTests - ', function() {
+
+    it('should reject if the patternConfigFile could not be found',
+        shouldRejectIfThePatternConfigFileCouldNotBeFound
+    );
+
+    it('should generate the correct test file',
+        shouldGenerateTheCorrectTestFile
+    );
+
+  });
+
 
   /* ------------------------------------------------------------------
    * Test case implementation
@@ -228,6 +240,41 @@ describe('main - ', () => {
           else {
             throw new Error('could not find backup file');
           }
+        })
+        .then(done, done);
+  }
+
+  function shouldRejectIfThePatternConfigFileCouldNotBeFound(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    instanceToTest.generateTests()
+        .then(() => {
+          throw new Error('should not resolve')
+        },(error) => {
+          assert.equal(error.message, 'PatternlabToNode - config error - could not find config file "emptyConfig.json"');
+        })
+        .then(done, done);
+  }
+
+  function shouldGenerateTheCorrectTestFile(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/generateTestsConfig.json'),
+      "patternConfig.json": path.resolve(__dirname, 'dummyConfigs/generateTestsPatternConfig.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTests.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.generateTests()
+        .then(() => {
+          assert.equal(
+              fs.readFileSync('patternlabTests.js').toString(),
+              fs.readFileSync('expectedTest.js').toString(),
+              "wrong testFile generated"
+          )
         })
         .then(done, done);
   }

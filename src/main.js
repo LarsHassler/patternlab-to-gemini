@@ -262,6 +262,52 @@ PatternlabToNode.
       });
 };
 
+/**
+ * @return {Promise.<>}
+ */
+PatternlabToNode.
+    prototype.generateTests = function() {
+  return this.init_()
+      .then(() => {
+        return this.loadOldPatternConfig_();
+      })
+      .then((config) => {
+        return new Promise((resolve, reject) => {
+          var data = {
+            'patterns': [],
+            'sizes': []
+          };
+          config['_patternOrder'].forEach((patternId) => {
+            data['patterns'].push(config['patterns'][patternId]);
+          });
+          for(var screenSize in this.config_['screenSizes']) {
+            data.sizes.push({
+              name: screenSize,
+              width: this.config_['screenSizes'][screenSize]['width'],
+              height: this.config_['screenSizes'][screenSize]['height']
+            })
+          }
+          var templateFilePath = path.resolve(
+              this.getConfigFilePath_(),
+              this.config_.templateFile);
+          ejs.renderFile(templateFilePath, data, {}, function(err, str) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(str);
+            }
+          });
+        });
+      })
+      .then((fileContent) => {
+        var configFilePath = path.resolve(
+            this.getConfigFilePath_(),
+            this.config_.outputFile);
+        fs.writeFileSync(configFilePath, fileContent);
+      });
+};
+
+
 
 /**
  * @param {string} message

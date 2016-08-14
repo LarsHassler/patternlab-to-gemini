@@ -1,6 +1,5 @@
 ##EPICS:
-* [x] Template for test case structure. maybe http://ejs.co/
-* CLI mode
+* [x] CLI mode
 * Add proper Documentation 
     * for pattern configuration
     * public api
@@ -17,7 +16,7 @@
 * Should work with not existing pattern config file
 
 ##USER STORIES: 
-* add template file
+
 
 ##TODOS:
 
