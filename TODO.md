@@ -1,9 +1,12 @@
 ##EPICS:
 * [x] Template for test case structure. maybe http://ejs.co/
 * CLI mode
+* Add Documentation for pattern configuration
 * Publish NPM Package
 * Deal with pattern states
 * Skipping screen sizes for specific pattern
+* Additional screen sizes for specific pattern
+* Overwriting screen sizes for specific pattern
 * Skipping browsers for specific patterns
 * Test for molecules and organisms should not run if an included pattern broke
     * get dependency tree out of patternlab
@@ -11,9 +14,13 @@
 * Should work with not existing pattern config file
 
 ##USER STORIES: 
+* [x] add config for tests output file
+* [x] add config for template file
+* add template file
 
 ##TODOS:
-
+* [x] update README
+* add default value
 
 
 ##CONSIDERATIONS:
