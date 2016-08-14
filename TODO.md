@@ -1,10 +1,11 @@
 ##EPICS:
 * [x] generate json file with all pattern
 * Template for test case structure. maybe http://ejs.co/
-* Skipping screen sizes for specific pattern
-* Skipping browsers for specific patterns
 * CLI mode
 * Publish NPM Package
+* Deal with pattern states
+* Skipping screen sizes for specific pattern
+* Skipping browsers for specific patterns
 * Test for molecules and organisms should not run if an included pattern broke
     * get dependency tree out of patternlab
 * Improve display of warnings
@@ -13,7 +14,9 @@
 * config file should be written
 
 ##TODOS:
-
+* add _patternOrder
+* create backup
+* save new config
 
 
 
