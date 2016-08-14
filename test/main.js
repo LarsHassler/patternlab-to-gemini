@@ -352,7 +352,7 @@ describe('main - ', () => {
           // This would normally be an underlying layer exception.
           assert.equal(
               'Nock: Not allow net connect ' +
-              'for "localhost:3000"',
+              'for "localhost:3000/styleguide/html/styleguide.html"',
               error.message
           );
         })
