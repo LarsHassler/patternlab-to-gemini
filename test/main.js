@@ -178,12 +178,51 @@ describe('main - ', () => {
         shouldWarnIfAPatternFromTheConfigIsNoLongerPartOfTheStyleguide
     );
 
+    it('should backup the old configuration',
+        shouldBackupTheOldConfiguration
+    );
+
   });
 
 
   /* ------------------------------------------------------------------
    * Test case implementation
    * --------------------------------------------------------------- */
+
+  function shouldBackupTheOldConfiguration(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
+      "emptyConfig.json.bak": {},
+      "emptyConfig.json": {
+        patterns: {}
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    var configContent = fs.readFileSync(path.resolve(__dirname, '../emptyConfig.json'));
+    instanceToTest.getPatternsConfiguration()
+        .then((patterns) => {
+          var fileExists = false;
+          try {
+            fileExists = !!fs.statSync("emptyConfig.json.bak");
+          } catch(e) {}
+
+          if (fileExists) {
+            var backupConfig = fs.readFileSync("emptyConfig.json.bak").toString();
+            assert.equal(backupConfig, configContent, "Backup file is not identical to old config");
+          }
+          else {
+            throw new Error('could not find backup file');
+          }
+        })
+        .then(done, done);
+  }
 
   function shouldForwardAllMessagesToConsoleLog(done) {
     var randomMessage = 'randomMessage' + new Date().getTime();

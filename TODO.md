@@ -14,9 +14,7 @@
 * config file should be written
 
 ##TODOS:
-* add _patternOrder
-* create backup
-* save new config
+* [x] save new config
 
 
 

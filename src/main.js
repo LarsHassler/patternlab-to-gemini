@@ -62,6 +62,7 @@ var PatternlabToNode = function(opt_options) {
   }
 };
 
+
 /**
  * @private
  */
@@ -158,19 +159,32 @@ PatternlabToNode.
 
 
 /**
+ * @return {string}
+ * @private
+ */
+PatternlabToNode.
+    prototype.getConfigFilePath_ = function() {
+  var configFilePath;
+  if (this.wasLoadedFromConfigFile_) {
+    configFilePath = path.resolve(
+        path.dirname(this.wasLoadedFromConfigFile_),
+        this.config_.patternConfigFile
+    );
+  } else {
+    configFilePath = path.resolve(__dirname, this.config_.patternConfigFile);
+  }
+  return configFilePath;
+};
+
+
+/**
  * @return {Promise.<patternsReturn>}
+ * @private
  */
 PatternlabToNode.
     prototype.loadOldPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
-    var configFilePath;
-    if (this.wasLoadedFromConfigFile_) {
-      configFilePath = path.resolve(
-          path.dirname(this.wasLoadedFromConfigFile_),
-          this.config_.patternConfigFile);
-    } else {
-      configFilePath = path.resolve(__dirname, this.config_.patternConfigFile);
-    }
+    var configFilePath = this.getConfigFilePath_();
     try {
       var statConfigFile = fs.statSync(configFilePath);
     } catch(err) {
@@ -198,6 +212,7 @@ PatternlabToNode.
     prototype.getPatternsConfiguration = function() {
   var newPatterns = {};
   var newPatternIds = [];
+  var oldPatternConfig;
   return this.init_()
       .then(() => {
         return this.getStyleguide_();
@@ -212,7 +227,8 @@ PatternlabToNode.
         });
         return this.loadOldPatternConfig_();
       })
-      .then((oldPatternConfig) => {
+      .then((loadedOldPatternConfig) => {
+        oldPatternConfig = loadedOldPatternConfig;
         var oldPatternIds = Object.keys(oldPatternConfig['patterns']);
         var missingPatterns = oldPatternIds.filter(x => newPatternIds.indexOf(x) < 0 );
 
@@ -226,6 +242,10 @@ PatternlabToNode.
         for(var patternId in oldPatternConfig['patterns']) {
           newPatterns[patternId] = oldPatternConfig['patterns'][patternId];
         }
+      })
+      .then(() => {
+        var configFilePath = this.getConfigFilePath_();
+        fs.writeFileSync(configFilePath + '.bak', JSON.stringify(oldPatternConfig));
       })
       // backup old file
       // write new file
