@@ -80,6 +80,10 @@ describe('main - ', () => {
           defaultoutputFileShouldPointToFile
       );
 
+      it('default templateFile should point to file',
+          defaultTemplateFileShouldPointToFile
+      );
+
     });
 
     it('should overwrite the configuration with a given config object',
@@ -687,6 +691,13 @@ describe('main - ', () => {
     delete config['outputFile'];
     var instanceToTest = new patternlabToNode(config);
     assert.equal('./patternlabTests.js', instanceToTest.config_['outputFile']);
+  }
+
+  function defaultTemplateFileShouldPointToFile() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    delete config['templateFile'];
+    var instanceToTest = new patternlabToNode(config);
+    assert.equal('./templates/main.js', instanceToTest.config_['templateFile']);
   }
 
   function shouldExcludeNoPatternByDefault() {

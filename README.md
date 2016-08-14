@@ -60,3 +60,11 @@ be resolve in relation to the main config file.
 ```json
 "patternConfigFile": "./patternlabTests.js"
 ```
+
+### templateFile (default: ./templates/main.js)
+
+The path to the file where the templates for the tests.
+
+```json
+"templateFile": "./templates/main.js"
+```
