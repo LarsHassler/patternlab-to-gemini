@@ -24,16 +24,20 @@
  * dependency
  * --------------------------------------------------------------- */
 
-const patternlabToNode = require('../src/main');
-const path = require('path');
+const assert = require('chai').assert;
+const exampleConfig = require('../example.config.json');
 const fs = require('fs');
 const mock_fs = require('mock-fs');
 const nock = require('nock');
-const assert = require('chai').assert;
-const exampleConfig = require('../example.config.json');
+const path = require('path');
+const rewire = require('rewire');
+
+const patternlabToNode = rewire('../src/main');
 
 
 describe('main - ', () => {
+
+  var rewiresToRevert = [];
 
   /* ------------------------------------------------------------------
    * Setup & Tear down
@@ -47,6 +51,9 @@ describe('main - ', () => {
     nock.cleanAll();
     nock.disableNetConnect();
     mock_fs.restore();
+    rewiresToRevert.forEach((revertFunction) => {
+      revertFunction();
+    })
   });
 
   after(() => {
@@ -97,6 +104,13 @@ describe('main - ', () => {
           shouldTransformAllExcludeConfigsInRegexp
       );
 
+    });
+
+    describe('logMessage_ - ', function() {
+
+      it('should forward all messages to console.log',
+          shouldForwardAllMessagesToConsoleLog
+      );
     });
 
     describe('getStyleguide_ - ', () => {
@@ -160,12 +174,36 @@ describe('main - ', () => {
         shouldMergeOldAndNewPatterns
     );
 
+    it('should warn if a pattern from the config is no longer part of the styleguide',
+        shouldWarnIfAPatternFromTheConfigIsNoLongerPartOfTheStyleguide
+    );
+
   });
 
 
   /* ------------------------------------------------------------------
    * Test case implementation
    * --------------------------------------------------------------- */
+
+  function shouldForwardAllMessagesToConsoleLog(done) {
+    var randomMessage = 'randomMessage' + new Date().getTime();
+    var loggedMessages = [];
+    rewiresToRevert.push(
+        patternlabToNode.__set__({
+          console: {
+            log: function(message) {
+              loggedMessages.push(message);
+            }
+          }
+        })
+    );
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {},
+    });
+    instanceToTest.logMessage_(randomMessage);
+    assert.deepEqual(loggedMessages, [randomMessage]);
+    done();
+  }
 
   function shouldRejectIfTheConfigFileDoesNotExist(done) {
     setUpFsMock({
@@ -252,6 +290,54 @@ describe('main - ', () => {
               }
             }
           }, patterns);
+        })
+        .then(done, done);
+  }
+
+
+  function shouldWarnIfAPatternFromTheConfigIsNoLongerPartOfTheStyleguide(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
+      "emptyConfig.json": {
+        patterns: {
+          "pattern-no-more": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide"
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+
+    var loggedMessages = setUpExpectedLogMessages(instanceToTest, [
+        'The following Patterns are no longer part of the styleguide: pattern-no-more'
+        ]);
+    instanceToTest.getPatternsConfiguration()
+        .then((patterns) => {
+          assert.deepEqual({
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1"
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2"
+              },
+              "pattern-no-more": {
+                id: "pattern-no-more",
+                name: "Pattern which is no longer part of the styleguide"
+              }
+            }
+          }, patterns);
+          loggedMessages.check();
         })
         .then(done, done);
   }
@@ -585,5 +671,23 @@ describe('main - ', () => {
       }
     }
     mock_fs(options);
+  }
+
+  function setUpExpectedLogMessages(instance, messages) {
+    var expectedMessages = messages;
+    var loggedMessages = [];
+    instance.logMessage_ = function(message) {
+      loggedMessages.push(message);
+    };
+
+    return {
+      'check': function() {
+        assert.deepEqual(
+            expectedMessages,
+            loggedMessages,
+            'wrong messages logged'
+        );
+      }
+    };
   }
 });

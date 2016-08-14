@@ -197,6 +197,7 @@ PatternlabToNode.
 PatternlabToNode.
     prototype.getPatternsConfiguration = function() {
   var newPatterns = {};
+  var newPatternIds = [];
   return this.init_()
       .then(() => {
         return this.getStyleguide_();
@@ -206,19 +207,43 @@ PatternlabToNode.
       })
       .then((patterns) => {
         patterns.forEach((pattern) => {
+          newPatternIds.push(pattern['id']);
           newPatterns[pattern['id']] = pattern;
         });
         return this.loadOldPatternConfig_();
       })
       .then((oldPatternConfig) => {
+        var oldPatternIds = Object.keys(oldPatternConfig['patterns']);
+        var missingPatterns = oldPatternIds.filter(x => newPatternIds.indexOf(x) < 0 );
+
+        if (missingPatterns.length) {
+          this.logMessage_(
+              'The following Patterns are no longer part of the styleguide: ' +
+                  missingPatterns.join(', ')
+          )
+        }
+
         for(var patternId in oldPatternConfig['patterns']) {
           newPatterns[patternId] = oldPatternConfig['patterns'][patternId];
         }
+
         return {
           patterns: newPatterns
         };
       });
 };
+
+
+/**
+ * @param {string} message
+ * @private
+ */
+PatternlabToNode.
+    prototype.logMessage_ = function(message) {
+  console.log(message);
+};
+
+
 
 
 
