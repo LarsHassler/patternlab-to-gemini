@@ -1,4 +1,4 @@
-# Patternlab to Gemini
+# Patternlab to Gemini [build status](https://travis-ci.org/LarsHassler/patternlab-to-gemini.svg?branch=master)
 
 I love [atomic design](http://atomicdesign.bradfrost.com) with [patternlab](http://patternlab.io). 
 But in combination with [gemini](https://github.com/gemini-testing/gemini), which provides utility for css regression tests, 
