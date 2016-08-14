@@ -14,7 +14,6 @@
 * Should work with not existing pattern config file
 
 ##USER STORIES: 
-* [x] add config for tests output file
 * [x] add config for template file
 * add template file
 

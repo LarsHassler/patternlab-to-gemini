@@ -51,3 +51,12 @@ be resolve in relation to the main config file.
 ```json
 "patternConfigFile": "./pattern.config.json"
 ```
+
+### outputFile (default: ./patternlabTests.js)
+
+The path to the file where the generated tests will be stored. Relative paths will
+be resolve in relation to the main config file. 
+
+```json
+"patternConfigFile": "./patternlabTests.js"
+```
