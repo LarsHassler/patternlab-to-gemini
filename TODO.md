@@ -1,7 +1,10 @@
 ##EPICS:
 * [x] Template for test case structure. maybe http://ejs.co/
 * CLI mode
-* Add Documentation for pattern configuration
+* Add proper Documentation 
+    * for pattern configuration
+    * public api
+    * constructor call with file path
 * Publish NPM Package
 * Deal with pattern states
 * Skipping screen sizes for specific pattern
