@@ -24,7 +24,8 @@
   "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
   "private": true,
   "dependencies": {
-    "cheerio": "^0.20.0"
+    "cheerio": "^0.20.0",
+    "ejs": "^2.5.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
