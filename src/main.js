@@ -20,11 +20,12 @@
  * IN THE SOFTWARE.
  */
 
-const extend = require('extend');
-const path = require('path');
-const fs = require('fs');
-const request = require('request');
 const cheerio = require('cheerio');
+const extend = require('extend');
+const ejs = require('ejs');
+const fs = require('fs');
+const path = require('path');
+const request = require('request');
 
 /**
  * @param {(Object|string)=} opt_options
@@ -168,25 +169,24 @@ PatternlabToNode.
     prototype.getConfigFilePath_ = function() {
   var configFilePath;
   if (this.wasLoadedFromConfigFile_) {
-    configFilePath = path.resolve(
-        path.dirname(this.wasLoadedFromConfigFile_),
-        this.config_.patternConfigFile
-    );
+    configFilePath = path.dirname(this.wasLoadedFromConfigFile_);
   } else {
-    configFilePath = path.resolve(__dirname, this.config_.patternConfigFile);
+    configFilePath = __dirname;
   }
   return configFilePath;
 };
 
 
 /**
- * @return {Promise.<patternsReturn>}
+ * @return {Promise.<>}
  * @private
  */
 PatternlabToNode.
     prototype.loadOldPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
-    var configFilePath = this.getConfigFilePath_();
+    var configFilePath = path.resolve(
+        this.getConfigFilePath_(),
+        this.config_.patternConfigFile);
     try {
       var statConfigFile = fs.statSync(configFilePath);
     } catch(err) {
@@ -246,11 +246,15 @@ PatternlabToNode.
         }
       })
       .then(() => {
-        var configFilePath = this.getConfigFilePath_();
+        var configFilePath = path.resolve(
+            this.getConfigFilePath_(),
+            this.config_.patternConfigFile);
         fs.writeFileSync(configFilePath + '.bak', JSON.stringify(oldPatternConfig));
       })
       .then(() => {
-        var configFilePath = this.getConfigFilePath_();
+        var configFilePath = path.resolve(
+            this.getConfigFilePath_(),
+            this.config_.patternConfigFile);
         fs.writeFileSync(configFilePath, JSON.stringify({
           _patternOrder: newPatternIds,
           patterns: newPatterns
