@@ -17,12 +17,9 @@
 * Should work with not existing pattern config file
 
 ##USER STORIES: 
-* [x] add config for template file
 * add template file
 
 ##TODOS:
-* [x] update README
-* add default value
 
 
 ##CONSIDERATIONS:
