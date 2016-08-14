@@ -72,8 +72,12 @@ describe('main - ', () => {
           defaultPatternlabUrlShouldPointToLocalhostOnPort3000
       );
 
-      it('default patter config file shout point to file',
-          defaultPatterConfigFileShoutPointToFile
+      it('default patternConfigFile should point to file',
+          defaultPatterConfigFileShouldPointToFile
+      );
+
+      it('default outputFile should point to file',
+          defaultoutputFileShouldPointToFile
       );
 
     });
@@ -671,11 +675,18 @@ describe('main - ', () => {
     assert.equal('http://localhost:3000', instanceToTest.config_['patternlabUrl']);
   }
 
-  function defaultPatterConfigFileShoutPointToFile() {
+  function defaultPatterConfigFileShouldPointToFile() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config['patternConfigFile'];
     var instanceToTest = new patternlabToNode(config);
     assert.equal('./pattern.config.json', instanceToTest.config_['patternConfigFile']);
+  }
+
+  function defaultoutputFileShouldPointToFile() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    delete config['outputFile'];
+    var instanceToTest = new patternlabToNode(config);
+    assert.equal('./patternlabTests.js', instanceToTest.config_['outputFile']);
   }
 
   function shouldExcludeNoPatternByDefault() {

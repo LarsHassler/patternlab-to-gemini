@@ -54,6 +54,7 @@ var PatternlabToNode = function(opt_options) {
   this.config_ = extend({
     patternlabUrl: 'http://localhost:3000',
     patternConfigFile: './pattern.config.json',
+    outputFile: './patternlabTests.js',
     excludePatterns: []
   }, opt_options);
 
