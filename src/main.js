@@ -271,11 +271,3 @@ PatternlabToNode.
 
 
 module.exports = PatternlabToNode;
-
-/** @typedef {{
- *     patterns: Object.<string, {
- *       id: string,
- *       name: string
- *     }
- * }} */
-var patternsReturn;
