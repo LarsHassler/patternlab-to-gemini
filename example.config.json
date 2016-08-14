@@ -2,7 +2,7 @@
   "patternlabUrl": "https://domainForPatternLab:1337",
   "patternConfigFile": "./patternConfigFile.config.json",
   "outputFile": "./patternlabTests.js",
-  "templateFile": "./templates/main.js",
+  "templateFile": "./templates/main.ejs",
   "screenSizes": {
     "desktop": {
       "width": 1440,

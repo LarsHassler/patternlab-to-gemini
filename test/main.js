@@ -697,7 +697,7 @@ describe('main - ', () => {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config['templateFile'];
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('./templates/main.js', instanceToTest.config_['templateFile']);
+    assert.equal('./templates/main.ejs', instanceToTest.config_['templateFile']);
   }
 
   function shouldExcludeNoPatternByDefault() {
