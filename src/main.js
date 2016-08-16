@@ -39,7 +39,7 @@ var PatternlabToNode = function(opt_options) {
    */
   this.wasLoadedFromConfigFile_ = null;
 
-  if (typeof opt_options == 'string') {
+  if (typeof opt_options === 'string') {
     this.wasLoadedFromConfigFile_ = opt_options;
     opt_options = JSON.parse(fs.readFileSync(opt_options).toString());
   }
@@ -60,7 +60,7 @@ var PatternlabToNode = function(opt_options) {
     excludePatterns: []
   }, opt_options);
 
-  if (!this.config_['screenSizes']) {
+  if (!this.config_.screenSizes) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
   }
 };
@@ -69,8 +69,7 @@ var PatternlabToNode = function(opt_options) {
 /**
  * @private
  */
-PatternlabToNode.
-    prototype.init_ = function() {
+PatternlabToNode.prototype.init_ = function() {
   return new Promise((resolve, reject) => {
     // transform all strings in excludePatterns config to regular expressions
     this.config_.excludePatterns.forEach((pattern, index) => {
@@ -86,26 +85,25 @@ PatternlabToNode.
  * @return {Promise.<string>}
  * @private
  */
-PatternlabToNode.
-    prototype.getStyleguide_ = function() {
+PatternlabToNode.prototype.getStyleguide_ = function() {
   return new Promise((resolve, reject) => {
     request.get(
-        this.config_['patternlabUrl'] + '/styleguide/html/styleguide.html',
-        (err, request, body) => {
+        this.config_.patternlabUrl + '/styleguide/html/styleguide.html',
+        (err, req, body) => {
           if (err) {
             reject(err);
           }
-          else if (request.statusCode === 200) {
+          else if (req.statusCode === 200) {
             resolve(body);
           }
           else {
             var error;
-            switch (request.statusCode) {
+            switch (req.statusCode) {
               case 404:
-                error = new Error('PatternlabToNode - scraping error - "' + (this.config_['patternlabUrl'] + '/styleguide/html/styleguide.html') + '" could not be found');
+                error = new Error('PatternlabToNode - scraping error - "' + this.config_.patternlabUrl + '/styleguide/html/styleguide.html" could not be found');
                 break;
               default:
-                error = new Error('PatternlabToNode - scraping error - unknown error (statusCode was: ' + request.statusCode + ')');
+                error = new Error('PatternlabToNode - scraping error - unknown error (statusCode was: ' + req.statusCode + ')');
             }
             reject(error);
           }
@@ -121,8 +119,7 @@ PatternlabToNode.
  * @return {Promise.<Array.<{id: string, name: string}>>}
  * @private
  */
-PatternlabToNode.
-    prototype.scrapePatternlab_ = function(html) {
+PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
   return new Promise((resolve, reject) => {
     const $ = cheerio.load(html);
     const patterns = [];
@@ -131,28 +128,27 @@ PatternlabToNode.
           var patternId = $(element).attr('id');
           var header = $(element).find('.sg-pattern-title > a');
           var shouldBeExcluded = this.config_.excludePatterns.reduce(
-              (previousValue, currentValue, currentIndex) => {
+              (previousValue, currentValue) => {
                 return previousValue || currentValue.test(patternId);
               }, false);
           if (!shouldBeExcluded) {
-            patterns.push(
-                {
-                  id: patternId,
-                  name: header.html().trim()
-                }
-            );
+            patterns.push({
+              id: patternId,
+              name: header.html().trim()
+            });
           }
         }
     );
     var patternWithoutAnId = patterns.filter((pattern) => {
-      return !pattern.id || pattern.id == ''
+      return !pattern.id || pattern.id === ''
     });
-    if (patternWithoutAnId.length != 0) {
-      var error = new Error('PatternlabToNode - scraping error - pattern without an id found');
+    var error;
+    if (patternWithoutAnId.length !== 0) {
+      error = new Error('PatternlabToNode - scraping error - pattern without an id found');
       reject(error);
     }
-    else if (patterns.length == 0) {
-      var error = new Error('PatternlabToNode - scraping error - no pattern found');
+    else if (patterns.length === 0) {
+      error = new Error('PatternlabToNode - scraping error - no pattern found');
       reject(error);
     } else {
       resolve(patterns);
@@ -165,8 +161,7 @@ PatternlabToNode.
  * @return {string}
  * @private
  */
-PatternlabToNode.
-    prototype.getConfigFilePath_ = function() {
+PatternlabToNode.prototype.getConfigFilePath_ = function() {
   var configFilePath;
   if (this.wasLoadedFromConfigFile_) {
     configFilePath = path.dirname(this.wasLoadedFromConfigFile_);
@@ -181,16 +176,16 @@ PatternlabToNode.
  * @return {Promise.<>}
  * @private
  */
-PatternlabToNode.
-    prototype.loadOldPatternConfig_ = function() {
+PatternlabToNode.prototype.loadOldPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
+    var error;
     var configFilePath = path.resolve(
         this.getConfigFilePath_(),
         this.config_.patternConfigFile);
     try {
       var statConfigFile = fs.statSync(configFilePath);
     } catch(err) {
-      var error = new Error('PatternlabToNode - config error - ' +
+      error = new Error('PatternlabToNode - config error - ' +
           'could not find config file "' + this.config_.patternConfigFile + '"');
       reject(error);
     }
@@ -199,7 +194,7 @@ PatternlabToNode.
       var oldConfig = JSON.parse(fs.readFileSync(configFilePath).toString());
       resolve(oldConfig);
     } else {
-      var error = new Error('PatternlabToNode - config error - ' +
+      error = new Error('PatternlabToNode - config error - ' +
           'could not find config file "' + this.config_.patternConfigFile + '"');
       reject(error);
     }
@@ -210,8 +205,7 @@ PatternlabToNode.
 /**
  * @return {Promise.<>}
  */
-PatternlabToNode.
-    prototype.getPatternsConfiguration = function() {
+PatternlabToNode.prototype.getPatternsConfiguration = function() {
   var newPatterns = {};
   var newPatternIds = [];
   var oldPatternConfig;
@@ -224,15 +218,15 @@ PatternlabToNode.
       })
       .then((patterns) => {
         patterns.forEach((pattern) => {
-          newPatternIds.push(pattern['id']);
-          newPatterns[pattern['id']] = pattern;
+          newPatternIds.push(pattern.id);
+          newPatterns[pattern.id] = pattern;
         });
         return this.loadOldPatternConfig_();
       })
       .then((loadedOldPatternConfig) => {
         oldPatternConfig = loadedOldPatternConfig;
-        var oldPatternIds = Object.keys(oldPatternConfig['patterns']);
-        var missingPatterns = oldPatternIds.filter(x => newPatternIds.indexOf(x) < 0 );
+        var oldPatternIds = Object.keys(oldPatternConfig.patterns);
+        var missingPatterns = oldPatternIds.filter(x => newPatternIds.indexOf(x) < 0);
 
         if (missingPatterns.length) {
           this.logMessage_(
@@ -241,8 +235,8 @@ PatternlabToNode.
           )
         }
 
-        for(var patternId in oldPatternConfig['patterns']) {
-          newPatterns[patternId] = oldPatternConfig['patterns'][patternId];
+        for(var patternId in oldPatternConfig.patterns) {
+          newPatterns[patternId] = oldPatternConfig.patterns[patternId];
         }
       })
       .then(() => {
@@ -265,8 +259,7 @@ PatternlabToNode.
 /**
  * @return {Promise.<>}
  */
-PatternlabToNode.
-    prototype.generateTests = function() {
+PatternlabToNode.prototype.generateTests = function() {
   return this.init_()
       .then(() => {
         return this.loadOldPatternConfig_();
@@ -277,14 +270,14 @@ PatternlabToNode.
             'patterns': [],
             'sizes': []
           };
-          config['_patternOrder'].forEach((patternId) => {
-            data['patterns'].push(config['patterns'][patternId]);
+          config._patternOrder.forEach((patternId) => {
+            data.patterns.push(config.patterns[patternId]);
           });
-          for(var screenSize in this.config_['screenSizes']) {
+          for(var screenSize in this.config_.screenSizes) {
             data.sizes.push({
               name: screenSize,
-              width: this.config_['screenSizes'][screenSize]['width'],
-              height: this.config_['screenSizes'][screenSize]['height']
+              width: this.config_.screenSizes[screenSize]['width'],
+              height: this.config_.screenSizes[screenSize]['height']
             })
           }
           var templateFilePath = path.resolve(
@@ -313,8 +306,7 @@ PatternlabToNode.
  * @param {string} message
  * @private
  */
-PatternlabToNode.
-    prototype.logMessage_ = function(message) {
+PatternlabToNode.prototype.logMessage_ = function(message) {
   console.log(message);
 };
 
