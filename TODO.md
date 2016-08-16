@@ -1,5 +1,8 @@
 ##EPICS:
 * [x] CLI mode
+* separate patternConfig into one file that overwrites
+    * new function to create initial config
+* Restructure/rename test data
 * Add proper Documentation 
     * for pattern configuration
     * public api
