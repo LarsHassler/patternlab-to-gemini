@@ -196,7 +196,7 @@ describe('main - ', () => {
 
   function shouldRejectIfThereWasAnErrorWhileRenderingTheTemplate(done) {
     setUpFsMock({
-      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config2.json')
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/notExisitingTemplateFile.json')
     });
     var instanceToTest = new patternlabToNode(
         'config.json'
@@ -326,8 +326,8 @@ describe('main - ', () => {
 
   function shouldReadThePatterconfigRelativeToTheConfigFile(done) {
     setUpFsMock({
-      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
-      "emptyConfig.json": {
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/minimalConfig.json'),
+      "patternConfig.json": {
         patterns: {}
       },
       'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
@@ -364,8 +364,8 @@ describe('main - ', () => {
 
   function shouldRejectIfPatternsWhichAreInThePatternConfigAreMissingInTheStyleguide(done) {
     setUpFsMock({
-      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
-      "emptyConfig.json": {
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/minimalConfig.json'),
+      "patternConfig.json": {
         patterns: {
           "pattern-no-more": {
             id: "pattern-no-more",
