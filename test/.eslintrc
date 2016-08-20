@@ -4,10 +4,14 @@
     "sourceType": "module"
   },
   "env": {
-    "mocha": true,
+    "mocha": true
   },
   "globals": {},
+  "plugins": [
+    "mocha"
+  ],
   "rules": {
+    "mocha/no-exclusive-tests": "error",
     "no-use-before-define": 0
   }
 }
