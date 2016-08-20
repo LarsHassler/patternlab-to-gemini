@@ -1,9 +1,5 @@
 ##EPICS:
-* Add proper Documentation 
-    * for pattern configuration
-    * public api
-    * constructor call with file path
-    * cli mode
+* [] CLI does not show Errors
 * Publish NPM Package
 * Deal with pattern states
 * Skipping screen sizes for specific pattern
