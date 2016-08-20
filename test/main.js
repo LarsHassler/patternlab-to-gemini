@@ -331,7 +331,7 @@ describe('main - ', () => {
 
   function shouldRejectIfTheConfigFileIsADirectory(done) {
     var instanceToTest = new patternlabToNode({
-      "patternConfigFile": "../test/dummyConfigs/",
+      "patternConfigFile": "../test/",
       "screenSizes": {},
       "excludePatterns": [
         'exclude'
@@ -347,7 +347,7 @@ describe('main - ', () => {
       }, (error) => {
         assert.equal(
             'PatternlabToNode - config error - could not find config file ' +
-            '"../test/dummyConfigs/"',
+            '"../test/"',
             error.message
         );
       })
