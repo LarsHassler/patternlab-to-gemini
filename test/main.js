@@ -72,10 +72,6 @@ describe('main - ', () => {
           defaultPatternlabUrlShouldPointToLocalhostOnPort3000
       );
 
-      it('default patternConfigFile should point to file',
-          defaultPatterConfigFileShouldPointToFile
-      );
-
       it('default outputFile should point to file',
           defaultoutputFileShouldPointToFile
       );
@@ -401,13 +397,9 @@ describe('main - ', () => {
 
   function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
     setUpFsMock({
-      "emptyConfig.json": {
-        patterns: {}
-      },
       'dummyhtml/patternsToExclude.html': __dirname + '/dummyhtml/patternsToExclude.html'
     });
     var instanceToTest = new patternlabToNode({
-      "patternConfigFile": "../emptyConfig.json",
       "screenSizes": {},
       "excludePatterns": [
         'exclude'
@@ -686,13 +678,6 @@ describe('main - ', () => {
     delete config.patternlabUrl;
     var instanceToTest = new patternlabToNode(config);
     assert.equal('http://localhost:3000', instanceToTest.config_.patternlabUrl);
-  }
-
-  function defaultPatterConfigFileShouldPointToFile() {
-    var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config.patternConfigFile;
-    var instanceToTest = new patternlabToNode(config);
-    assert.equal('./pattern.config.json', instanceToTest.config_.patternConfigFile);
   }
 
   function defaultoutputFileShouldPointToFile() {

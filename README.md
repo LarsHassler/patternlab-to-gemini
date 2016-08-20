@@ -10,6 +10,8 @@ The idea behind this project is to generate the test cases automatically from th
 
 > For a detailed example also take a look at the example.config.json in the project root.
 
+All relative paths will be resolve in relation to the main config file.
+
 #### patternlabUrl (default: http://localhost:3000)
 
 The domain where the patternlab styleguide is located.
@@ -43,10 +45,9 @@ An array containing regular expressions to exclude patterns for the tests.
 ]
 ```
 
-### patternConfigFile (default: ./pattern.config.json)
+### patternConfigFile
 
-The path to the file where the pattern config will be stored. Relative paths will
-be resolve in relation to the main config file. 
+The path to the file with settings for specific patterns
 
 ```json
 "patternConfigFile": "./pattern.config.json"
@@ -54,8 +55,7 @@ be resolve in relation to the main config file.
 
 ### outputFile (default: ./patternlabTests.js)
 
-The path to the file where the generated tests will be stored. Relative paths will
-be resolve in relation to the main config file. 
+The path to the file where the generated tests will be stored. 
 
 ```json
 "patternConfigFile": "./patternlabTests.js"

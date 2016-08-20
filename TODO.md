@@ -1,6 +1,4 @@
 ##EPICS:
-* [x] separate patternConfig into one file that overwrites
-    * new function to create initial config
 * Restructure/rename test data
 * Add proper Documentation 
     * for pattern configuration
@@ -21,8 +19,6 @@
 ##USER STORIES: 
 
 ##TODOS:
-* warnings for missing patterns -> throw error
-* should work without an pattern overwrite file
 
 
 ##CONSIDERATIONS:

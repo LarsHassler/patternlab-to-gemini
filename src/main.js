@@ -55,7 +55,7 @@ var PatternlabToNode = function(opt_options) {
    */
   this.config_ = extend({
     patternlabUrl: 'http://localhost:3000',
-    patternConfigFile: './pattern.config.json',
+    patternConfigFile: null,
     outputFile: './patternlabTests.js',
     templateFile: './templates/main.ejs',
     excludePatterns: []
@@ -177,8 +177,15 @@ PatternlabToNode.prototype.getConfigFilePath_ = function() {
  * @return {Promise.<>}
  * @private
  */
-PatternlabToNode.prototype.loadOldPatternConfig_ = function() {
+PatternlabToNode.prototype.loadPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
+    if (!this.config_.patternConfigFile) {
+      resolve({
+        'patterns': {}
+      });
+      return;
+    }
+
     var error;
     var statConfigFile;
     var configFilePath = path.resolve(
@@ -225,7 +232,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
           newPatternIds.push(pattern.id);
           newPatterns[pattern.id] = pattern;
         });
-        return this.loadOldPatternConfig_();
+        return this.loadPatternConfig_();
       })
       .then((loadedOldPatternConfig) => {
         oldPatternConfig = loadedOldPatternConfig;
