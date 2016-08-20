@@ -1,0 +1,13 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "mocha": true,
+  },
+  "globals": {},
+  "rules": {
+    "no-use-before-define": 0
+  }
+}
