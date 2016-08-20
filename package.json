@@ -50,7 +50,7 @@
     "lint": "./node_modules/.bin/eslint src/** test/*",
     "test": "./node_modules/.bin/_mocha -R spec test/",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec test/ ",
-    "ci": "npm lint && npm coverage"
+    "ci": "npm run lint && npm run coverage"
   },
   "keywords": [
     "test",
