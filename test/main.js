@@ -198,6 +198,10 @@ describe('main - ', () => {
         shouldRejectIfThePatternConfigFileCouldNotBeFound
     );
 
+    it('should reject if there was an error while rendering the template',
+        shouldRejectIfThereWasAnErrorWhileRenderingTheTemplate
+    );
+
     it('should generate the correct test file',
         shouldGenerateTheCorrectTestFile
     );
@@ -242,6 +246,23 @@ describe('main - ', () => {
         else {
           throw new Error('could not find backup file');
         }
+      })
+      .then(done, done);
+  }
+
+  function shouldRejectIfThereWasAnErrorWhileRenderingTheTemplate(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config2.json'),
+      "patternConfig.json": path.resolve(__dirname, 'dummyConfigs/generateTestsPatternConfig.json'),
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    instanceToTest.generateTests()
+      .then(() => {
+        throw new Error('should not resolve')
+      }, (error) => {
+        assert.equal('PatternlabToNode - rendering error - there was an error while rendering "' + path.resolve('noExistingTemplateFile') + '"', error.message);
       })
       .then(done, done);
   }

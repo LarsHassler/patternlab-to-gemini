@@ -293,7 +293,9 @@ PatternlabToNode.prototype.generateTests = function() {
               this.config_.templateFile);
           ejs.renderFile(templateFilePath, data, {}, function(err, str) {
             if (err) {
-              reject(err);
+              var error = new Error('PatternlabToNode - rendering error - ' +
+                'there was an error while rendering "' + templateFilePath + '"');
+              reject(error);
             } else {
               resolve(str);
             }
