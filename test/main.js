@@ -227,21 +227,23 @@ describe('main - ', () => {
     );
     var configContent = fs.readFileSync(path.resolve(__dirname, '../emptyConfig.json'));
     instanceToTest.getPatternsConfiguration()
-        .then((patterns) => {
-          var fileExists = false;
-          try {
-            fileExists = !!fs.statSync("emptyConfig.json.bak");
-          } catch(e) {}
+      .then(() => {
+        var fileExists = false;
+        try {
+          fileExists = !!fs.statSync("emptyConfig.json.bak");
+        } catch (e) {
+          // we ignore this here
+        }
 
-          if (fileExists) {
-            var backupConfig = fs.readFileSync("emptyConfig.json.bak").toString();
-            assert.equal(backupConfig, configContent, "Backup file is not identical to old config");
-          }
-          else {
-            throw new Error('could not find backup file');
-          }
-        })
-        .then(done, done);
+        if (fileExists) {
+          var backupConfig = fs.readFileSync("emptyConfig.json.bak").toString();
+          assert.equal(backupConfig, configContent, "Backup file is not identical to old config");
+        }
+        else {
+          throw new Error('could not find backup file');
+        }
+      })
+      .then(done, done);
   }
 
   function shouldRejectIfThePatternConfigFileCouldNotBeFound(done) {
@@ -252,12 +254,12 @@ describe('main - ', () => {
         'config.json'
     );
     instanceToTest.generateTests()
-        .then(() => {
-          throw new Error('should not resolve')
-        },(error) => {
-          assert.equal(error.message, 'PatternlabToNode - config error - could not find config file "emptyConfig.json"');
-        })
-        .then(done, done);
+      .then(() => {
+        throw new Error('should not resolve')
+      }, (error) => {
+        assert.equal(error.message, 'PatternlabToNode - config error - could not find config file "emptyConfig.json"');
+      })
+      .then(done, done);
   }
 
   function shouldGenerateTheCorrectTestFile(done) {
@@ -269,14 +271,14 @@ describe('main - ', () => {
     });
     var instanceToTest = new patternlabToNode('config.json');
     instanceToTest.generateTests()
-        .then(() => {
-          assert.equal(
-              fs.readFileSync('patternlabTests.js').toString(),
-              fs.readFileSync('expectedTest.js').toString(),
-              "wrong testFile generated"
-          )
-        })
-        .then(done, done);
+      .then(() => {
+        assert.equal(
+            fs.readFileSync('patternlabTests.js').toString(),
+            fs.readFileSync('expectedTest.js').toString(),
+            "wrong testFile generated"
+        )
+      })
+      .then(done, done);
   }
 
   function shouldForwardAllMessagesToConsoleLog(done) {
@@ -316,16 +318,16 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then(() => {
-          throw new Error('should not resolve');
-        }, (error) => {
-          assert.equal(
-              'PatternlabToNode - config error - could not find config file ' +
-              '"./noExtits"',
-              error.message
-          );
-        })
-        .then(done, done);
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+            'PatternlabToNode - config error - could not find config file ' +
+            '"./noExtits"',
+            error.message
+        );
+      })
+      .then(done, done);
   }
 
 
@@ -342,16 +344,16 @@ describe('main - ', () => {
         __dirname + '/dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then(() => {
-          throw new Error('should not resolve');
-        }, (error) => {
-          assert.equal(
-              'PatternlabToNode - config error - could not find config file ' +
-              '"../test/dummyConfigs/"',
-              error.message
-          );
-        })
-        .then(done, done);
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+            'PatternlabToNode - config error - could not find config file ' +
+            '"../test/dummyConfigs/"',
+            error.message
+        );
+      })
+      .then(done, done);
   }
 
 
@@ -371,25 +373,25 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then(() => {
-          assert.deepEqual({
-            "_patternOrder": [
-              "pattern-1",
-              "pattern-2"
-            ],
-            "patterns": {
-              "pattern-1": {
-                id: "pattern-1",
-                name: "Pattern Name 1"
-              },
-              "pattern-2": {
-                id: "pattern-2",
-                name: "Pattern Name 2"
-              }
+      .then(() => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2"
             }
-          }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
-        })
-        .then(done, done);
+          }
+        }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
+      })
+      .then(done, done);
   }
 
 
@@ -415,33 +417,33 @@ describe('main - ', () => {
     );
 
     var loggedMessages = setUpExpectedLogMessages(instanceToTest, [
-        'The following Patterns are no longer part of the styleguide: pattern-no-more'
-        ]);
+      'The following Patterns are no longer part of the styleguide: pattern-no-more'
+    ]);
     instanceToTest.getPatternsConfiguration()
-        .then(() => {
-          assert.deepEqual({
-            "_patternOrder": [
-              "pattern-1",
-              "pattern-2"
-            ],
-            "patterns": {
-              "pattern-1": {
-                id: "pattern-1",
-                name: "Pattern Name 1"
-              },
-              "pattern-2": {
-                id: "pattern-2",
-                name: "Pattern Name 2"
-              },
-              "pattern-no-more": {
-                id: "pattern-no-more",
-                name: "Pattern which is no longer part of the styleguide"
-              }
+      .then(() => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2"
+            },
+            "pattern-no-more": {
+              id: "pattern-no-more",
+              name: "Pattern which is no longer part of the styleguide"
             }
-          }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
-          loggedMessages.check();
-        })
-        .then(done, done);
+          }
+        }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
+        loggedMessages.check();
+      })
+      .then(done, done);
   }
 
 
@@ -456,7 +458,7 @@ describe('main - ', () => {
       "patternConfigFile": "../emptyConfig.json",
       "screenSizes": {},
       "excludePatterns": [
-          'exclude'
+        'exclude'
       ]
     });
     setUpPatternlabResponse(
@@ -464,25 +466,25 @@ describe('main - ', () => {
         'dummyhtml/patternsToExclude.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then(() => {
-          assert.deepEqual({
-            "_patternOrder": [
-              "pattern-1",
-              "pattern-2"
-            ],
-            "patterns": {
-              "pattern-1": {
-                id: "pattern-1",
-                name: "Pattern Name 1"
-              },
-              "pattern-2": {
-                id: "pattern-2",
-                name: "Pattern Name 2"
-              }
+      .then(() => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2"
             }
-          }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
-        })
-        .then(done, done);
+          }
+        }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
+      })
+      .then(done, done);
   }
 
 
@@ -517,46 +519,47 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-        .then(() => {
-          assert.deepEqual({
-            "_patternOrder": [
-              "pattern-1",
-              "pattern-2"
-            ],
-            "patterns": {
-              "pattern-1": {
-                id: "pattern-1",
-                name: "Pattern Name 1",
-                data: randomInfo
-              },
-              "pattern-2": {
-                id: "pattern-2",
-                name: "Pattern Name 2"
-              }
+      .then(() => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              data: randomInfo
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2"
             }
-          }, JSON.parse(fs.readFileSync('oldConfig.json').toString()));
-        })
-        .then(done, done);
+          }
+        }, JSON.parse(fs.readFileSync('oldConfig.json').toString()));
+      })
+      .then(done, done);
   }
 
   function shouldRejectIfTheRequestWasNotSuccessfull(done) {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+
     // TODO: replace with public api call
     instanceToTest.getStyleguide_()
-        .then(() => {
-          throw new Error('should not have resolved');
-        }, (error) => {
-          // We just test if execptions from nock are properly bubbled up.
-          // This would normally be an underlying layer exception.
-          assert.equal(
-              'Nock: Not allow net connect ' +
-              'for "localhost:3000/styleguide/html/styleguide.html"',
-              error.message
-          );
-        })
-        .then(done, done);
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
+        // We just test if execptions from nock are properly bubbled up.
+        // This would normally be an underlying layer exception.
+        assert.equal(
+            'Nock: Not allow net connect ' +
+            'for "localhost:3000/styleguide/html/styleguide.html"',
+            error.message
+        );
+      })
+      .then(done, done);
   }
 
 
@@ -569,19 +572,20 @@ describe('main - ', () => {
         randomString + '$'
       ]
     });
+
     // TODO: replace with public api call
     instanceToTest.init_()
-        .then(() => {
-          assert.equal(
-              '/^' + randomString + '/',
-              instanceToTest.config_.excludePatterns[0]
-          );
-          assert.equal(
-              '/' + randomString + '$/',
-              instanceToTest.config_.excludePatterns[1]
-          );
-        })
-        .then(done, done);
+      .then(() => {
+        assert.equal(
+            '/^' + randomString + '/',
+            instanceToTest.config_.excludePatterns[0]
+        );
+        assert.equal(
+            '/' + randomString + '$/',
+            instanceToTest.config_.excludePatterns[1]
+        );
+      })
+      .then(done, done);
   }
 
 
@@ -589,23 +593,24 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
-    var nockScope = nock('http://localhost:3000')
-        .get('/styleguide/html/styleguide.html')
-        .reply(404, 'Not found', {'content-type': 'text/html'});
+    nock('http://localhost:3000')
+      .get('/styleguide/html/styleguide.html')
+      .reply(404, 'Not found', {'content-type': 'text/html'});
+
     // TODO: replace with public api call
     instanceToTest.getStyleguide_()
-        .then(() => {
-          throw new Error('should not have resolved');
-        }, (error) => {
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
           // We just test if execptions from nock are properly bubbled up.
           // This would normally be an underlying layer exception.
-          assert.equal(
+        assert.equal(
               'PatternlabToNode - scraping error - ' +
               '"http://localhost:3000/styleguide/html/styleguide.html" could not be found',
               error.message
           );
-        })
-        .then(done, done);
+      })
+      .then(done, done);
   }
 
 
@@ -613,23 +618,24 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
-    var nockScope = nock('http://localhost:3000')
-        .get('/styleguide/html/styleguide.html')
-        .reply(999);
+    nock('http://localhost:3000')
+      .get('/styleguide/html/styleguide.html')
+      .reply(999);
+
     // TODO: replace with public api call
     instanceToTest.getStyleguide_()
-        .then(() => {
-          throw new Error('should not have resolved');
-        }, (error) => {
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
           // We just test if execptions from nock are properly bubbled up.
           // This would normally be an underlying layer exception.
-          assert.equal(
+        assert.equal(
               'PatternlabToNode - scraping error - ' +
               'unknown error (statusCode was: 999)',
               error.message
           );
-        })
-        .then(done, done);
+      })
+      .then(done, done);
   }
 
 
@@ -638,18 +644,19 @@ describe('main - ', () => {
       "screenSizes": {}
     });
     var randomBody = 'bodyContent' + new Date().getTime();
-    var nockScope = nock('http://localhost:3000')
-        .get('/styleguide/html/styleguide.html')
-        .reply(200, randomBody);
+    nock('http://localhost:3000')
+      .get('/styleguide/html/styleguide.html')
+      .reply(200, randomBody);
+
     // TODO: replace with public api call
     instanceToTest.getStyleguide_()
-        .then((bodyHtml) => {
-          assert.equal(
+      .then((bodyHtml) => {
+        assert.equal(
               randomBody,
               bodyHtml
           );
-        })
-        .then(done, done);
+      })
+      .then(done, done);
   }
 
 
@@ -660,17 +667,18 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+
     // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
-        .then(() => {
-          throw new Error('should not have resolved');
-        }, (error) => {
-          assert.equal(
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
+        assert.equal(
               'PatternlabToNode - scraping error - no pattern found',
               error.message
           );
-        })
-        .then(done, done);
+      })
+      .then(done, done);
   }
 
 
@@ -681,17 +689,18 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+
     // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
-        .then(() => {
-          throw new Error('should not have resolved');
-        }, (error) => {
-          assert.equal(
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
+        assert.equal(
               'PatternlabToNode - scraping error - pattern without an id found',
               error.message
           );
-        })
-        .then(done, done);
+      })
+      .then(done, done);
   }
 
 
@@ -702,56 +711,57 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode({
       "screenSizes": {}
     });
+
     // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
-        .then((patterns) => {
-          assert.deepEqual([
-            {
-              id: "pattern-1",
-              name: "Pattern Name 1"
-            },
-            {
-              id: "pattern-2",
-              name: "Pattern Name 2"
-            }
-          ], patterns)
-        })
-        .then(done, done);
+      .then((patterns) => {
+        assert.deepEqual([
+          {
+            id: "pattern-1",
+            name: "Pattern Name 1"
+          },
+          {
+            id: "pattern-2",
+            name: "Pattern Name 2"
+          }
+        ], patterns)
+      })
+      .then(done, done);
   }
 
   function defaultPatternlabUrlShouldPointToLocalhostOnPort3000() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config['patternlabUrl'];
+    delete config.patternlabUrl;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('http://localhost:3000', instanceToTest.config_['patternlabUrl']);
+    assert.equal('http://localhost:3000', instanceToTest.config_.patternlabUrl);
   }
 
   function defaultPatterConfigFileShouldPointToFile() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config['patternConfigFile'];
+    delete config.patternConfigFile;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('./pattern.config.json', instanceToTest.config_['patternConfigFile']);
+    assert.equal('./pattern.config.json', instanceToTest.config_.patternConfigFile);
   }
 
   function defaultoutputFileShouldPointToFile() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config['outputFile'];
+    delete config.outputFile;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('./patternlabTests.js', instanceToTest.config_['outputFile']);
+    assert.equal('./patternlabTests.js', instanceToTest.config_.outputFile);
   }
 
   function defaultTemplateFileShouldPointToFile() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config['templateFile'];
+    delete config.templateFile;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('./templates/main.ejs', instanceToTest.config_['templateFile']);
+    assert.equal('./templates/main.ejs', instanceToTest.config_.templateFile);
   }
 
   function shouldExcludeNoPatternByDefault() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config['excludePatterns'];
+    delete config.excludePatterns;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal(0, instanceToTest.config_['excludePatterns'].length);
+    assert.equal(0, instanceToTest.config_.excludePatterns.length);
   }
 
   function shouldOverwriteTheConfigurationWithAGivenConfigObject() {
@@ -768,9 +778,12 @@ describe('main - ', () => {
 
   function shouldFailIfThereAreNoScreenSizesDefined() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
-    delete config['screenSizes'];
+    delete config.screenSizes;
     assert.throws(() => {
+      /* eslint-disable no-new */
       new patternlabToNode(config);
+
+      /* eslint-enable no-new */
     }, null, /missing screenSizes/);
   }
 
@@ -785,14 +798,17 @@ describe('main - ', () => {
    *    the path to the file which will be the body of the response
    */
   function setUpPatternlabResponse(domain, responseBodyFileName) {
-    var scope = nock(domain)
-        .get('/styleguide/html/styleguide.html')
-        .replyWithFile(200, responseBodyFileName);
+    nock(domain)
+      .get('/styleguide/html/styleguide.html')
+      .replyWithFile(200, responseBodyFileName);
   }
 
+  /**
+   * @param {Object<string, string>} options
+   */
   function setUpFsMock(options) {
-    for(var key in options) {
-      if (typeof options[key] == 'string') {
+    for (var key in options) {
+      if (typeof options[key] === 'string') {
         options[key] = fs.readFileSync(options[key]).toString();
       } else {
         options[key] = JSON.stringify(options[key]);
@@ -801,6 +817,10 @@ describe('main - ', () => {
     mock_fs(options);
   }
 
+  /**
+   * @param {PatternlabToGemini} instance
+   * @param {Array<string>} messages
+   */
   function setUpExpectedLogMessages(instance, messages) {
     var expectedMessages = messages;
     var loggedMessages = [];

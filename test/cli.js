@@ -25,7 +25,6 @@
  * --------------------------------------------------------------- */
 
 const assert = require('chai').assert;
-const path = require('path');
 const rewire = require('rewire');
 
 const patternlabToNodeCli = rewire('../src/cli');
@@ -121,7 +120,7 @@ describe('cli - ', () => {
     rewiresToRevert.push(rewired);
 
     patternlabToNodeCli()
-        .then(done, done);
+      .then(done, done);
   }
 
   function shouldResolveCFlagToCurrentPwd(done) {
@@ -147,7 +146,7 @@ describe('cli - ', () => {
     rewiresToRevert.push(rewired);
 
     patternlabToNodeCli()
-        .then(done, done);
+      .then(done, done);
   }
 
 

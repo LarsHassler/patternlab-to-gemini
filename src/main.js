@@ -39,9 +39,10 @@ var PatternlabToNode = function(opt_options) {
    */
   this.wasLoadedFromConfigFile_ = null;
 
+  var options = opt_options || {};
   if (typeof opt_options === 'string') {
     this.wasLoadedFromConfigFile_ = opt_options;
-    opt_options = JSON.parse(fs.readFileSync(opt_options).toString());
+    options = JSON.parse(fs.readFileSync(opt_options).toString());
   }
 
   /**
@@ -58,7 +59,7 @@ var PatternlabToNode = function(opt_options) {
     outputFile: './patternlabTests.js',
     templateFile: './templates/main.ejs',
     excludePatterns: []
-  }, opt_options);
+  }, options);
 
   if (!this.config_.screenSizes) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
@@ -70,7 +71,7 @@ var PatternlabToNode = function(opt_options) {
  * @private
  */
 PatternlabToNode.prototype.init_ = function() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     // transform all strings in excludePatterns config to regular expressions
     this.config_.excludePatterns.forEach((pattern, index) => {
       this.config_.excludePatterns[index] = new RegExp(pattern);
@@ -179,15 +180,18 @@ PatternlabToNode.prototype.getConfigFilePath_ = function() {
 PatternlabToNode.prototype.loadOldPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
     var error;
+    var statConfigFile;
     var configFilePath = path.resolve(
         this.getConfigFilePath_(),
         this.config_.patternConfigFile);
+
     try {
-      var statConfigFile = fs.statSync(configFilePath);
-    } catch(err) {
+      statConfigFile = fs.statSync(configFilePath);
+    } catch (err) {
       error = new Error('PatternlabToNode - config error - ' +
           'could not find config file "' + this.config_.patternConfigFile + '"');
       reject(error);
+      return;
     }
 
     if (statConfigFile.isFile()) {
@@ -235,8 +239,10 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
           )
         }
 
-        for(var patternId in oldPatternConfig.patterns) {
-          newPatterns[patternId] = oldPatternConfig.patterns[patternId];
+        for (var patternId in oldPatternConfig.patterns) {
+          if (oldPatternConfig.patterns.hasOwnProperty(patternId)) {
+            newPatterns[patternId] = oldPatternConfig.patterns[patternId];
+          }
         }
       })
       .then(() => {
@@ -273,12 +279,14 @@ PatternlabToNode.prototype.generateTests = function() {
           config._patternOrder.forEach((patternId) => {
             data.patterns.push(config.patterns[patternId]);
           });
-          for(var screenSize in this.config_.screenSizes) {
-            data.sizes.push({
-              name: screenSize,
-              width: this.config_.screenSizes[screenSize]['width'],
-              height: this.config_.screenSizes[screenSize]['height']
-            })
+          for (var screenSize in this.config_.screenSizes) {
+            if (this.config_.screenSizes.hasOwnProperty(screenSize)) {
+              data.sizes.push({
+                name: screenSize,
+                width: this.config_.screenSizes[screenSize].width,
+                height: this.config_.screenSizes[screenSize].height
+              });
+            }
           }
           var templateFilePath = path.resolve(
               this.getConfigFilePath_(),

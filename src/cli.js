@@ -29,8 +29,8 @@ var p2g = require('./main.js');
  */
 function start() {
   program
-      .option('-c, --config <filename>', 'your patternlab-tog-gemini config file')
-      .parse(process.argv);
+    .option('-c, --config <filename>', 'your patternlab-tog-gemini config file')
+    .parse(process.argv);
 
   if (!program.config) {
     throw Error('please provide a config file via the --config (-c) flag');
@@ -39,9 +39,9 @@ function start() {
     const configFile = path.resolve(process.cwd(), program.config);
     const patternlabToGemini = new p2g(configFile);
     return patternlabToGemini.getPatternsConfiguration()
-        .then(() => {
-          return patternlabToGemini.generateTests();
-        });
+      .then(() => {
+        return patternlabToGemini.generateTests();
+      });
   }
 }
 
