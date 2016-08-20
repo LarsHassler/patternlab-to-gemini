@@ -302,17 +302,4 @@ PatternlabToNode.prototype.generateTests = function() {
 };
 
 
-
-/**
- * @param {string} message
- * @private
- */
-PatternlabToNode.prototype.logMessage_ = function(message) {
-  console.log(message);
-};
-
-
-
-
-
 module.exports = PatternlabToNode;

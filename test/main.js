@@ -114,13 +114,6 @@ describe('main - ', () => {
 
     });
 
-    describe('logMessage_ - ', function() {
-
-      it('should forward all messages to console.log',
-          shouldForwardAllMessagesToConsoleLog
-      );
-    });
-
     describe('getStyleguide_ - ', () => {
 
       it('should reject if the request was not successfull',
@@ -277,26 +270,6 @@ describe('main - ', () => {
         )
       })
       .then(done, done);
-  }
-
-  function shouldForwardAllMessagesToConsoleLog(done) {
-    var randomMessage = 'randomMessage' + new Date().getTime();
-    var loggedMessages = [];
-    rewiresToRevert.push(
-        patternlabToNode.__set__({
-          console: {
-            log: function(message) {
-              loggedMessages.push(message);
-            }
-          }
-        })
-    );
-    var instanceToTest = new patternlabToNode({
-      "screenSizes": {},
-    });
-    instanceToTest.logMessage_(randomMessage);
-    assert.deepEqual(loggedMessages, [randomMessage]);
-    done();
   }
 
   function shouldRejectIfTheConfigFileDoesNotExist(done) {
@@ -794,27 +767,5 @@ describe('main - ', () => {
       }
     }
     mock_fs(options);
-  }
-
-  /**
-   * @param {PatternlabToGemini} instance
-   * @param {Array<string>} messages
-   */
-  function setUpExpectedLogMessages(instance, messages) {
-    var expectedMessages = messages;
-    var loggedMessages = [];
-    instance.logMessage_ = function(message) {
-      loggedMessages.push(message);
-    };
-
-    return {
-      'check': function() {
-        assert.deepEqual(
-            expectedMessages,
-            loggedMessages,
-            'wrong messages logged'
-        );
-      }
-    };
   }
 });
