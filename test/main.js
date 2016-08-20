@@ -186,17 +186,9 @@ describe('main - ', () => {
         shouldWarnIfAPatternFromTheConfigIsNoLongerPartOfTheStyleguide
     );
 
-    it('should backup the old configuration',
-        shouldBackupTheOldConfiguration
-    );
-
   });
 
   describe('generateTests - ', function() {
-
-    it('should reject if the patternConfigFile could not be found',
-        shouldRejectIfThePatternConfigFileCouldNotBeFound
-    );
 
     it('should reject if there was an error while rendering the template',
         shouldRejectIfThereWasAnErrorWhileRenderingTheTemplate
@@ -213,51 +205,33 @@ describe('main - ', () => {
    * Test case implementation
    * --------------------------------------------------------------- */
 
-  function shouldBackupTheOldConfiguration(done) {
-    setUpFsMock({
-      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
-      "emptyConfig.json.bak": {},
-      "emptyConfig.json": {
-        patterns: {}
-      },
-      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
-    });
-    var instanceToTest = new patternlabToNode(
-        'config.json'
-    );
-    setUpPatternlabResponse(
-        'http://localhost:3000',
-        'dummyhtml/patterns.html'
-    );
-    var configContent = fs.readFileSync(path.resolve(__dirname, '../emptyConfig.json'));
-    instanceToTest.getPatternsConfiguration()
-      .then(() => {
-        var fileExists = false;
-        try {
-          fileExists = !!fs.statSync("emptyConfig.json.bak");
-        } catch (e) {
-          // we ignore this here
-        }
-
-        if (fileExists) {
-          var backupConfig = fs.readFileSync("emptyConfig.json.bak").toString();
-          assert.equal(backupConfig, configContent, "Backup file is not identical to old config");
-        }
-        else {
-          throw new Error('could not find backup file');
-        }
-      })
-      .then(done, done);
-  }
-
   function shouldRejectIfThereWasAnErrorWhileRenderingTheTemplate(done) {
     setUpFsMock({
-      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config2.json'),
-      "patternConfig.json": path.resolve(__dirname, 'dummyConfigs/generateTestsPatternConfig.json'),
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config2.json')
     });
     var instanceToTest = new patternlabToNode(
         'config.json'
     );
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1"
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2"
+            }
+          }
+        });
+      })
+    };
     instanceToTest.generateTests()
       .then(() => {
         throw new Error('should not resolve')
@@ -267,30 +241,33 @@ describe('main - ', () => {
       .then(done, done);
   }
 
-  function shouldRejectIfThePatternConfigFileCouldNotBeFound(done) {
-    setUpFsMock({
-      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
-    });
-    var instanceToTest = new patternlabToNode(
-        'config.json'
-    );
-    instanceToTest.generateTests()
-      .then(() => {
-        throw new Error('should not resolve')
-      }, (error) => {
-        assert.equal(error.message, 'PatternlabToNode - config error - could not find config file "emptyConfig.json"');
-      })
-      .then(done, done);
-  }
-
   function shouldGenerateTheCorrectTestFile(done) {
     setUpFsMock({
       "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/generateTestsConfig.json'),
-      "patternConfig.json": path.resolve(__dirname, 'dummyConfigs/generateTestsPatternConfig.json'),
       "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTests.js'),
       "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
     });
     var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1"
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2"
+            }
+          }
+        });
+      })
+    };
     instanceToTest.generateTests()
       .then(() => {
         assert.equal(
@@ -394,7 +371,7 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-      .then(() => {
+      .then((patternConfig) => {
         assert.deepEqual({
           "_patternOrder": [
             "pattern-1",
@@ -410,7 +387,7 @@ describe('main - ', () => {
               name: "Pattern Name 2"
             }
           }
-        }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
+        }, patternConfig);
       })
       .then(done, done);
   }
@@ -441,7 +418,7 @@ describe('main - ', () => {
       'The following Patterns are no longer part of the styleguide: pattern-no-more'
     ]);
     instanceToTest.getPatternsConfiguration()
-      .then(() => {
+      .then((patternConfig) => {
         assert.deepEqual({
           "_patternOrder": [
             "pattern-1",
@@ -461,7 +438,7 @@ describe('main - ', () => {
               name: "Pattern which is no longer part of the styleguide"
             }
           }
-        }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
+        }, patternConfig);
         loggedMessages.check();
       })
       .then(done, done);
@@ -487,7 +464,7 @@ describe('main - ', () => {
         'dummyhtml/patternsToExclude.html'
     );
     instanceToTest.getPatternsConfiguration()
-      .then(() => {
+      .then((patternConfig) => {
         assert.deepEqual({
           "_patternOrder": [
             "pattern-1",
@@ -503,7 +480,7 @@ describe('main - ', () => {
               name: "Pattern Name 2"
             }
           }
-        }, JSON.parse(fs.readFileSync('emptyConfig.json').toString()));
+        }, patternConfig);
       })
       .then(done, done);
   }

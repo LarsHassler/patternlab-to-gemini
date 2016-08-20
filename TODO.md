@@ -6,6 +6,7 @@
     * for pattern configuration
     * public api
     * constructor call with file path
+    * cli mode
 * Publish NPM Package
 * Deal with pattern states
 * Skipping screen sizes for specific pattern
@@ -19,8 +20,10 @@
 
 ##USER STORIES: 
 
-
 ##TODOS:
+* warnings for missing patterns -> throw error
+* should work without an pattern overwrite file
+
 
 ##CONSIDERATIONS:
 * [?] move browserSize into npm dependency (or maybe not??)

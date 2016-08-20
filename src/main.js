@@ -244,21 +244,11 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             newPatterns[patternId] = oldPatternConfig.patterns[patternId];
           }
         }
-      })
-      .then(() => {
-        var configFilePath = path.resolve(
-            this.getConfigFilePath_(),
-            this.config_.patternConfigFile);
-        fs.writeFileSync(configFilePath + '.bak', JSON.stringify(oldPatternConfig));
-      })
-      .then(() => {
-        var configFilePath = path.resolve(
-            this.getConfigFilePath_(),
-            this.config_.patternConfigFile);
-        fs.writeFileSync(configFilePath, JSON.stringify({
+
+        return {
           _patternOrder: newPatternIds,
           patterns: newPatterns
-        }));
+        };
       });
 };
 
@@ -268,7 +258,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
 PatternlabToNode.prototype.generateTests = function() {
   return this.init_()
       .then(() => {
-        return this.loadOldPatternConfig_();
+        return this.getPatternsConfiguration();
       })
       .then((config) => {
         return new Promise((resolve, reject) => {
