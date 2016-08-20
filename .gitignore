@@ -16,6 +16,7 @@ node_modules
 
 # temp
 .tmp/
+npm-debug.log
 
 # coverage report
 coverage/
