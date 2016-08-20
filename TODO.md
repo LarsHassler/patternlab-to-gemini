@@ -1,5 +1,4 @@
 ##EPICS:
-* Restructure/rename test data
 * Add proper Documentation 
     * for pattern configuration
     * public api

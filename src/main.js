@@ -26,6 +26,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 const request = require('request');
+const debug = require('debug')('patternlabe-to-gemini:main');
 
 /**
  * @param {(Object|string)=} opt_options
@@ -88,6 +89,7 @@ PatternlabToNode.prototype.init_ = function() {
  */
 PatternlabToNode.prototype.getStyleguide_ = function() {
   return new Promise((resolve, reject) => {
+    debug('starting request for styleguide on ' + this.config_.patternlabUrl);
     request.get(
         this.config_.patternlabUrl + '/styleguide/html/styleguide.html',
         (err, req, body) => {
@@ -95,9 +97,12 @@ PatternlabToNode.prototype.getStyleguide_ = function() {
             reject(err);
           }
           else if (req.statusCode === 200) {
+            debug('styleguide request finished');
             resolve(body);
           }
           else {
+            debug('styleguide request finished with unexpected status '
+              + req.statusCode);
             var error;
             switch (req.statusCode) {
               case 404:
@@ -124,14 +129,19 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
   return new Promise((resolve, reject) => {
     const $ = cheerio.load(html);
     const patterns = [];
+    debug('scraping html for patterns');
     $('.sg-pattern').each(
         (index, element) => {
           var patternId = $(element).attr('id');
+          debug('found pattern: ' + patternId);
           var header = $(element).find('.sg-pattern-title > a');
           var shouldBeExcluded = this.config_.excludePatterns.reduce(
               (previousValue, currentValue) => {
                 return previousValue || currentValue.test(patternId);
               }, false);
+          if (shouldBeExcluded) {
+            debug('pattern "' + patternId + '" will be excluded');
+          }
           if (!shouldBeExcluded) {
             patterns.push({
               id: patternId,
@@ -152,6 +162,7 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
       error = new Error('PatternlabToNode - scraping error - no pattern found');
       reject(error);
     } else {
+      debug('collected patterns');
       resolve(patterns);
     }
   });
@@ -180,6 +191,7 @@ PatternlabToNode.prototype.getConfigFilePath_ = function() {
 PatternlabToNode.prototype.loadPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
     if (!this.config_.patternConfigFile) {
+      debug('no patternConfigFile specified');
       resolve({
         'patterns': {}
       });
@@ -192,9 +204,12 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
         this.getConfigFilePath_(),
         this.config_.patternConfigFile);
 
+    debug('loading patternConfig from ' + configFilePath);
     try {
       statConfigFile = fs.statSync(configFilePath);
     } catch (err) {
+      debug('error while reading file ' + configFilePath);
+      debug(err);
       error = new Error('PatternlabToNode - config error - ' +
           'could not find config file "' + this.config_.patternConfigFile + '"');
       reject(error);
@@ -235,6 +250,9 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         return this.loadPatternConfig_();
       })
       .then((loadedOldPatternConfig) => {
+        debug('loaded patternConfig');
+        debug(loadedOldPatternConfig);
+
         oldPatternConfig = loadedOldPatternConfig;
         var oldPatternIds = Object.keys(oldPatternConfig.patterns);
         var missingPatterns = oldPatternIds.filter(x => newPatternIds.indexOf(x) < 0);
@@ -266,9 +284,12 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
 PatternlabToNode.prototype.generateTests = function() {
   return this.init_()
       .then(() => {
+        debug('init finished');
         return this.getPatternsConfiguration();
       })
       .then((config) => {
+        debug('finished generating config');
+        debug(config);
         return new Promise((resolve, reject) => {
           var data = {
             'patterns': [],

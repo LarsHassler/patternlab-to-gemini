@@ -22,6 +22,7 @@
 
 const program = require('commander');
 const path = require('path');
+const debug = require('debug')('patternlabe-to-gemini:cli');
 var p2g = require('./main.js');
 
 /**
@@ -37,10 +38,18 @@ function start() {
   }
   else {
     const configFile = path.resolve(process.cwd(), program.config);
+
+    debug('starting with ' + configFile);
     const patternlabToGemini = new p2g(configFile);
-    return patternlabToGemini.getPatternsConfiguration()
+    return patternlabToGemini.generateTests()
       .then(() => {
-        return patternlabToGemini.generateTests();
+        debug('done');
+
+        // TODO add proper stdout output
+      }, (err) => {
+        debug(err);
+
+        // TODO add proper stderr output
       });
   }
 }
