@@ -1,5 +1,5 @@
 ##EPICS:
-* [x] CLI mode
+* [x] add support for eslint
 * separate patternConfig into one file that overwrites
     * new function to create initial config
 * Restructure/rename test data
@@ -22,7 +22,9 @@
 
 
 ##TODOS:
-
+* add .eslintrc file
+* configure eslint
+* add script to package.json
 
 ##CONSIDERATIONS:
 * [?] move browserSize into npm dependency (or maybe not??)

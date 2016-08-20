@@ -21,10 +21,14 @@
   "bugs": {
     "url": "https://github.com/LarsHassler/patternlab-to-gemini/issues"
   },
+  "bin": {
+    "patternlab-to-gemini": "./bin/patternlab-to-gemini"
+  },
   "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
   "private": true,
   "dependencies": {
     "cheerio": "^0.20.0",
+    "commander": "^2.9.0",
     "ejs": "^2.5.1",
     "request": "2.73.0"
   },
