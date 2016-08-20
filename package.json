@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^3.3.1",
     "extend": "^3.0.0",
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
@@ -45,7 +46,9 @@
     "gemini": "^4.4.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/istanbul test ./node_modules/.bin/_mocha -- -R spec test/"
+    "lint": "./node_modules/.bin/eslint src/** test/*",
+    "test": "./node_modules/.bin/_mocha -R spec test/",
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec test/ "
   },
   "keywords": [
     "test",
