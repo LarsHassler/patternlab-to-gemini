@@ -233,10 +233,11 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         var missingPatterns = oldPatternIds.filter(x => newPatternIds.indexOf(x) < 0);
 
         if (missingPatterns.length) {
-          this.logMessage_(
-              'The following Patterns are no longer part of the styleguide: ' +
-                  missingPatterns.join(', ')
-          )
+          var error = new Error('PatternlabToNode - config error - ' +
+            'The following patterns are no longer part of the styleguide: "' +
+            missingPatterns.join('", "') +
+            '"! Please check if they have been renamed or remove them from the config');
+          throw error
         }
 
         for (var patternId in oldPatternConfig.patterns) {

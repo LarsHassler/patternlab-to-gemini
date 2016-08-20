@@ -178,12 +178,12 @@ describe('main - ', () => {
         shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
 
-    it('should merge old and new patterns',
-        shouldMergeOldAndNewPatterns
+    it('should reject if patterns which are in the patternConfig are missing in the styleguide',
+      shouldRejectIfPatternsWhichAreInThePatternConfigAreMissingInTheStyleguide
     );
 
-    it('should warn if a pattern from the config is no longer part of the styleguide',
-        shouldWarnIfAPatternFromTheConfigIsNoLongerPartOfTheStyleguide
+    it('should merge old and new patterns',
+        shouldMergeOldAndNewPatterns
     );
 
   });
@@ -393,7 +393,7 @@ describe('main - ', () => {
   }
 
 
-  function shouldWarnIfAPatternFromTheConfigIsNoLongerPartOfTheStyleguide(done) {
+  function shouldRejectIfPatternsWhichAreInThePatternConfigAreMissingInTheStyleguide(done) {
     setUpFsMock({
       "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/config1.json'),
       "emptyConfig.json": {
@@ -413,33 +413,14 @@ describe('main - ', () => {
         'http://localhost:3000',
         'dummyhtml/patterns.html'
     );
-
-    var loggedMessages = setUpExpectedLogMessages(instanceToTest, [
-      'The following Patterns are no longer part of the styleguide: pattern-no-more'
-    ]);
     instanceToTest.getPatternsConfiguration()
-      .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1"
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2"
-            },
-            "pattern-no-more": {
-              id: "pattern-no-more",
-              name: "Pattern which is no longer part of the styleguide"
-            }
-          }
-        }, patternConfig);
-        loggedMessages.check();
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - The following patterns are no longer part of the styleguide: "pattern-no-more"! Please check if they have been renamed or remove them from the config',
+          error.message
+        );
       })
       .then(done, done);
   }
