@@ -1,5 +1,6 @@
 ##EPICS:
 * [] CLI does not show Errors
+* add debug flag to CLI
 * Publish NPM Package
 * Deal with pattern states
 * Skipping screen sizes for specific pattern
