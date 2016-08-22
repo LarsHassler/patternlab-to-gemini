@@ -1,0 +1,26 @@
+# IDEs (WebStorm, PhpStorm, Eclipse etc.)
+*.iml
+*.ipr
+*.iws
+.idea/
+.project
+
+# temp
+.tmp/
+example.config.json
+
+# coverage report
+coverage/
+
+# tests
+test/
+
+# docs
+docs/
+
+# dev environment
+.editorconfig
+.eslintignore
+.eslintrc
+.travis.yml
+TODO.md
