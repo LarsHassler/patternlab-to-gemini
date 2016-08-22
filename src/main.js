@@ -58,7 +58,7 @@ var PatternlabToNode = function(opt_options) {
     patternlabUrl: 'http://localhost:3000',
     patternConfigFile: null,
     outputFile: './patternlabTests.js',
-    templateFile: './templates/main.ejs',
+    templateFile: path.resolve(__dirname, '../templates/main.ejs'),
     excludePatterns: []
   }, options);
 
