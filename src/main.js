@@ -26,7 +26,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 const request = require('request');
-const debug = require('debug')('patternlabe-to-gemini:main');
+const debug = require('debug')('patternlab-to-gemini:main');
 
 /**
  * @param {(Object|string)=} opt_options

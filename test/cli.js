@@ -26,6 +26,7 @@
 
 const assert = require('chai').assert;
 const rewire = require('rewire');
+const debug = require('debug')('patternlab-to-gemini:_test:cli');
 
 const testStdErr = require('test-console').stderr;
 const testStdOut = require('test-console').stdout;
@@ -57,12 +58,12 @@ describe('cli - ', () => {
       revertFunction();
     });
     if (stderrMock) {
-      console.log('stderrMock:');
-      console.log(stderrMock.output);
+      debug('stderrMock:');
+      debug(stderrMock.output);
     }
     if (stdoutMock) {
-      console.log('stdoutMock:');
-      console.log(stdoutMock.output);
+      debug('stdoutMock:');
+      debug(stdoutMock.output);
     }
   });
 

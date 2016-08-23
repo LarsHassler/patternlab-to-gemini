@@ -22,7 +22,7 @@
 
 const program = require('commander');
 const path = require('path');
-const debug = require('debug')('patternlabe-to-gemini:cli');
+const debug = require('debug')('patternlab-to-gemini:cli');
 var p2g = require('./main.js');
 
 /**
