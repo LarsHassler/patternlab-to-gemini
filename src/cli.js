@@ -46,13 +46,10 @@ function start(args) {
     return patternlabToGemini.generateTests()
       .then(() => {
         debug('done');
-
-        // TODO add proper stdout output
+        process.stdout.write('done');
       }, (err) => {
-        // process.stderr.write(err.message);
         debug(err);
-
-        // TODO add proper stderr output
+        process.stderr.write(err.message);
       });
   }
 }

@@ -27,12 +27,17 @@
 const assert = require('chai').assert;
 const rewire = require('rewire');
 
+const testStdErr = require('test-console').stderr;
+const testStdOut = require('test-console').stdout;
+
 const patternlabToNodeCli = rewire('../src/cli');
 
 
 describe('cli - ', () => {
-  
-  var rewiresToRevert = [];
+
+  const rewiresToRevert = [];
+  var stderrMock;
+  var stdoutMock;
 
   /* ------------------------------------------------------------------
    * Setup & Tear down
@@ -42,11 +47,23 @@ describe('cli - ', () => {
 
   });
 
+  beforeEach(() => {
+    stderrMock = testStdErr.inspect();
+    stdoutMock = testStdOut.inspect();
+  });
+
   afterEach(() => {
     rewiresToRevert.forEach((revertFunction) => {
       revertFunction();
     });
-
+    if (stderrMock) {
+      console.log('stderrMock:');
+      console.log(stderrMock.output);
+    }
+    if (stdoutMock) {
+      console.log('stdoutMock:');
+      console.log(stdoutMock.output);
+    }
   });
 
   after(() => {
@@ -73,6 +90,10 @@ describe('cli - ', () => {
         shouldResolveCFlagToCurrentPwd
     );
 
+    it('should print all errors to stderr',
+      shouldPrintAllErrorsToStderr
+    );
+
   });
 
 
@@ -89,6 +110,7 @@ describe('cli - ', () => {
         },
         'please provide a config file via the --config (-c) flag'
     );
+    resetConsole();
     done();
   }
 
@@ -107,6 +129,12 @@ describe('cli - ', () => {
     rewiresToRevert.push(rewired);
 
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename])
+      .then(() => {
+        resetConsole();
+      }, (err) => {
+        resetConsole();
+        throw err;
+      })
       .then(done, done);
   }
 
@@ -125,7 +153,47 @@ describe('cli - ', () => {
     rewiresToRevert.push(rewired);
 
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
+      .then(() => {
+        resetConsole();
+      }, (err) => {
+        resetConsole();
+        throw err;
+      })
       .then(done, done);
+  }
+
+  function shouldPrintAllErrorsToStderr(done) {
+    var randomPwd = '/path/to/dir/' + new Date().getTime();
+    var randomErrorMessage = 'errormessage' + new Date().getTime();
+    var randomFilename = 'filename' + new Date().getTime();
+    var rewired = patternlabToNodeCli.__set__({
+      p2g: function(configfile) {
+        return {
+          generateTests: function() {
+            return new Promise((resolve, reject) => {
+              var err = new Error(randomErrorMessage);
+              reject(err);
+            });
+          }
+        }
+      }
+    });
+    rewiresToRevert.push(rewired);
+
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
+      .then(() => {
+        assert.equal(
+          randomErrorMessage,
+          stderrMock.output
+        );
+      })
+      .then(() => {
+        resetConsole();
+        done();
+      }, (err) => {
+        resetConsole();
+        done(err);
+      });
   }
 
 
@@ -133,5 +201,12 @@ describe('cli - ', () => {
    * Helpers
    * --------------------------------------------------------------- */
 
-
+  function resetConsole() {
+    if (stderrMock) {
+      stderrMock.restore();
+    }
+    if (stdoutMock) {
+      stdoutMock.restore();
+    }
+  }
 });
