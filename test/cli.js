@@ -83,34 +83,21 @@ describe('cli - ', () => {
    * --------------------------------------------------------------- */
 
   function shouldThrowAnErrorIfNoConfigFileWasProvided(done) {
-    var rewired = patternlabToNodeCli.__set__({
-      process: {
-        cwd: function() { return ''; },
-        argv: ["node", "/bin/patternlab-to-gemini"]
-      }
-    });
-    rewiresToRevert.push(rewired);
     assert.throws(
-        patternlabToNodeCli,
+        function() {
+          patternlabToNodeCli(["node", "/bin/patternlab-to-gemini"])
+        },
         'please provide a config file via the --config (-c) flag'
     );
     done();
   }
 
   function shouldResolveConfigFlagToCurrentPwd(done) {
-    var randomPwd = '/path/to/dir/' + new Date().getTime();
     var randomFilename = 'filename' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
-      process: {
-        cwd: function() { return randomPwd; },
-        argv: ["node", "/bin/patternlab-to-gemini", '--config', randomFilename]
-      },
       p2g: function(configfile) {
-        assert.equal(configfile, randomPwd + '/' + randomFilename, 'wrong configfile set');
+        assert.equal(configfile, process.cwd() + '/' + randomFilename, 'wrong configfile set');
         return {
-          getPatternsConfiguration: function() {
-            return new Promise((resolve) => { resolve(); });
-          },
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
           }
@@ -119,24 +106,16 @@ describe('cli - ', () => {
     });
     rewiresToRevert.push(rewired);
 
-    patternlabToNodeCli()
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename])
       .then(done, done);
   }
 
   function shouldResolveCFlagToCurrentPwd(done) {
-    var randomPwd = '/path/to/dir/' + new Date().getTime();
     var randomFilename = 'filename' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
-      process: {
-        cwd: function() { return randomPwd; },
-        argv: ["node", "/bin/patternlab-to-gemini", '-c', randomFilename]
-      },
       p2g: function(configfile) {
-        assert.equal(configfile, randomPwd + '/' + randomFilename, 'wrong configfile set');
+        assert.equal(configfile, process.cwd() + '/' + randomFilename, 'wrong configfile set');
         return {
-          getPatternsConfiguration: function() {
-            return new Promise((resolve) => { resolve(); });
-          },
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
           }
@@ -145,7 +124,7 @@ describe('cli - ', () => {
     });
     rewiresToRevert.push(rewired);
 
-    patternlabToNodeCli()
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(done, done);
   }
 
