@@ -44,9 +44,6 @@
     "rewire": "^2.5.2",
     "test-console": "^1.0.0"
   },
-  "peerDependencies": {
-    "gemini": "^4.4.0"
-  },
   "scripts": {
     "lint": "./node_modules/.bin/eslint src/** test/*",
     "test": "./node_modules/.bin/_mocha -R spec test/",
