@@ -266,6 +266,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         }
 
         for (var patternId in oldPatternConfig.patterns) {
+          /* istanbul ignore else */
           if (oldPatternConfig.patterns.hasOwnProperty(patternId)) {
             newPatterns[patternId] = oldPatternConfig.patterns[patternId];
           }
@@ -299,6 +300,7 @@ PatternlabToNode.prototype.generateTests = function() {
             data.patterns.push(config.patterns[patternId]);
           });
           for (var screenSize in this.config_.screenSizes) {
+            /* istanbul ignore else */
             if (this.config_.screenSizes.hasOwnProperty(screenSize)) {
               data.sizes.push({
                 name: screenSize,
