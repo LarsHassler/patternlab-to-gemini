@@ -95,6 +95,10 @@ describe('cli - ', () => {
       shouldPrintAllErrorsToStderr
     );
 
+    it('should print when its done',
+        shouldPrintWhenItsDone
+    );
+
   });
 
 
@@ -164,11 +168,10 @@ describe('cli - ', () => {
   }
 
   function shouldPrintAllErrorsToStderr(done) {
-    var randomPwd = '/path/to/dir/' + new Date().getTime();
     var randomErrorMessage = 'errormessage' + new Date().getTime();
     var randomFilename = 'filename' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
-      p2g: function(configfile) {
+      p2g: function() {
         return {
           generateTests: function() {
             return new Promise((resolve, reject) => {
@@ -186,6 +189,37 @@ describe('cli - ', () => {
         assert.equal(
           randomErrorMessage,
           stderrMock.output
+        );
+      })
+      .then(() => {
+        resetConsole();
+        done();
+      }, (err) => {
+        resetConsole();
+        done(err);
+      });
+  }
+
+  function shouldPrintWhenItsDone(done) {
+    var randomFilename = 'filename' + new Date().getTime();
+    var rewired = patternlabToNodeCli.__set__({
+      p2g: function() {
+        return {
+          generateTests: function() {
+            return new Promise((resolve) => {
+              resolve();
+            });
+          }
+        }
+      }
+    });
+    rewiresToRevert.push(rewired);
+
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
+      .then(() => {
+        assert.equal(
+          'done',
+          stdoutMock.output
         );
       })
       .then(() => {
