@@ -33,7 +33,7 @@ var p2g = require('./main.js');
 function start(args) {
   program
     .option('-c, --config <filename>', 'your patternlab-tog-gemini config file')
-    .parse(args || process.argv);
+    .parse(args);
 
   if (!program.config) {
     throw Error('please provide a config file via the --config (-c) flag');
