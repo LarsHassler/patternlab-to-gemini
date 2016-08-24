@@ -187,7 +187,7 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
         assert.equal(
-          randomErrorMessage,
+          randomErrorMessage + '\n',
           stderrMock.output
         );
       })
@@ -218,7 +218,7 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
         assert.equal(
-          'done',
+          'done\n',
           stdoutMock.output
         );
       })
