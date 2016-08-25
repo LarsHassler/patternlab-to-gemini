@@ -28,3 +28,5 @@ As soon as you have you config file ready, you can generate your tests with the 
 ```
 $ ./node_modules/.bin/patternlab-to-gemini -c path/to/your/configfile.json
 ```
+
+You may also use `--debug` or `-d` to get debug output.

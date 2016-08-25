@@ -1,5 +1,4 @@
 ##EPICS:
-* add debug flag to CLI
 * Deal with pattern states
 * Skipping screen sizes for specific pattern
 * Additional screen sizes for specific pattern
@@ -13,8 +12,6 @@
 ##USER STORIES: 
 
 ##TODOS:
-* update README
-* implement flag
 
 ##CONSIDERATIONS:
 * [?] move browserSize into npm dependency (or maybe not??)

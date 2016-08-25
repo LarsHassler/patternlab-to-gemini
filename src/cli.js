@@ -19,11 +19,10 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-
 const program = require('commander');
 const path = require('path');
-const debug = require('debug')('patternlab-to-gemini:cli');
-var p2g = require('./main.js');
+var nodeDebug = require('debug');
+var p2g;
 
 /**
  * @param {Array.<string>} args
@@ -33,15 +32,25 @@ var p2g = require('./main.js');
 function start(args) {
   program
     .option('-c, --config <filename>', 'your patternlab-tog-gemini config file')
+    .option('-d, --debug', 'enable debug output')
     .parse(args);
+
+  if (program.debug) {
+    nodeDebug.enable('patternlab-to-gemini:*');
+  }
 
   if (!program.config) {
     throw Error('please provide a config file via the --config (-c) flag');
   }
   else {
+    const debug = nodeDebug('patternlab-to-gemini:cli');
+
     const configFile = path.resolve(process.cwd(), program.config);
 
     debug('starting with ' + configFile);
+
+    // we need this construct to be able to test everything properly
+    p2g = p2g || require('./main.js');
     const patternlabToGemini = new p2g(configFile);
     return patternlabToGemini.generateTests()
       .then(() => {

@@ -99,6 +99,14 @@ describe('cli - ', () => {
         shouldPrintWhenItsDone
     );
 
+    it('should enable debug if --debug flag was set',
+        shouldEnableDebugIfDebugFlagWasSet
+    );
+
+    it('should enable debug if -d flag was set',
+        shouldEnableDebugIfDFlagWasSet
+    );
+
   });
 
 
@@ -107,6 +115,66 @@ describe('cli - ', () => {
   /* ------------------------------------------------------------------
    * Test case implementation
    * --------------------------------------------------------------- */
+
+  function shouldEnableDebugIfDebugFlagWasSet(done) {
+    var randomFilename = 'filename' + new Date().getTime();
+    var debugScope;
+    var debugFunction = function() { return function() {}; };
+    debugFunction.enable = function(scope) {
+      debugScope = scope;
+    };
+    var rewired = patternlabToNodeCli.__set__({
+      p2g: function() {
+        return {
+          generateTests: function() {
+            return new Promise((resolve) => { resolve(); });
+          }
+        }
+      },
+      nodeDebug: debugFunction
+    });
+    rewiresToRevert.push(rewired);
+
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename, '--debug'])
+      .then(() => {
+        resetConsole();
+        assert.equal('patternlab-to-gemini:*', debugScope, 'wrong debug scope set or not set at all');
+      }, (err) => {
+        resetConsole();
+        throw err;
+      })
+      .then(done, done);
+  }
+
+  function shouldEnableDebugIfDFlagWasSet(done) {
+    var randomFilename = 'filename' + new Date().getTime();
+    var debugScope;
+    var debugFunction = function() { return function() {}; };
+    debugFunction.enable = function(scope) {
+      debugScope = scope;
+    };
+    var rewired = patternlabToNodeCli.__set__({
+      p2g: function() {
+        return {
+          generateTests: function() {
+            return new Promise((resolve) => { resolve(); });
+          }
+        }
+      },
+      nodeDebug: debugFunction
+    });
+    rewiresToRevert.push(rewired);
+
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename, '-d'])
+      .then(() => {
+        resetConsole();
+        assert.equal('patternlab-to-gemini:*', debugScope, 'wrong debug scope set or not set at all');
+      }, (err) => {
+        resetConsole();
+        throw err;
+      })
+      .then(done, done);
+  }
 
   function shouldThrowAnErrorIfNoConfigFileWasProvided(done) {
     assert.throws(
@@ -186,18 +254,16 @@ describe('cli - ', () => {
 
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
+        resetConsole();
         assert.equal(
           randomErrorMessage + '\n',
           stderrMock.output
         );
-      })
-      .then(() => {
-        resetConsole();
-        done();
       }, (err) => {
         resetConsole();
-        done(err);
-      });
+        throw err;
+      })
+      .then(done, done);
   }
 
   function shouldPrintWhenItsDone(done) {
@@ -217,18 +283,16 @@ describe('cli - ', () => {
 
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
+        resetConsole();
         assert.equal(
           'done\n',
           stdoutMock.output
         );
-      })
-      .then(() => {
-        resetConsole();
-        done();
       }, (err) => {
         resetConsole();
-        done(err);
-      });
+        throw err;
+      })
+      .then(done, done);
   }
 
 
