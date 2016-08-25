@@ -29,21 +29,23 @@ const request = require('request');
 const debug = require('debug')('patternlab-to-gemini:main');
 
 /**
- * @param {(Object|string)=} opt_options
+ * @param {{
+ *    screenSizes: Object!
+ * }|string} options
  *    Either an options object or a path to a config json file
  * @constructor
  */
-var PatternlabToNode = function(opt_options) {
+var PatternlabToNode = function(options) {
   /**
    * @type {?string}
    * @private
    */
   this.wasLoadedFromConfigFile_ = null;
 
-  var options = opt_options || {};
-  if (typeof opt_options === 'string') {
-    this.wasLoadedFromConfigFile_ = opt_options;
-    options = JSON.parse(fs.readFileSync(opt_options).toString());
+  var settings = options;
+  if (typeof options === 'string') {
+    this.wasLoadedFromConfigFile_ = options;
+    settings = JSON.parse(fs.readFileSync(options).toString());
   }
 
   /**
@@ -60,7 +62,7 @@ var PatternlabToNode = function(opt_options) {
     outputFile: './patternlabTests.js',
     templateFile: path.resolve(__dirname, '../templates/main.ejs'),
     excludePatterns: []
-  }, options);
+  }, settings);
 
   if (!this.config_.screenSizes) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')

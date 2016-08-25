@@ -49,8 +49,7 @@ function start(args) {
 
     debug('starting with ' + configFile);
 
-    // we need this construct to be able to test everything properly
-    p2g = p2g || require('./main.js');
+    p2g = p2g || /* istanbul ignore next: we need this construct to be able to test everything properly */ require('./main.js');
     const patternlabToGemini = new p2g(configFile);
     return patternlabToGemini.generateTests()
       .then(() => {
