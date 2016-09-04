@@ -26,19 +26,19 @@
 
 const assert = require('chai').assert;
 const rewire = require('rewire');
-const debug = require('debug')('patternlab-to-gemini:_test:cli');
-
 const testStdErr = require('test-console').stderr;
 const testStdOut = require('test-console').stdout;
 
+// const debug = require('debug')('patternlab-to-gemini:_test:cli');
 const patternlabToNodeCli = rewire('../src/cli');
-
 
 describe('cli - ', () => {
 
   const rewiresToRevert = [];
   var stderrMock;
   var stdoutMock;
+  var lastTestsStderr;
+  var lastTestsStdout;
 
   /* ------------------------------------------------------------------
    * Setup & Tear down
@@ -49,22 +49,15 @@ describe('cli - ', () => {
   });
 
   beforeEach(() => {
-    stderrMock = testStdErr.inspect();
-    stdoutMock = testStdOut.inspect();
+    lastTestsStderr = null;
+    lastTestsStdout = null;
   });
 
   afterEach(() => {
     rewiresToRevert.forEach((revertFunction) => {
       revertFunction();
     });
-    if (stderrMock) {
-      debug('stderrMock:');
-      debug(stderrMock.output);
-    }
-    if (stdoutMock) {
-      debug('stdoutMock:');
-      debug(stdoutMock.output);
-    }
+    resetConsole();
   });
 
   after(() => {
@@ -117,6 +110,7 @@ describe('cli - ', () => {
    * --------------------------------------------------------------- */
 
   function shouldEnableDebugIfDebugFlagWasSet(done) {
+    captureConsole();
     var randomFilename = 'filename' + new Date().getTime();
     var debugScope;
     var debugFunction = function() { return function() {}; };
@@ -147,6 +141,7 @@ describe('cli - ', () => {
   }
 
   function shouldEnableDebugIfDFlagWasSet(done) {
+    captureConsole();
     var randomFilename = 'filename' + new Date().getTime();
     var debugScope;
     var debugFunction = function() { return function() {}; };
@@ -188,7 +183,8 @@ describe('cli - ', () => {
   }
 
   function shouldResolveConfigFlagToCurrentPwd(done) {
-    var randomFilename = 'filename' + new Date().getTime();
+    captureConsole();
+    var randomFilename = 'filenameConfigFlag' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
       p2g: function(configfile) {
         assert.equal(configfile, process.cwd() + '/' + randomFilename, 'wrong configfile set');
@@ -212,7 +208,8 @@ describe('cli - ', () => {
   }
 
   function shouldResolveCFlagToCurrentPwd(done) {
-    var randomFilename = 'filename' + new Date().getTime();
+    captureConsole();
+    var randomFilename = 'filenameCFlag' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
       p2g: function(configfile) {
         assert.equal(configfile, process.cwd() + '/' + randomFilename, 'wrong configfile set');
@@ -225,7 +222,7 @@ describe('cli - ', () => {
     });
     rewiresToRevert.push(rewired);
 
-    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename])
       .then(() => {
         resetConsole();
       }, (err) => {
@@ -236,6 +233,7 @@ describe('cli - ', () => {
   }
 
   function shouldPrintAllErrorsToStderr(done) {
+    captureConsole();
     var randomErrorMessage = 'errormessage' + new Date().getTime();
     var randomFilename = 'filename' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
@@ -257,7 +255,7 @@ describe('cli - ', () => {
         resetConsole();
         assert.equal(
           randomErrorMessage + '\n',
-          stderrMock.output
+          lastTestsStderr
         );
       }, (err) => {
         resetConsole();
@@ -267,6 +265,7 @@ describe('cli - ', () => {
   }
 
   function shouldPrintWhenItsDone(done) {
+    captureConsole();
     var randomFilename = 'filename' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
       p2g: function() {
@@ -286,7 +285,7 @@ describe('cli - ', () => {
         resetConsole();
         assert.equal(
           'done\n',
-          stdoutMock.output
+          lastTestsStdout
         );
       }, (err) => {
         resetConsole();
@@ -300,12 +299,21 @@ describe('cli - ', () => {
    * Helpers
    * --------------------------------------------------------------- */
 
+  function captureConsole() {
+    stderrMock = testStdErr.inspect();
+    stdoutMock = testStdOut.inspect();
+  }
+
   function resetConsole() {
     if (stderrMock) {
       stderrMock.restore();
+      lastTestsStderr = stderrMock.output;
+      stderrMock = null;
     }
     if (stdoutMock) {
       stdoutMock.restore();
+      lastTestsStdout = stdoutMock.output;
+      stdoutMock = null;
     }
   }
 });

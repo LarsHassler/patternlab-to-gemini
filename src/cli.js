@@ -38,7 +38,6 @@ function start(args) {
   if (program.debug) {
     nodeDebug.enable('patternlab-to-gemini:*');
   }
-
   if (!program.config) {
     throw Error('please provide a config file via the --config (-c) flag');
   }
