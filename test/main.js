@@ -175,6 +175,18 @@ describe('main - ', () => {
         shouldMergeOldAndNewPatterns
     );
 
+    it('should add additional screen sizes'//, shouldAddAdditionalScreenSizes
+    );
+
+    it('should remove screen sizes' //, shouldRemoveScreenSizes
+    );
+
+    it('should overwrite screen sizes' //, shouldOverwriteScreenSizes
+    );
+
+    it('should reject if a custom screen size was found but not defined' //, shouldRejectIfACustomScreenSizeWasFoundButNotDefined
+    );
+
   });
 
   describe('generateTests - ', function() {
