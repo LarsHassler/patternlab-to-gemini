@@ -12,6 +12,10 @@
   ],
   "rules": {
     "mocha/no-exclusive-tests": "error",
+    "mocha/no-global-tests": "error",
+    "mocha/no-identical-title": "error",
+    "mocha/no-pending-tests": "warn",
+    "mocha/no-skipped-tests": "error",
     "no-use-before-define": 0
   }
 }
