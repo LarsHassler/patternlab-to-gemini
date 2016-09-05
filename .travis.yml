@@ -26,3 +26,8 @@ node_js:
 
 # run ci script
 script: npm run ci
+
+# Notification settings
+notifications:
+  email:
+    on_success: never
