@@ -305,12 +305,17 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               newPatterns[patternId].additionalScreenSizes || [],
               newPatterns[patternId].excludeScreenSizes || []
             );
-            screenSizes.forEach((screenSizeId) => {
-              /* istanbul ignore else */
-              if (!this.config_.screenSizes[screenSizeId]) {
-                notDefinedScreens.push(screenSizeId);
-              }
-            });
+            if (screenSizes.length === 0) {
+              newPatterns[patternId].screenSizes = Object.keys(
+                this.config_.screenSizes);
+            } else {
+              screenSizes.forEach((screenSizeId) => {
+                /* istanbul ignore else */
+                if (!this.config_.screenSizes[screenSizeId]) {
+                  notDefinedScreens.push(screenSizeId);
+                }
+              });
+            }
           }
         }
         if (notDefinedScreens.length) {
@@ -347,14 +352,20 @@ PatternlabToNode.prototype.generateTests = function() {
             'sizes': []
           };
           config._patternOrder.forEach((patternId) => {
-            data.patterns.push(config.patterns[patternId]);
-          });
-          this.config_.defaultSizes.forEach((screenSizeId) => {
-            data.sizes.push({
-              name: screenSizeId,
-              width: this.config_.screenSizes[screenSizeId].width,
-              height: this.config_.screenSizes[screenSizeId].height
+            // data.patterns.push(config.patterns[patternId]);
+            var patternSettings = {
+              'id': patternId,
+              'name': config.patterns[patternId].name,
+              'sizes': []
+            };
+            config.patterns[patternId].screenSizes.forEach((screenSizeId) => {
+              patternSettings.sizes.push({
+                name: screenSizeId,
+                width: this.config_.screenSizes[screenSizeId].width,
+                height: this.config_.screenSizes[screenSizeId].height
+              });
             });
+            data.patterns.push(patternSettings);
           });
           var templateFilePath = path.resolve(
               this.getConfigFilePath_(),

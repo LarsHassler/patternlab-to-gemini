@@ -4,7 +4,7 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
 <% patterns.forEach(function(pattern) { %>
   gemini.suite('<%= pattern.name %>', function(suite) {
     suite
-        .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% sizes.forEach(function(size) { %>
+        .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% pattern.sizes.forEach(function(size) { %>
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>);
         })<% }); %>;

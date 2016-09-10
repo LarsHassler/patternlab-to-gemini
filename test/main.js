@@ -193,7 +193,8 @@ describe('main - ', () => {
     it('should remove screen sizes' //, shouldRemoveScreenSizes
     );
 
-    it('should overwrite screen sizes' //, shouldOverwriteScreenSizes
+    it('should overwrite screen sizes',
+      shouldOverwriteScreenSizes
     );
 
   });
@@ -210,6 +211,10 @@ describe('main - ', () => {
 
     it('should work with defined screen sizes and a subset as defaults',
       shouldWorkWithDefinedScreenSizesAndDefaults
+    );
+
+    it('should work with specific pattern sizes',
+      shouldWorkWithSpecificPatternSizes
     );
 
   });
@@ -236,11 +241,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               "id": "pattern-1",
-              "name": "Pattern Name 1"
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"]
             },
             "pattern-2": {
               "id": "pattern-2",
-              "name": "Pattern Name 2"
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
             }
           }
         });
@@ -272,11 +279,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               "id": "pattern-1",
-              "name": "Pattern Name 1"
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"]
             },
             "pattern-2": {
               "id": "pattern-2",
-              "name": "Pattern Name 2"
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
             }
           }
         });
@@ -310,11 +319,53 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               "id": "pattern-1",
-              "name": "Pattern Name 1"
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"]
             },
             "pattern-2": {
               "id": "pattern-2",
-              "name": "Pattern Name 2"
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        assert.equal(
+            fs.readFileSync('patternlabTests.js').toString(),
+            fs.readFileSync('expectedTest.js').toString(),
+            "wrong testFile generated"
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithSpecificPatternSizes(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedPatternScreensizes.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsPatternScreensizes.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
             }
           }
         });
@@ -412,11 +463,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               id: "pattern-1",
-              name: "Pattern Name 1"
+              name: "Pattern Name 1",
+              screenSizes: ['desktop']
             },
             "pattern-2": {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              screenSizes: ['desktop']
             }
           }
         }, patternConfig);
@@ -526,11 +579,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               id: "pattern-1",
-              name: "Pattern Name 1"
+              name: "Pattern Name 1",
+              screenSizes: []
             },
             "pattern-2": {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              screenSizes: []
             }
           }
         }, patternConfig);
@@ -570,7 +625,7 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-      .then(() => {
+      .then((patternConfig) => {
         assert.deepEqual({
           "_patternOrder": [
             "pattern-1",
@@ -580,14 +635,79 @@ describe('main - ', () => {
             "pattern-1": {
               id: "pattern-1",
               name: "Pattern Name 1",
-              data: randomInfo
+              data: randomInfo,
+              screenSizes: []
             },
             "pattern-2": {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              screenSizes: []
             }
           }
-        }, JSON.parse(fs.readFileSync('oldConfig.json').toString()));
+        }, patternConfig);
+      })
+      .then(done, done);
+  }
+
+
+  function shouldOverwriteScreenSizes(done) {
+    setUpFsMock({
+      "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1",
+            screenSizes: ['desktop']
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2"
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              screenSizes: ['desktop']
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              screenSizes: ['desktop', 'tablet']
+            }
+          }
+        }, patternConfig);
       })
       .then(done, done);
   }
