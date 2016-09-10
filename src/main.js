@@ -61,11 +61,28 @@ var PatternlabToNode = function(options) {
     patternConfigFile: null,
     outputFile: './patternlabTests.js',
     templateFile: path.resolve(__dirname, '../templates/main.ejs'),
-    excludePatterns: []
+    excludePatterns: [],
+    defaultSizes: null
   }, settings);
 
   if (!this.config_.screenSizes) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
+  }
+
+  if (this.config_.defaultSizes) {
+    var notdefinedScreens = [];
+    this.config_.defaultSizes.forEach((screenSizeId) => {
+      if (!this.config_.screenSizes[screenSizeId]) {
+        notdefinedScreens.push(screenSizeId);
+      }
+    });
+    if (notdefinedScreens.length) {
+      throw new Error(
+        'PatternlabToNode - config error - ' +
+            'The following default screenSizes are not defined: ' +
+            notdefinedScreens.join(', ')
+      );
+    }
   }
 };
 

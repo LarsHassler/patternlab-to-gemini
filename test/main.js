@@ -88,7 +88,8 @@ describe('main - ', () => {
         shouldFailIfThereAreNoScreenSizesDefined
       );
 
-      it('should fail if a screen size was referenced which is not defined'//, shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined
+      it('should fail if a screen size was referenced which is not defined',
+        shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined
       );
 
       it('should work without default sizes'//, shouldWorkWithoutDefaultSizes
@@ -747,6 +748,17 @@ describe('main - ', () => {
 
       /* eslint-enable no-new */
     }, null, /missing screenSizes/);
+  }
+
+  function shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    config.defaultSizes = ['notExistingScreenSize_1', 'unknownScreenSize_2'];
+    assert.throws(() => {
+      /* eslint-disable no-new */
+      new patternlabToNode(config);
+
+      /* eslint-enable no-new */
+    }, null, /The following default screenSizes are not defined: notExistingScreenSize_1, unknownScreenSize_2/);
   }
 
   /* ------------------------------------------------------------------
