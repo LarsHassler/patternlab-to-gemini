@@ -296,10 +296,18 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         }
       })
       .then(() => {
+        var patternsWithOverwritesAndAdditionsOrExlcudes = [];
         var notDefinedScreens = [];
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
+
+            if ((newPatterns[patternId].screenSizes &&
+              newPatterns[patternId].additionalScreenSizes) ||
+              (newPatterns[patternId].screenSizes &&
+                newPatterns[patternId].excludeScreenSizes)) {
+              patternsWithOverwritesAndAdditionsOrExlcudes.push(patternId);
+            }
             var screenSizes = [].concat(
               newPatterns[patternId].screenSizes || [],
               newPatterns[patternId].additionalScreenSizes || [],
@@ -323,6 +331,14 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             'PatternlabToNode - config error - ' +
             'The following screenSizes are used in patterns, but are not defined: ' +
             notDefinedScreens.join(', ')
+          );
+        }
+        if (patternsWithOverwritesAndAdditionsOrExlcudes.length) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            'The following patterns have both overwrites and additionalScreenSizes or excludeScreenSizes defined: ' +
+            patternsWithOverwritesAndAdditionsOrExlcudes.join(', ') + ' ' +
+            'please fix the configuration to use either overwrites or additionalScreenSizes/excludeScreenSizes'
           );
         }
       })
@@ -352,7 +368,6 @@ PatternlabToNode.prototype.generateTests = function() {
             'sizes': []
           };
           config._patternOrder.forEach((patternId) => {
-            // data.patterns.push(config.patterns[patternId]);
             var patternSettings = {
               'id': patternId,
               'name': config.patterns[patternId].name,

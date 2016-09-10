@@ -187,10 +187,14 @@ describe('main - ', () => {
       shouldRejectIfACustomScreenSizeWasFoundButNotDefined
     );
 
-    it('should add additional screen sizes'//, shouldAddAdditionalScreenSizes
+    it('should reject if a pattern has both size overwrites and additions or excludes',
+      shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
     );
 
-    it('should remove screen sizes' //, shouldRemoveScreenSizes
+    it('should add additional screen sizes'// shouldAddAdditionalScreenSizes
+    );
+
+    it('should remove screen sizes'// shouldRemoveScreenSizes
     );
 
     it('should overwrite screen sizes',
@@ -548,6 +552,49 @@ describe('main - ', () => {
               'unknownSize_1, unknownSize_2, ' +
               'unknownSize_3, unknownSize_4, ' +
               'unknownSize_5, unknownSize_6',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+  function shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedPatternScreensizes.json'),
+      "patternConfig.json": {
+        patterns: {
+          "pattern-1": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            screenSizes: ['desktop'],
+            additionalScreenSizes: ['tablet']
+          },
+          "pattern-2": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            screenSizes: ['desktop'],
+            excludeScreenSizes: ['tablet']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - ' +
+              'The following patterns have both overwrites and additionalScreenSizes or excludeScreenSizes defined: ' +
+              'pattern-1, pattern-2' +
+              ' please fix the configuration to use either overwrites or additionalScreenSizes/excludeScreenSizes',
           error.message
         );
       })
