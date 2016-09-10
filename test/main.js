@@ -82,16 +82,29 @@ describe('main - ', () => {
 
     });
 
+    describe('screen sizes - ', function() {
+
+      it('should fail if there are no screen sizes defined',
+        shouldFailIfThereAreNoScreenSizesDefined
+      );
+
+      it('should fail if a screen size was referenced which is not defined'//, shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined
+      );
+
+      it('should work without default sizes'//, shouldWorkWithoutDefaultSizes
+      );
+
+      it('should work with defined screen sizes and defaults'//, shouldWorkWithDefinedScreenSizesAndDefaults
+      );
+
+    });
+
     it('should overwrite the configuration with a given config object',
         shouldOverwriteTheConfigurationWithAGivenConfigObject
     );
 
     it('should overwrite the configuration with a given filename',
         shouldOverwriteTheConfigurationWithAGivenFilename
-    );
-
-    it('should fail if there are no screen sizes defined',
-        shouldFailIfThereAreNoScreenSizesDefined
     );
 
     it('should exclude no pattern by default',
@@ -175,6 +188,9 @@ describe('main - ', () => {
         shouldMergeOldAndNewPatterns
     );
 
+    it('should reject if a custom screen size was found but not defined' //, shouldRejectIfACustomScreenSizeWasFoundButNotDefined
+    );
+
     it('should add additional screen sizes'//, shouldAddAdditionalScreenSizes
     );
 
@@ -182,9 +198,6 @@ describe('main - ', () => {
     );
 
     it('should overwrite screen sizes' //, shouldOverwriteScreenSizes
-    );
-
-    it('should reject if a custom screen size was found but not defined' //, shouldRejectIfACustomScreenSizeWasFoundButNotDefined
     );
 
   });
