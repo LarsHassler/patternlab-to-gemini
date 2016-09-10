@@ -183,7 +183,8 @@ describe('main - ', () => {
         shouldMergeOldAndNewPatterns
     );
 
-    it('should reject if a custom screen size was found but not defined' //, shouldRejectIfACustomScreenSizeWasFoundButNotDefined
+    it('should reject if a custom screen size was found but not defined',
+      shouldRejectIfACustomScreenSizeWasFoundButNotDefined
     );
 
     it('should add additional screen sizes'//, shouldAddAdditionalScreenSizes
@@ -450,6 +451,50 @@ describe('main - ', () => {
       }, (error) => {
         assert.equal(
           'PatternlabToNode - config error - The following patterns are no longer part of the styleguide: "pattern-no-more"! Please check if they have been renamed or remove them from the config',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRejectIfACustomScreenSizeWasFoundButNotDefined(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/minimalConfig.json'),
+      "patternConfig.json": {
+        patterns: {
+          "pattern-1": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            screenSizes: ['unknownSize_1', 'unknownSize_2']
+          },
+          "pattern-2": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            additionalScreenSizes: ['unknownSize_3', 'unknownSize_4'],
+            excludeScreenSizes: ['unknownSize_5', 'unknownSize_6']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - ' +
+              'The following screenSizes are used in patterns, but are not defined: ' +
+              'unknownSize_1, unknownSize_2, ' +
+              'unknownSize_3, unknownSize_4, ' +
+              'unknownSize_5, unknownSize_6',
           error.message
         );
       })

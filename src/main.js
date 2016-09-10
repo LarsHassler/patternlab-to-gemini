@@ -294,7 +294,33 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             newPatterns[patternId] = oldPatternConfig.patterns[patternId];
           }
         }
-
+      })
+      .then(() => {
+        var notDefinedScreens = [];
+        for (var patternId in newPatterns) {
+          /* istanbul ignore else */
+          if (newPatterns.hasOwnProperty(patternId)) {
+            var screenSizes = [].concat(
+              newPatterns[patternId].screenSizes || [],
+              newPatterns[patternId].additionalScreenSizes || [],
+              newPatterns[patternId].excludeScreenSizes || []
+            );
+            screenSizes.forEach((screenSizeId) => {
+              if (!this.config_.screenSizes[screenSizeId]) {
+                notDefinedScreens.push(screenSizeId);
+              }
+            });
+          }
+        }
+        if (notDefinedScreens.length) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            'The following screenSizes are used in patterns, but are not defined: ' +
+            notDefinedScreens.join(', ')
+          );
+        }
+      })
+      .then(() => {
         return {
           _patternOrder: newPatternIds,
           patterns: newPatterns
