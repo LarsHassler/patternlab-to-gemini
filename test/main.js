@@ -92,12 +92,6 @@ describe('main - ', () => {
         shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined
       );
 
-      it('should work without default sizes'//, shouldWorkWithoutDefaultSizes
-      );
-
-      it('should work with defined screen sizes and defaults'//, shouldWorkWithDefinedScreenSizesAndDefaults
-      );
-
     });
 
     it('should overwrite the configuration with a given config object',
@@ -213,6 +207,10 @@ describe('main - ', () => {
         shouldGenerateTheCorrectTestFile
     );
 
+    it('should work with defined screen sizes and a subset as defaults',
+      shouldWorkWithDefinedScreenSizesAndDefaults
+    );
+
   });
 
 
@@ -259,6 +257,44 @@ describe('main - ', () => {
   function shouldGenerateTheCorrectTestFile(done) {
     setUpFsMock({
       "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/generateTestsConfig.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTests.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1"
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2"
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        assert.equal(
+            fs.readFileSync('patternlabTests.js').toString(),
+            fs.readFileSync('expectedTest.js').toString(),
+            "wrong testFile generated"
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithDefinedScreenSizesAndDefaults(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedSubsetScreensizes.json'),
       "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTests.js'),
       "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
     });

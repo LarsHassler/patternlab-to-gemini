@@ -96,6 +96,10 @@ PatternlabToNode.prototype.init_ = function() {
     this.config_.excludePatterns.forEach((pattern, index) => {
       this.config_.excludePatterns[index] = new RegExp(pattern);
     });
+
+    if (!this.config_.defaultSizes) {
+      this.config_.defaultSizes = Object.keys(this.config_.screenSizes);
+    }
     resolve();
   });
 };
@@ -318,16 +322,13 @@ PatternlabToNode.prototype.generateTests = function() {
           config._patternOrder.forEach((patternId) => {
             data.patterns.push(config.patterns[patternId]);
           });
-          for (var screenSize in this.config_.screenSizes) {
-            /* istanbul ignore else */
-            if (this.config_.screenSizes.hasOwnProperty(screenSize)) {
-              data.sizes.push({
-                name: screenSize,
-                width: this.config_.screenSizes[screenSize].width,
-                height: this.config_.screenSizes[screenSize].height
-              });
-            }
-          }
+          this.config_.defaultSizes.forEach((screenSizeId) => {
+            data.sizes.push({
+              name: screenSizeId,
+              width: this.config_.screenSizes[screenSizeId].width,
+              height: this.config_.screenSizes[screenSizeId].height
+            });
+          });
           var templateFilePath = path.resolve(
               this.getConfigFilePath_(),
               this.config_.templateFile);
