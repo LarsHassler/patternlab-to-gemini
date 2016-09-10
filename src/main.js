@@ -306,6 +306,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               newPatterns[patternId].excludeScreenSizes || []
             );
             screenSizes.forEach((screenSizeId) => {
+              /* istanbul ignore else */
               if (!this.config_.screenSizes[screenSizeId]) {
                 notDefinedScreens.push(screenSizeId);
               }
