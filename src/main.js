@@ -70,17 +70,17 @@ var PatternlabToNode = function(options) {
   }
 
   if (this.config_.defaultSizes) {
-    var notdefinedScreens = [];
+    var notDefinedScreens = [];
     this.config_.defaultSizes.forEach((screenSizeId) => {
       if (!this.config_.screenSizes[screenSizeId]) {
-        notdefinedScreens.push(screenSizeId);
+        notDefinedScreens.push(screenSizeId);
       }
     });
-    if (notdefinedScreens.length) {
+    if (notDefinedScreens.length) {
       throw new Error(
         'PatternlabToNode - config error - ' +
             'The following default screenSizes are not defined: ' +
-            notdefinedScreens.join(', ')
+            notDefinedScreens.join(', ')
       );
     }
   }
