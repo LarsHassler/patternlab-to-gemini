@@ -255,8 +255,8 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
  * @return {Promise.<>}
  */
 PatternlabToNode.prototype.getPatternsConfiguration = function() {
-  var newPatterns = {};
-  var newPatternIds = [];
+  const newPatterns = {};
+  const newPatternIds = [];
   var oldPatternConfig;
   return this.init_()
       .then(() => {
@@ -296,26 +296,29 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         }
       })
       .then(() => {
-        var patternsWithOverwritesAndAdditionsOrExlcudes = [];
-        var notDefinedScreens = [];
+        const patternsWithOverwritesAndAdditionsOrExlcudes = [];
+        const notDefinedScreens = [];
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
 
+            // check if both screenSizes and overwritten or modified screen
+            // sizes are defined
             if ((newPatterns[patternId].screenSizes &&
               newPatterns[patternId].additionalScreenSizes) ||
               (newPatterns[patternId].screenSizes &&
                 newPatterns[patternId].excludeScreenSizes)) {
               patternsWithOverwritesAndAdditionsOrExlcudes.push(patternId);
             }
+
+            // check if there are undefined screen sizes
             var screenSizes = [].concat(
               newPatterns[patternId].screenSizes || [],
               newPatterns[patternId].additionalScreenSizes || [],
               newPatterns[patternId].excludeScreenSizes || []
             );
             if (screenSizes.length === 0) {
-              newPatterns[patternId].screenSizes = Object.keys(
-                this.config_.screenSizes);
+              newPatterns[patternId].screenSizes = this.config_.defaultSizes;
             } else {
               screenSizes.forEach((screenSizeId) => {
                 /* istanbul ignore else */
@@ -323,9 +326,20 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
                   notDefinedScreens.push(screenSizeId);
                 }
               });
+
+              if (!newPatterns[patternId].screenSizes) {
+                var defaultSizesCopy = this.config_.defaultSizes.slice(0);
+                if (newPatterns[patternId].additionalScreenSizes) {
+                  defaultSizesCopy = defaultSizesCopy.concat(
+                    newPatterns[patternId].additionalScreenSizes
+                  );
+                }
+                newPatterns[patternId].screenSizes = defaultSizesCopy;
+              }
             }
           }
         }
+
         if (notDefinedScreens.length) {
           throw new Error(
             'PatternlabToNode - config error - ' +
@@ -333,6 +347,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             notDefinedScreens.join(', ')
           );
         }
+
         if (patternsWithOverwritesAndAdditionsOrExlcudes.length) {
           throw new Error(
             'PatternlabToNode - config error - ' +

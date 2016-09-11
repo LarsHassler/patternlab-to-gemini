@@ -191,7 +191,8 @@ describe('main - ', () => {
       shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
     );
 
-    it('should add additional screen sizes'// shouldAddAdditionalScreenSizes
+    it('should add additional screen sizes',
+      shouldAddAdditionalScreenSizes
     );
 
     it('should remove screen sizes'// shouldRemoveScreenSizes
@@ -755,6 +756,75 @@ describe('main - ', () => {
             }
           }
         }, patternConfig);
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddAdditionalScreenSizes(done) {
+    setUpFsMock({
+      "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1"
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2",
+            additionalScreenSizes: ['additionalSize']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "defaultSizes": ['desktop', 'tablet'],
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        },
+        'additionalSize': {
+          width: 666,
+          height: 999
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual(patternConfig, {
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              screenSizes: ['desktop', 'tablet']
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              additionalScreenSizes: ['additionalSize'],
+              screenSizes: ['desktop', 'tablet', 'additionalSize']
+            }
+          }
+        });
       })
       .then(done, done);
   }
