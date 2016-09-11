@@ -82,16 +82,24 @@ describe('main - ', () => {
 
     });
 
+    describe('screen sizes - ', function() {
+
+      it('should fail if there are no screen sizes defined',
+        shouldFailIfThereAreNoScreenSizesDefined
+      );
+
+      it('should fail if a screen size was referenced which is not defined',
+        shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined
+      );
+
+    });
+
     it('should overwrite the configuration with a given config object',
         shouldOverwriteTheConfigurationWithAGivenConfigObject
     );
 
     it('should overwrite the configuration with a given filename',
         shouldOverwriteTheConfigurationWithAGivenFilename
-    );
-
-    it('should fail if there are no screen sizes defined',
-        shouldFailIfThereAreNoScreenSizesDefined
     );
 
     it('should exclude no pattern by default',
@@ -175,6 +183,26 @@ describe('main - ', () => {
         shouldMergeOldAndNewPatterns
     );
 
+    it('should reject if a custom screen size was found but not defined',
+      shouldRejectIfACustomScreenSizeWasFoundButNotDefined
+    );
+
+    it('should reject if a pattern has both size overwrites and additions or excludes',
+      shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
+    );
+
+    it('should add additional screen sizes',
+      shouldAddAdditionalScreenSizes
+    );
+
+    it('should remove screen sizes',
+      shouldRemoveScreenSizes
+    );
+
+    it('should overwrite screen sizes',
+      shouldOverwriteScreenSizes
+    );
+
   });
 
   describe('generateTests - ', function() {
@@ -185,6 +213,14 @@ describe('main - ', () => {
 
     it('should generate the correct test file',
         shouldGenerateTheCorrectTestFile
+    );
+
+    it('should work with defined screen sizes and a subset as defaults',
+      shouldWorkWithDefinedScreenSizesAndDefaults
+    );
+
+    it('should work with specific pattern sizes',
+      shouldWorkWithSpecificPatternSizes
     );
 
   });
@@ -211,11 +247,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               "id": "pattern-1",
-              "name": "Pattern Name 1"
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"]
             },
             "pattern-2": {
               "id": "pattern-2",
-              "name": "Pattern Name 2"
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
             }
           }
         });
@@ -247,11 +285,93 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               "id": "pattern-1",
-              "name": "Pattern Name 1"
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"]
             },
             "pattern-2": {
               "id": "pattern-2",
-              "name": "Pattern Name 2"
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        assert.equal(
+            fs.readFileSync('patternlabTests.js').toString(),
+            fs.readFileSync('expectedTest.js').toString(),
+            "wrong testFile generated"
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithDefinedScreenSizesAndDefaults(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedSubsetScreensizes.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTests.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        assert.equal(
+            fs.readFileSync('patternlabTests.js').toString(),
+            fs.readFileSync('expectedTest.js').toString(),
+            "wrong testFile generated"
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithSpecificPatternSizes(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedPatternScreensizes.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsPatternScreensizes.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"]
             }
           }
         });
@@ -349,11 +469,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               id: "pattern-1",
-              name: "Pattern Name 1"
+              name: "Pattern Name 1",
+              screenSizes: ['desktop']
             },
             "pattern-2": {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              screenSizes: ['desktop']
             }
           }
         }, patternConfig);
@@ -395,6 +517,93 @@ describe('main - ', () => {
   }
 
 
+  function shouldRejectIfACustomScreenSizeWasFoundButNotDefined(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/minimalConfig.json'),
+      "patternConfig.json": {
+        patterns: {
+          "pattern-1": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            screenSizes: ['unknownSize_1', 'unknownSize_2']
+          },
+          "pattern-2": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            additionalScreenSizes: ['unknownSize_3', 'unknownSize_4'],
+            excludeScreenSizes: ['unknownSize_5', 'unknownSize_6']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - ' +
+              'The following screenSizes are used in patterns, but are not defined: ' +
+              'unknownSize_1, unknownSize_2, ' +
+              'unknownSize_3, unknownSize_4, ' +
+              'unknownSize_5, unknownSize_6',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+  function shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedPatternScreensizes.json'),
+      "patternConfig.json": {
+        patterns: {
+          "pattern-1": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            screenSizes: ['desktop'],
+            additionalScreenSizes: ['tablet']
+          },
+          "pattern-2": {
+            id: "pattern-no-more",
+            name: "Pattern which is no longer part of the styleguide",
+            screenSizes: ['desktop'],
+            excludeScreenSizes: ['tablet']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - ' +
+              'The following patterns have both overwrites and additionalScreenSizes or excludeScreenSizes defined: ' +
+              'pattern-1, pattern-2' +
+              ' please fix the configuration to use either overwrites or additionalScreenSizes/excludeScreenSizes',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
   function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
     setUpFsMock({
       'dummyhtml/patternsToExclude.html': __dirname + '/dummyhtml/patternsToExclude.html'
@@ -419,11 +628,13 @@ describe('main - ', () => {
           "patterns": {
             "pattern-1": {
               id: "pattern-1",
-              name: "Pattern Name 1"
+              name: "Pattern Name 1",
+              screenSizes: []
             },
             "pattern-2": {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              screenSizes: []
             }
           }
         }, patternConfig);
@@ -463,7 +674,7 @@ describe('main - ', () => {
         'dummyhtml/patterns.html'
     );
     instanceToTest.getPatternsConfiguration()
-      .then(() => {
+      .then((patternConfig) => {
         assert.deepEqual({
           "_patternOrder": [
             "pattern-1",
@@ -473,14 +684,212 @@ describe('main - ', () => {
             "pattern-1": {
               id: "pattern-1",
               name: "Pattern Name 1",
-              data: randomInfo
+              data: randomInfo,
+              screenSizes: []
             },
             "pattern-2": {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              screenSizes: []
             }
           }
-        }, JSON.parse(fs.readFileSync('oldConfig.json').toString()));
+        }, patternConfig);
+      })
+      .then(done, done);
+  }
+
+
+  function shouldOverwriteScreenSizes(done) {
+    setUpFsMock({
+      "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1",
+            screenSizes: ['desktop']
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2"
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              screenSizes: ['desktop']
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              screenSizes: ['desktop', 'tablet']
+            }
+          }
+        }, patternConfig);
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddAdditionalScreenSizes(done) {
+    setUpFsMock({
+      "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1"
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2",
+            additionalScreenSizes: ['additionalSize']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "defaultSizes": ['desktop', 'tablet'],
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        },
+        'additionalSize': {
+          width: 666,
+          height: 999
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual(patternConfig, {
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              screenSizes: ['desktop', 'tablet']
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              additionalScreenSizes: ['additionalSize'],
+              screenSizes: ['desktop', 'tablet', 'additionalSize']
+            }
+          }
+        });
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRemoveScreenSizes(done) {
+    setUpFsMock({
+      "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1"
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2",
+            excludeScreenSizes: ['tablet']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual(patternConfig, {
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              screenSizes: ['desktop', 'tablet']
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              excludeScreenSizes: ['tablet'],
+              screenSizes: ['desktop']
+            }
+          }
+        });
       })
       .then(done, done);
   }
@@ -722,6 +1131,17 @@ describe('main - ', () => {
 
       /* eslint-enable no-new */
     }, null, /missing screenSizes/);
+  }
+
+  function shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    config.defaultSizes = ['notExistingScreenSize_1', 'unknownScreenSize_2'];
+    assert.throws(() => {
+      /* eslint-disable no-new */
+      new patternlabToNode(config);
+
+      /* eslint-enable no-new */
+    }, null, /The following default screenSizes are not defined: notExistingScreenSize_1, unknownScreenSize_2/);
   }
 
   /* ------------------------------------------------------------------

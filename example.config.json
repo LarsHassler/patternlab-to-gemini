@@ -25,6 +25,7 @@
       "height": 667
     }
   },
+  "defaultSizes": null,
   "excludePatterns": [
     "^templates"
   ]

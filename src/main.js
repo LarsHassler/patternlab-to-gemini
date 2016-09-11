@@ -61,11 +61,28 @@ var PatternlabToNode = function(options) {
     patternConfigFile: null,
     outputFile: './patternlabTests.js',
     templateFile: path.resolve(__dirname, '../templates/main.ejs'),
-    excludePatterns: []
+    excludePatterns: [],
+    defaultSizes: null
   }, settings);
 
   if (!this.config_.screenSizes) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
+  }
+
+  if (this.config_.defaultSizes) {
+    var notDefinedScreens = [];
+    this.config_.defaultSizes.forEach((screenSizeId) => {
+      if (!this.config_.screenSizes[screenSizeId]) {
+        notDefinedScreens.push(screenSizeId);
+      }
+    });
+    if (notDefinedScreens.length) {
+      throw new Error(
+        'PatternlabToNode - config error - ' +
+            'The following default screenSizes are not defined: ' +
+            notDefinedScreens.join(', ')
+      );
+    }
   }
 };
 
@@ -79,6 +96,10 @@ PatternlabToNode.prototype.init_ = function() {
     this.config_.excludePatterns.forEach((pattern, index) => {
       this.config_.excludePatterns[index] = new RegExp(pattern);
     });
+
+    if (!this.config_.defaultSizes) {
+      this.config_.defaultSizes = Object.keys(this.config_.screenSizes);
+    }
     resolve();
   });
 };
@@ -234,8 +255,8 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
  * @return {Promise.<>}
  */
 PatternlabToNode.prototype.getPatternsConfiguration = function() {
-  var newPatterns = {};
-  var newPatternIds = [];
+  const newPatterns = {};
+  const newPatternIds = [];
   var oldPatternConfig;
   return this.init_()
       .then(() => {
@@ -273,7 +294,82 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             newPatterns[patternId] = oldPatternConfig.patterns[patternId];
           }
         }
+      })
+      .then(() => {
+        const patternsWithOverwritesAndAdditionsOrExlcudes = [];
+        const notDefinedScreens = [];
+        for (var patternId in newPatterns) {
+          /* istanbul ignore else */
+          if (newPatterns.hasOwnProperty(patternId)) {
 
+            // check if both screenSizes and overwritten or modified screen
+            // sizes are defined
+            if ((newPatterns[patternId].screenSizes &&
+              newPatterns[patternId].additionalScreenSizes) ||
+              (newPatterns[patternId].screenSizes &&
+                newPatterns[patternId].excludeScreenSizes)) {
+              patternsWithOverwritesAndAdditionsOrExlcudes.push(patternId);
+            }
+
+            // check if there are undefined screen sizes
+            var screenSizes = [].concat(
+              newPatterns[patternId].screenSizes || [],
+              newPatterns[patternId].additionalScreenSizes || [],
+              newPatterns[patternId].excludeScreenSizes || []
+            );
+            if (screenSizes.length === 0) {
+              newPatterns[patternId].screenSizes = this.config_.defaultSizes;
+            } else {
+              screenSizes.forEach((screenSizeId) => {
+                /* istanbul ignore else */
+                if (!this.config_.screenSizes[screenSizeId]) {
+                  notDefinedScreens.push(screenSizeId);
+                }
+              });
+
+              if (!newPatterns[patternId].screenSizes) {
+                const defaultSizesCopy = this.config_.defaultSizes.slice(0);
+                if (newPatterns[patternId].additionalScreenSizes) {
+                  newPatterns[patternId].additionalScreenSizes.forEach((key) => {
+                    defaultSizesCopy.push(
+                      key
+                    );
+                  });
+                }
+                if (newPatterns[patternId].excludeScreenSizes) {
+                  newPatterns[patternId].excludeScreenSizes.forEach((key) => {
+                    var pos = defaultSizesCopy.indexOf(key);
+                    if (pos !== -1) {
+                      defaultSizesCopy.splice(
+                        pos, 1
+                      );
+                    }
+                  });
+                }
+                newPatterns[patternId].screenSizes = defaultSizesCopy;
+              }
+            }
+          }
+        }
+
+        if (notDefinedScreens.length) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            'The following screenSizes are used in patterns, but are not defined: ' +
+            notDefinedScreens.join(', ')
+          );
+        }
+
+        if (patternsWithOverwritesAndAdditionsOrExlcudes.length) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            'The following patterns have both overwrites and additionalScreenSizes or excludeScreenSizes defined: ' +
+            patternsWithOverwritesAndAdditionsOrExlcudes.join(', ') + ' ' +
+            'please fix the configuration to use either overwrites or additionalScreenSizes/excludeScreenSizes'
+          );
+        }
+      })
+      .then(() => {
         return {
           _patternOrder: newPatternIds,
           patterns: newPatterns
@@ -299,18 +395,20 @@ PatternlabToNode.prototype.generateTests = function() {
             'sizes': []
           };
           config._patternOrder.forEach((patternId) => {
-            data.patterns.push(config.patterns[patternId]);
-          });
-          for (var screenSize in this.config_.screenSizes) {
-            /* istanbul ignore else */
-            if (this.config_.screenSizes.hasOwnProperty(screenSize)) {
-              data.sizes.push({
-                name: screenSize,
-                width: this.config_.screenSizes[screenSize].width,
-                height: this.config_.screenSizes[screenSize].height
+            var patternSettings = {
+              'id': patternId,
+              'name': config.patterns[patternId].name,
+              'sizes': []
+            };
+            config.patterns[patternId].screenSizes.forEach((screenSizeId) => {
+              patternSettings.sizes.push({
+                name: screenSizeId,
+                width: this.config_.screenSizes[screenSizeId].width,
+                height: this.config_.screenSizes[screenSizeId].height
               });
-            }
-          }
+            });
+            data.patterns.push(patternSettings);
+          });
           var templateFilePath = path.resolve(
               this.getConfigFilePath_(),
               this.config_.templateFile);

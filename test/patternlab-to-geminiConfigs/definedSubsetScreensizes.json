@@ -1,0 +1,23 @@
+{
+  "patternlabUrl": "http://localhost:3000",
+  "patternConfigFile": "patternConfig.json",
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    },
+    "tablet": {
+      "width": 1024,
+      "height": 768
+    },
+    "notUsedDefault_1": {
+      "width": 1024,
+      "height": 768
+    },
+    "notUsedDefault_2": {
+      "width": 1024,
+      "height": 768
+    }
+  },
+  "defaultSizes": ["desktop", "tablet"]
+}
