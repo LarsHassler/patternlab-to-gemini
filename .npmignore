@@ -19,6 +19,7 @@ test/
 docs/
 
 # dev environment
+.github
 .githooks
 .editorconfig
 .eslintignore
