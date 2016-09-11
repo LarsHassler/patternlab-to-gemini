@@ -19,8 +19,8 @@ test/
 docs/
 
 # dev environment
+.githooks
 .editorconfig
 .eslintignore
 .eslintrc
 .travis.yml
-TODO.md
