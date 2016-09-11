@@ -31,3 +31,6 @@ script: npm run ci
 notifications:
   email:
     on_success: never
+
+# Send coverage report to coveralls
+after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"

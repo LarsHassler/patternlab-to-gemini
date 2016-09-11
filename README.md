@@ -1,4 +1,4 @@
-# Patternlab to Gemini [![Build Status](https://travis-ci.org/LarsHassler/patternlab-to-gemini.svg)](https://travis-ci.org/LarsHassler/patternlab-to-gemini) [![Dependencies](https://david-dm.org/LarsHassler/patternlab-to-gemini.svg)](https://david-dm.org/LarsHassler/patternlab-to-gemini)
+# Patternlab to Gemini [![Build Status](https://travis-ci.org/LarsHassler/patternlab-to-gemini.svg)](https://travis-ci.org/LarsHassler/patternlab-to-gemini) [![Dependencies](https://david-dm.org/LarsHassler/patternlab-to-gemini.svg)](https://david-dm.org/LarsHassler/patternlab-to-gemini) [![Coverage Status](https://coveralls.io/repos/github/LarsHassler/patternlab-to-gemini/badge.svg?branch=master)](https://coveralls.io/github/LarsHassler/patternlab-to-gemini?branch=master)
 
 I love [atomic design](http://atomicdesign.bradfrost.com) with [patternlab](http://patternlab.io). 
 But in combination with [gemini](https://github.com/gemini-testing/gemini), which provides utility for css regression tests, 
