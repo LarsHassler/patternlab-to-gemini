@@ -31,7 +31,7 @@ settings [screenSizes](#screenSizes), [additionalScreenSizes](#additionalScreenS
 }
 ```
 
-### defaultSizes
+#### defaultSizes
 
 An array containing keys of the [screenSizes](#exclamation-screensizes).
 For all of these sizes every pattern will be taken a screen shot of,
@@ -41,10 +41,9 @@ and [excludeScreenSizes](#excludeScreenSizes) for details.
 
 ```json
 "defaultSizes": ["yourScreenSize-1", "yourScreenSize-2"]
-}
 ```
 
-### excludePatterns
+#### excludePatterns
 
 An array containing regular expressions to exclude patterns for the tests.
 
@@ -54,7 +53,7 @@ An array containing regular expressions to exclude patterns for the tests.
 ]
 ```
 
-### patternConfigFile
+#### patternConfigFile
 
 The path to the file which contains settings for specific patterns.
 
@@ -62,7 +61,7 @@ The path to the file which contains settings for specific patterns.
 "patternConfigFile": "./pattern.config.json"
 ```
 
-### outputFile (default: ./patternlabTests.js)
+#### outputFile (default: ./patternlabTests.js)
 
 The path to the file where the generated tests will be stored. 
 
@@ -70,7 +69,7 @@ The path to the file where the generated tests will be stored.
 "patternConfigFile": "./patternlabTests.js"
 ```
 
-### templateFile (default: ./templates/main.js)
+#### templateFile (default: ./templates/main.js)
 
 The path to the file where the templates for the tests.
 
@@ -98,7 +97,7 @@ overwrite the screen shot sizes for this pattern.
 }
 ```
 
-> Can not be used with [additionalScreenSizes](#additionalScreenSizes) or
+> :warning: Can not be used with [additionalScreenSizes](#additionalScreenSizes) or
 [excludeScreenSizes](#excludeScreenSizes) on the same pattern. 
 Pattern screen shot sizes can either be overwritten or modified, but not both. 
 
@@ -117,7 +116,7 @@ screen shots will be taken in addition to the [defaultSizes](#defaultSizes).
 }
 ```
 
-> Can not be used with [screenSizes](#screenSizes) on the same pattern. 
+> :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern. 
 Pattern screen shot sizes can either be overwritten or modified, but not both.
 
 #### excludeScreenSizes
@@ -136,5 +135,5 @@ screen shots in these sizes will not be taken if the are part of the
 }
 ```
 
-> Can not be used with [screenSizes](#screenSizes) on the same pattern. 
+> :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern. 
 Pattern screen shot sizes can either be overwritten or modified, but not both.
