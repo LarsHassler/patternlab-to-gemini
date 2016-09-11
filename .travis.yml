@@ -25,7 +25,7 @@ node_js:
   - "node"
 
 # run ci script
-script: npm run ci
+script: npm run ci --silent
 
 # Notification settings
 notifications:

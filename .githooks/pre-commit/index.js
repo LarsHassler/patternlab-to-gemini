@@ -1,3 +1,3 @@
 #!/bin/sh
 
-npm run pre-commit
+npm run pre-commit --silent
