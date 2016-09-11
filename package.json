@@ -1,6 +1,6 @@
 {
   "name": "patternlab-to-gemini",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Automatic tranformation of your patternlab into testcases for gemini",
   "engines": {
     "node": ">= 4.4.3"
