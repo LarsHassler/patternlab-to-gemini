@@ -328,11 +328,23 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               });
 
               if (!newPatterns[patternId].screenSizes) {
-                var defaultSizesCopy = this.config_.defaultSizes.slice(0);
+                const defaultSizesCopy = this.config_.defaultSizes.slice(0);
                 if (newPatterns[patternId].additionalScreenSizes) {
-                  defaultSizesCopy = defaultSizesCopy.concat(
-                    newPatterns[patternId].additionalScreenSizes
-                  );
+                  newPatterns[patternId].additionalScreenSizes.forEach((key) => {
+                    defaultSizesCopy.push(
+                      key
+                    );
+                  });
+                }
+                if (newPatterns[patternId].excludeScreenSizes) {
+                  newPatterns[patternId].excludeScreenSizes.forEach((key) => {
+                    var pos = defaultSizesCopy.indexOf(key);
+                    if (pos !== -1) {
+                      defaultSizesCopy.splice(
+                        pos, 1
+                      );
+                    }
+                  });
                 }
                 newPatterns[patternId].screenSizes = defaultSizesCopy;
               }

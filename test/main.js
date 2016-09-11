@@ -195,7 +195,8 @@ describe('main - ', () => {
       shouldAddAdditionalScreenSizes
     );
 
-    it('should remove screen sizes'// shouldRemoveScreenSizes
+    it('should remove screen sizes',
+      shouldRemoveScreenSizes
     );
 
     it('should overwrite screen sizes',
@@ -822,6 +823,70 @@ describe('main - ', () => {
               name: "Pattern Name 2",
               additionalScreenSizes: ['additionalSize'],
               screenSizes: ['desktop', 'tablet', 'additionalSize']
+            }
+          }
+        });
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRemoveScreenSizes(done) {
+    setUpFsMock({
+      "oldConfig.json": {
+        "_patternOrder": [
+          "pattern-1",
+          "pattern-2"
+        ],
+        "patterns": {
+          "pattern-1" :{
+            id: "pattern-1",
+            name: "Pattern Name 1"
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2",
+            excludeScreenSizes: ['tablet']
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "patternConfigFile": "../oldConfig.json",
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual(patternConfig, {
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              screenSizes: ['desktop', 'tablet']
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              excludeScreenSizes: ['tablet'],
+              screenSizes: ['desktop']
             }
           }
         });
