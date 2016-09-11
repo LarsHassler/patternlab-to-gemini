@@ -22,6 +22,7 @@
 const program = require('commander');
 const path = require('path');
 var nodeDebug = require('debug');
+var packageJson = require('../package.json');
 var p2g;
 
 /**
@@ -31,6 +32,7 @@ var p2g;
  */
 function start(args) {
   program
+    .version(packageJson.version)
     .option('-c, --config <filename>', 'your patternlab-tog-gemini config file')
     .option('-d, --debug', 'enable debug output')
     .parse(args);

@@ -25,6 +25,7 @@
  * --------------------------------------------------------------- */
 
 const assert = require('chai').assert;
+const exec = require('child_process').exec;
 const rewire = require('rewire');
 const testStdErr = require('test-console').stderr;
 const testStdOut = require('test-console').stdout;
@@ -100,6 +101,13 @@ describe('cli - ', () => {
         shouldEnableDebugIfDFlagWasSet
     );
 
+  });
+
+  describe('version - ', function() {
+
+    it('should return the version of the package json',
+        shouldReturnTheVersionOfThePackageJson
+    );
   });
 
 
@@ -292,6 +300,21 @@ describe('cli - ', () => {
         throw err;
       })
       .then(done, done);
+  }
+
+  function shouldReturnTheVersionOfThePackageJson(done) {
+    var packageJson = require('../package.json');
+    exec('./bin/patternlab-to-gemini --version', (error, stdout) => {
+      if (error) {
+        done(error);
+      } else {
+        assert.equal(
+          packageJson.version + '\n',
+          stdout
+        );
+        done();
+      }
+    });
   }
 
 
