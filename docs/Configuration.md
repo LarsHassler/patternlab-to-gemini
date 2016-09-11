@@ -3,8 +3,9 @@
 > For a detailed example also take a look at the example.config.json in the project root.
 
 All relative paths will be resolve in relation to the main config file.
+Required variables are marked with a :exclamation:.
 
-#### patternlabUrl *required* (default: http://localhost:3000)
+#### :exclamation: patternlabUrl (default: http://localhost:3000)
 
 The domain where the patternlab styleguide is located.
 
@@ -12,11 +13,14 @@ The domain where the patternlab styleguide is located.
 "patternlabUrl": "https://domainForPatternLab:1337"
 ```
 
-#### screenSizes *required*
+#### :exclamation: screenSizes
 
-A collection of screen sizes with will be used for the responsive screen shots. 
+A collection of screen sizes with will be used for the screen shots. 
 The key will be used for the filename of the screen shot.
 Beware that the screen shot might be smaller due to the captured html element.
+They can be referenced in [defaultSizes](#defaultSizes) and pattern specific
+settings [screenSizes](#screenSizes), [additionalScreenSizes](#additionalScreenSizes),
+[excludeScreenSizes](#excludeScreenSizes)
 
 ```json
 "screenSizes": {
@@ -24,6 +28,19 @@ Beware that the screen shot might be smaller due to the captured html element.
     "width": 999,
     "height": 666
   }
+}
+```
+
+### defaultSizes
+
+An array containing keys of the [screenSizes](#exclamation-screensizes).
+For all of these sizes every pattern will be taken a screen shot of,
+if not defined otherwise in the pattern specific configuration.
+See [screenSizes](#screenSizes), [additionalScreenSizes](#additionalScreenSizes) 
+and [excludeScreenSizes](#excludeScreenSizes) for details.
+
+```json
+"defaultSizes": ["yourScreenSize-1", "yourScreenSize-2"]
 }
 ```
 
@@ -60,3 +77,64 @@ The path to the file where the templates for the tests.
 ```json
 "templateFile": "./templates/main.js"
 ```
+
+
+# Pattern specific configuration
+
+These settings will live in the [patternconfigfile](#patternconfigfile).
+
+#### screenSizes 
+
+An array of the globally defined [screenSizes](#exclamation-screensizes). This will
+overwrite the screen shot sizes for this pattern.
+
+```json
+{
+    "patterns": {
+        "pattern-id": {
+            "screenSizes": ["size1", "size2"]
+        }
+    }
+}
+```
+
+> Can not be used with [additionalScreenSizes](#additionalScreenSizes) or
+[excludeScreenSizes](#excludeScreenSizes) on the same pattern. 
+Pattern screen shot sizes can either be overwritten or modified, but not both. 
+
+#### additionalScreenSizes 
+
+An array of the globally defined [screenSizes](#exclamation-screensizes). These
+screen shots will be taken in addition to the [defaultSizes](#defaultSizes).
+
+```json
+{
+    "patterns": {
+        "pattern-id": {
+            "additionalScreenSizes": ["size1", "size2"]
+        }
+    }
+}
+```
+
+> Can not be used with [screenSizes](#screenSizes) on the same pattern. 
+Pattern screen shot sizes can either be overwritten or modified, but not both.
+
+#### excludeScreenSizes
+
+An array of the globally defined [screenSizes](#exclamation-screensizes). The
+screen shots in these sizes will not be taken if the are part of the 
+[defaultSizes](#defaultSizes).
+
+```json
+{
+    "patterns": {
+        "pattern-id": {
+            "excludeScreenSizes": ["size1", "size2"]
+        }
+    }
+}
+```
+
+> Can not be used with [screenSizes](#screenSizes) on the same pattern. 
+Pattern screen shot sizes can either be overwritten or modified, but not both.
