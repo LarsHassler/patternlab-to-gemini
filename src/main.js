@@ -62,7 +62,8 @@ var PatternlabToNode = function(options) {
     outputFile: './patternlabTests.js',
     templateFile: path.resolve(__dirname, '../templates/main.ejs'),
     excludePatterns: [],
-    defaultSizes: null
+    defaultSizes: null,
+    patterns: null
   }, settings);
 
   if (!this.config_.screenSizes) {
