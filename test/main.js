@@ -94,6 +94,7 @@ describe('main - ', () => {
 
     });
 
+    // TODO remove in 1.0.0
     it('should fail if patterns and patternConfigFile are defined',
       shouldFailIfPatternsAndPatternConfigFileAreDefined
     );
@@ -181,7 +182,8 @@ describe('main - ', () => {
     it('should show a deprecation warning if the patternfile has been defined'// shouldShowADeprecationWarningIfThePatternfileHasBeenDefined
     );
 
-    it('should load patterns from pattern config file'// shouldLoadPatternsFromPatternConfigFile
+    it('should load patterns from pattern config file',
+      shouldLoadPatternsFromPatternConfigFile
     );
 
     it('should not return patters that match one of the exclude regexps',
@@ -576,6 +578,61 @@ describe('main - ', () => {
               ' please fix the configuration to use either overwrites or additionalScreenSizes/excludeScreenSizes',
           error.message
         );
+      })
+      .then(done, done);
+  }
+
+  function shouldLoadPatternsFromPatternConfigFile(done) {
+    var randomInfo = 'data1-' + new Date().getTime();
+    var randomInfo2 = 'data2-' + new Date().getTime();
+    setUpFsMock({
+      'config.json': {
+        "screenSizes": {},
+        "patternConfigFile": "patternConfigFile.json"
+      },
+      'patternConfigFile.json': {
+        "patterns": {
+          "pattern-1": {
+            id: "pattern-1",
+            name: "Pattern Name 1",
+            data: randomInfo
+          },
+          "pattern-2": {
+            id: "pattern-2",
+            name: "Pattern Name 2",
+            data: randomInfo2
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    setUpPatternlabResponse(
+      'http://localhost:3000',
+      'dummyhtml/patterns.html'
+    );
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              id: "pattern-1",
+              name: "Pattern Name 1",
+              data: randomInfo,
+              screenSizes: []
+            },
+            "pattern-2": {
+              id: "pattern-2",
+              name: "Pattern Name 2",
+              data: randomInfo2,
+              screenSizes: []
+            }
+          }
+        }, patternConfig);
       })
       .then(done, done);
   }
