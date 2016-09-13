@@ -86,7 +86,10 @@ describe('cli - ', () => {
     );
 
     it('should print all errors to stderr',
-      shouldPrintAllErrorsToStderr
+        shouldPrintAllErrorsToStderr
+    );
+
+    it('should print all warnings to stdout'// shouldPrintAllWarningsToStdout
     );
 
     it('should print when its done',
