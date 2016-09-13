@@ -54,6 +54,12 @@ function start(args) {
     const patternlabToGemini = new p2g(configFile);
     return patternlabToGemini.generateTests()
       .then(() => {
+        if (patternlabToGemini.getWarnings().length) {
+          process.stdout.write(
+            patternlabToGemini.getWarnings().join('\n') +
+            '\n\n'
+          );
+        }
         debug('done');
         process.stdout.write('done\n');
       }, (err) => {

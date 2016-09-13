@@ -179,7 +179,8 @@ describe('main - ', () => {
         shouldReadThePatterconfigRelativeToTheConfigFile
     );
 
-    it('should show a deprecation warning if the patternfile has been defined'// shouldShowADeprecationWarningIfThePatternfileHasBeenDefined
+    it('should show a deprecation warning if the patternfile has been defined',
+      shouldShowADeprecationWarningIfThePatternfileHasBeenDefined
     );
 
     it('should load patterns from pattern config file',
@@ -502,6 +503,32 @@ describe('main - ', () => {
             }
           }
         }, patternConfig);
+      })
+      .then(done, done);
+  }
+
+
+  function shouldShowADeprecationWarningIfThePatternfileHasBeenDefined(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/minimalConfig.json'),
+      "patternConfig.json": {
+        patterns: {}
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        assert.deepEqual([
+          'Deprecating Warning: patternConfigFile is deprecated. ' +
+          'It will be removed in 1.0.0. Please use "patterns" instead.'
+        ], instanceToTest.getWarnings());
       })
       .then(done, done);
   }

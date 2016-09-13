@@ -36,11 +36,18 @@ const debug = require('debug')('patternlab-to-gemini:main');
  * @constructor
  */
 var PatternlabToNode = function(options) {
+
   /**
    * @type {?string}
    * @private
    */
   this.wasLoadedFromConfigFile_ = null;
+
+  /**
+   * @type {Array.<string>}
+   * @private
+   */
+  this.warnings_ = [];
 
   var settings = options;
   if (typeof options === 'string') {
@@ -70,9 +77,15 @@ var PatternlabToNode = function(options) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
   }
 
-  if (this.config_.patterns && this.config_.patternConfigFile) {
-    throw new Error('PatternlabToNode - config error - ' +
-      'Please use either the patternConfigFile or the patterns settings')
+  if (this.config_.patternConfigFile) {
+    this.addWarning_(
+      'Deprecating Warning: patternConfigFile is deprecated. ' +
+          'It will be removed in 1.0.0. Please use "patterns" instead.'
+    );
+    if (this.config_.patterns) {
+      throw new Error('PatternlabToNode - config error - ' +
+        'Please use either the patternConfigFile or the patterns settings')
+    }
   }
 
   if (this.config_.defaultSizes) {
@@ -110,6 +123,22 @@ PatternlabToNode.prototype.init_ = function() {
   });
 };
 
+/**
+ * @param {string} message
+ * @private
+ */
+PatternlabToNode.prototype.addWarning_ = function(message) {
+  this.warnings_.push(message);
+};
+
+
+/**
+ * @return {Array.<string>}
+ * @private
+ */
+PatternlabToNode.prototype.getWarnings = function() {
+  return this.warnings_;
+};
 
 
 /**
