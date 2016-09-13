@@ -174,6 +174,15 @@ describe('main - ', () => {
         shouldReadThePatterconfigRelativeToTheConfigFile
     );
 
+    it('should fail if patterns and patternConfigFile are defined'//shouldFailIfPatternsAndPatternConfigFileAreDefined
+    );
+
+    it('should show a deprecation warning if the patternfile has been defined'// shouldShowADeprecationWarningIfThePatternfileHasBeenDefined
+    );
+
+    it('should load patterns from pattern config file'// shouldLoadPatternsFromPatternConfigFile
+    );
+
     it('should not return patters that match one of the exclude regexps',
         shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
@@ -192,6 +201,9 @@ describe('main - ', () => {
 
     it('should reject if a pattern has both size overwrites and additions or excludes',
       shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
+    );
+
+    it('should reject if a pattern excludes all screenSizes'// shouldRejectIfAPatternExcludesAllScreenSizes
     );
 
     it('should add additional screen sizes',
