@@ -206,7 +206,12 @@ describe('main - ', () => {
       shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
     );
 
-    it('should reject if a pattern excludes all screenSizes'// shouldRejectIfAPatternExcludesAllScreenSizes
+    it('should reject if a pattern excludes all screenSizes',
+      shouldRejectIfAPatternExcludesAllScreenSizes
+    );
+
+    it('should reject if a pattern overwrites with empty ScreenSizes',
+      shouldRejectIfAPatternOverwirtesWithEmptyScreenSizes
     );
 
     it('should add additional screen sizes',
@@ -892,6 +897,88 @@ describe('main - ', () => {
             }
           }
         });
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRejectIfAPatternExcludesAllScreenSizes(done) {
+    setUpFsMock({
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      },
+      "patterns": {
+        "pattern-2": {
+          id: "pattern-2", // TODO: remove
+          name: "Pattern Name 2", // TODO: remove
+          excludeScreenSizes: ['desktop', 'tablet']
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - ' +
+          'The following patterns have no screens: pattern-2',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRejectIfAPatternOverwirtesWithEmptyScreenSizes(done) {
+    setUpFsMock({
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      },
+      "patterns": {
+        "pattern-2": {
+          id: "pattern-2", // TODO: remove
+          name: "Pattern Name 2", // TODO: remove
+          screenSizes: []
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not have resolved');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - ' +
+          'The following patterns have no screens: pattern-2',
+          error.message
+        );
       })
       .then(done, done);
   }

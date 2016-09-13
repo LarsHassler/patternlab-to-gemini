@@ -312,6 +312,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
       .then(() => {
         const patternsWithOverwritesAndAdditionsOrExlcudes = [];
         const notDefinedScreens = [];
+        const removedAllScreens = [];
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
@@ -331,6 +332,13 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               newPatterns[patternId].additionalScreenSizes || [],
               newPatterns[patternId].excludeScreenSizes || []
             );
+
+            if (newPatterns[patternId].screenSizes &&
+                newPatterns[patternId].screenSizes.length === 0) {
+              removedAllScreens.push(patternId);
+              continue;
+            }
+
             if (screenSizes.length === 0) {
               newPatterns[patternId].screenSizes = this.config_.defaultSizes;
             } else {
@@ -360,6 +368,10 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
                     }
                   });
                 }
+
+                if (defaultSizesCopy.length === 0) {
+                  removedAllScreens.push(patternId);
+                }
                 newPatterns[patternId].screenSizes = defaultSizesCopy;
               }
             }
@@ -371,6 +383,14 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             'PatternlabToNode - config error - ' +
             'The following screenSizes are used in patterns, but are not defined: ' +
             notDefinedScreens.join(', ')
+          );
+        }
+
+        if (removedAllScreens.length) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            'The following patterns have no screens: ' +
+            removedAllScreens.join(', ')
           );
         }
 
