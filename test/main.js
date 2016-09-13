@@ -159,14 +159,17 @@ describe('main - ', () => {
 
   describe('getPatternsConfiguration - ', () => {
 
+    // TODO remove in 1.0.0
     it('should reject if the config file does not exist',
         shouldRejectIfTheConfigFileDoesNotExist
     );
 
+    // TODO remove in 1.0.0
     it('should reject if the config file is a directory',
         shouldRejectIfTheConfigFileIsADirectory
     );
 
+    // TODO remove in 1.0.0
     it('should read the patterconfig relative to the config file',
         shouldReadThePatterconfigRelativeToTheConfigFile
     );
