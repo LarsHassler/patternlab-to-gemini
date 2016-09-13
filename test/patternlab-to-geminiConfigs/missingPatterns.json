@@ -1,0 +1,11 @@
+{
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "patterns": {
+    "pattern-no-more": {}
+  }
+}

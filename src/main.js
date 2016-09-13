@@ -214,6 +214,14 @@ PatternlabToNode.prototype.getConfigFilePath_ = function() {
  */
 PatternlabToNode.prototype.loadPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
+    if (this.config_.patterns) {
+      debug('returning inlined patterns');
+      resolve({
+        'patterns': this.config_.patterns
+      });
+      return;
+    }
+
     if (!this.config_.patternConfigFile) {
       debug('no patternConfigFile specified');
       resolve({
