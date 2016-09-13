@@ -94,6 +94,10 @@ describe('main - ', () => {
 
     });
 
+    it('should fail if patterns and patternConfigFile are defined',
+      shouldFailIfPatternsAndPatternConfigFileAreDefined
+    );
+
     it('should overwrite the configuration with a given config object',
         shouldOverwriteTheConfigurationWithAGivenConfigObject
     );
@@ -172,9 +176,6 @@ describe('main - ', () => {
     // TODO remove in 1.0.0
     it('should read the patterconfig relative to the config file',
         shouldReadThePatterconfigRelativeToTheConfigFile
-    );
-
-    it('should fail if patterns and patternConfigFile are defined'//shouldFailIfPatternsAndPatternConfigFileAreDefined
     );
 
     it('should show a deprecation warning if the patternfile has been defined'// shouldShowADeprecationWarningIfThePatternfileHasBeenDefined
@@ -625,7 +626,6 @@ describe('main - ', () => {
       'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
     });
     var instanceToTest = new patternlabToNode({
-      "patternConfigFile": "../oldConfig.json",
       "screenSizes": {},
       "patterns": {
         "pattern-1": {
@@ -1076,6 +1076,17 @@ describe('main - ', () => {
 
       /* eslint-enable no-new */
     }, null, /missing screenSizes/);
+  }
+
+  function shouldFailIfPatternsAndPatternConfigFileAreDefined() {
+    var config = JSON.parse(JSON.stringify(exampleConfig));
+    config.patterns = {};
+    assert.throws(() => {
+      /* eslint-disable no-new */
+      new patternlabToNode(config);
+
+      /* eslint-enable no-new */
+    }, null, /Please use either the patternConfigFile or the patterns settings/);
   }
 
   function shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined() {

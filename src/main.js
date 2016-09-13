@@ -70,6 +70,11 @@ var PatternlabToNode = function(options) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
   }
 
+  if (this.config_.patterns && this.config_.patternConfigFile) {
+    throw new Error('PatternlabToNode - config error - ' +
+      'Please use either the patternConfigFile or the patterns settings')
+  }
+
   if (this.config_.defaultSizes) {
     var notDefinedScreens = [];
     this.config_.defaultSizes.forEach((screenSizeId) => {
