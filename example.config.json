@@ -28,5 +28,6 @@
   "defaultSizes": null,
   "excludePatterns": [
     "^templates"
-  ]
+  ],
+  "patterns": null
 }

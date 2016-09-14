@@ -3,7 +3,8 @@
 > For a detailed example also take a look at the example.config.json in the project root.
 
 All relative paths will be resolve in relation to the main config file.
-Required variables are marked with a :exclamation:.
+Required variables are marked with a :exclamation:. Variables marked with a :skull:
+are deprecated and will be removed with the next major release.
 
 #### :exclamation: patternlabUrl (default: http://localhost:3000)
 
@@ -53,7 +54,17 @@ An array containing regular expressions to exclude patterns for the tests.
 ]
 ```
 
-#### patternConfigFile
+#### outputFile (default: ./patternlabTests.js)
+
+The path to the file where the generated tests will be stored. 
+
+```json
+"patternConfigFile": "./patternlabTests.js"
+```
+
+#### :skull: patternConfigFile
+
+> Pattern settings are part of the main config file. See [patterns](#patterns)
 
 The path to the file which contains settings for specific patterns.
 
@@ -61,12 +72,16 @@ The path to the file which contains settings for specific patterns.
 "patternConfigFile": "./pattern.config.json"
 ```
 
-#### outputFile (default: ./patternlabTests.js)
+#### patterns
 
-The path to the file where the generated tests will be stored. 
+An object containing pattern specific configuration.
+The key has to map a pattern id from the styleguide. The object can contain any
+number of [pattern specific configuration](#pattern-specific-configuration).
 
 ```json
-"patternConfigFile": "./patternlabTests.js"
+"patterns": {
+    "pattern-id": {}
+}
 ```
 
 #### templateFile (default: ./templates/main.js)
@@ -80,7 +95,7 @@ The path to the file where the templates for the tests.
 
 # Pattern specific configuration
 
-These settings will live in the [patternconfigfile](#patternconfigfile).
+> These settings previously were part of the [patternconfigfile](#patternconfigfile).
 
 #### screenSizes 
 

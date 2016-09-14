@@ -86,7 +86,11 @@ describe('cli - ', () => {
     );
 
     it('should print all errors to stderr',
-      shouldPrintAllErrorsToStderr
+        shouldPrintAllErrorsToStderr
+    );
+
+    it('should print all warnings to stdout',
+      shouldPrintAllWarningsToStdout
     );
 
     it('should print when its done',
@@ -130,6 +134,9 @@ describe('cli - ', () => {
         return {
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
+          },
+          getWarnings: function() {
+            return []
           }
         }
       },
@@ -161,6 +168,9 @@ describe('cli - ', () => {
         return {
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
+          },
+          getWarnings: function() {
+            return []
           }
         }
       },
@@ -199,6 +209,9 @@ describe('cli - ', () => {
         return {
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
+          },
+          getWarnings: function() {
+            return []
           }
         }
       }
@@ -224,6 +237,9 @@ describe('cli - ', () => {
         return {
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
+          },
+          getWarnings: function() {
+            return []
           }
         }
       }
@@ -252,6 +268,9 @@ describe('cli - ', () => {
               var err = new Error(randomErrorMessage);
               reject(err);
             });
+          },
+          getWarnings: function() {
+            return []
           }
         }
       }
@@ -282,6 +301,9 @@ describe('cli - ', () => {
             return new Promise((resolve) => {
               resolve();
             });
+          },
+          getWarnings: function() {
+            return []
           }
         }
       }
@@ -293,6 +315,45 @@ describe('cli - ', () => {
         resetConsole();
         assert.equal(
           'done\n',
+          lastTestsStdout
+        );
+      }, (err) => {
+        resetConsole();
+        throw err;
+      })
+      .then(done, done);
+  }
+
+  function shouldPrintAllWarningsToStdout(done) {
+    captureConsole();
+    var randomFilename = 'filename' + new Date().getTime();
+    var randomMessage = 'message' + new Date().getTime();
+    var rewired = patternlabToNodeCli.__set__({
+      p2g: function() {
+        return {
+          generateTests: function() {
+            return new Promise((resolve) => {
+              resolve();
+            });
+          },
+          getWarnings: function() {
+            return [
+              randomMessage
+            ]
+          }
+        }
+      }
+    });
+    rewiresToRevert.push(rewired);
+
+    patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
+      .then(() => {
+        resetConsole();
+        assert.deepEqual(
+          [
+            randomMessage + '\n\n',
+            'done\n'
+          ],
           lastTestsStdout
         );
       }, (err) => {

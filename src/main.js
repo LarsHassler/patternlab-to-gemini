@@ -36,11 +36,18 @@ const debug = require('debug')('patternlab-to-gemini:main');
  * @constructor
  */
 var PatternlabToNode = function(options) {
+
   /**
    * @type {?string}
    * @private
    */
   this.wasLoadedFromConfigFile_ = null;
+
+  /**
+   * @type {Array.<string>}
+   * @private
+   */
+  this.warnings_ = [];
 
   var settings = options;
   if (typeof options === 'string') {
@@ -62,11 +69,23 @@ var PatternlabToNode = function(options) {
     outputFile: './patternlabTests.js',
     templateFile: path.resolve(__dirname, '../templates/main.ejs'),
     excludePatterns: [],
-    defaultSizes: null
+    defaultSizes: null,
+    patterns: null
   }, settings);
 
   if (!this.config_.screenSizes) {
     throw new Error('PatternlabToNode - config error - missing screenSizes')
+  }
+
+  if (this.config_.patternConfigFile) {
+    this.addWarning_(
+      'Deprecating Warning: patternConfigFile is deprecated. ' +
+          'It will be removed in 1.0.0. Please use "patterns" instead.'
+    );
+    if (this.config_.patterns) {
+      throw new Error('PatternlabToNode - config error - ' +
+        'Please use either the patternConfigFile or the patterns settings')
+    }
   }
 
   if (this.config_.defaultSizes) {
@@ -104,6 +123,22 @@ PatternlabToNode.prototype.init_ = function() {
   });
 };
 
+/**
+ * @param {string} message
+ * @private
+ */
+PatternlabToNode.prototype.addWarning_ = function(message) {
+  this.warnings_.push(message);
+};
+
+
+/**
+ * @return {Array.<string>}
+ * @private
+ */
+PatternlabToNode.prototype.getWarnings = function() {
+  return this.warnings_;
+};
 
 
 /**
@@ -213,6 +248,14 @@ PatternlabToNode.prototype.getConfigFilePath_ = function() {
  */
 PatternlabToNode.prototype.loadPatternConfig_ = function() {
   return new Promise((resolve, reject) => {
+    if (this.config_.patterns) {
+      debug('returning inlined patterns');
+      resolve({
+        'patterns': this.config_.patterns
+      });
+      return;
+    }
+
     if (!this.config_.patternConfigFile) {
       debug('no patternConfigFile specified');
       resolve({
@@ -298,6 +341,7 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
       .then(() => {
         const patternsWithOverwritesAndAdditionsOrExlcudes = [];
         const notDefinedScreens = [];
+        const removedAllScreens = [];
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
@@ -317,6 +361,13 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               newPatterns[patternId].additionalScreenSizes || [],
               newPatterns[patternId].excludeScreenSizes || []
             );
+
+            if (newPatterns[patternId].screenSizes &&
+                newPatterns[patternId].screenSizes.length === 0) {
+              removedAllScreens.push(patternId);
+              continue;
+            }
+
             if (screenSizes.length === 0) {
               newPatterns[patternId].screenSizes = this.config_.defaultSizes;
             } else {
@@ -346,6 +397,10 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
                     }
                   });
                 }
+
+                if (defaultSizesCopy.length === 0) {
+                  removedAllScreens.push(patternId);
+                }
                 newPatterns[patternId].screenSizes = defaultSizesCopy;
               }
             }
@@ -357,6 +412,14 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
             'PatternlabToNode - config error - ' +
             'The following screenSizes are used in patterns, but are not defined: ' +
             notDefinedScreens.join(', ')
+          );
+        }
+
+        if (removedAllScreens.length) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            'The following patterns have no screens: ' +
+            removedAllScreens.join(', ')
           );
         }
 
