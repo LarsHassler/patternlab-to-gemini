@@ -24,6 +24,7 @@
   "bin": {
     "patternlab-to-gemini": "./bin/patternlab-to-gemini"
   },
+  "main": "./src/main.js",
   "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
   "dependencies": {
     "cheerio": "^0.22.0",
