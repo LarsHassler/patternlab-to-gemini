@@ -192,7 +192,16 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
         (index, element) => {
           var patternId = $(element).attr('id');
           debug('found pattern: ' + patternId);
-          var header = $(element).find('.sg-pattern-title > a');
+          var headerElement = $(element).find('.sg-pattern-title > a');
+          var header = headerElement.text().trim();
+          var stateElement = $(element).find('.sg-pattern-state');
+          var state = null;
+
+          if (stateElement) {
+            state = stateElement.text();
+            debug('pattern has state: ' + state);
+            header = header.split('\n')[0].trim()
+          }
           var shouldBeExcluded = this.config_.excludePatterns.reduce(
               (previousValue, currentValue) => {
                 return previousValue || currentValue.test(patternId);
@@ -203,7 +212,7 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           if (!shouldBeExcluded) {
             patterns.push({
               id: patternId,
-              name: header.html().trim()
+              name: header
             });
           }
         }
