@@ -22,7 +22,8 @@ language: node_js
 
 # Node.js versions
 node_js:
-  - "node"
+  - "4"
+  - "6"
 
 # run ci script
 script: npm run ci --silent
