@@ -629,13 +629,9 @@ describe('main - ', () => {
       'patternConfigFile.json': {
         "patterns": {
           "pattern-1": {
-            id: "pattern-1",
-            name: "Pattern Name 1",
             data: randomInfo
           },
           "pattern-2": {
-            id: "pattern-2",
-            name: "Pattern Name 2",
             data: randomInfo2
           }
         }
@@ -762,8 +758,6 @@ describe('main - ', () => {
       "screenSizes": {},
       "patterns": {
         "pattern-1": {
-          id: "pattern-1", //TODO: remove
-          name: "Pattern Name 1", //TODO: remove
           data: randomInfo
         }
       }
@@ -815,12 +809,9 @@ describe('main - ', () => {
       },
       "patterns": {
         "pattern-1" :{
-          id: "pattern-1",
-          name: "Pattern Name 1",
           screenSizes: ['desktop']
         },
         "pattern-2": {
-          id: "pattern-2",
           name: "Pattern Name 2"
         }
       }
@@ -876,12 +867,8 @@ describe('main - ', () => {
       },
       "patterns": {
         "pattern-1" :{
-          id: "pattern-1",
-          name: "Pattern Name 1"
         },
         "pattern-2": {
-          id: "pattern-2",
-          name: "Pattern Name 2",
           additionalScreenSizes: ['additionalSize']
         }
       }
@@ -933,12 +920,8 @@ describe('main - ', () => {
       },
       "patterns": {
         "pattern-1" :{
-          id: "pattern-1",
-          name: "Pattern Name 1"
         },
         "pattern-2": {
-          id: "pattern-2",
-          name: "Pattern Name 2",
           excludeScreenSizes: ['tablet']
         }
       }
@@ -990,8 +973,6 @@ describe('main - ', () => {
       },
       "patterns": {
         "pattern-2": {
-          id: "pattern-2", // TODO: remove
-          name: "Pattern Name 2", // TODO: remove
           excludeScreenSizes: ['desktop', 'tablet']
         }
       }
@@ -1031,8 +1012,6 @@ describe('main - ', () => {
       },
       "patterns": {
         "pattern-2": {
-          id: "pattern-2", // TODO: remove
-          name: "Pattern Name 2", // TODO: remove
           screenSizes: []
         }
       }
