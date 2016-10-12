@@ -69,6 +69,7 @@ var PatternlabToNode = function(options) {
     outputFile: './patternlabTests.js',
     templateFile: path.resolve(__dirname, '../templates/main.ejs'),
     excludePatterns: [],
+    excludeStates: [],
     defaultSizes: null,
     patterns: null
   }, settings);
@@ -114,6 +115,10 @@ PatternlabToNode.prototype.init_ = function() {
     // transform all strings in excludePatterns config to regular expressions
     this.config_.excludePatterns.forEach((pattern, index) => {
       this.config_.excludePatterns[index] = new RegExp(pattern);
+    });
+    // transform all strings in excludeStates config to regular expressions
+    this.config_.excludeStates.forEach((pattern, index) => {
+      this.config_.excludeStates[index] = new RegExp(pattern);
     });
 
     if (!this.config_.defaultSizes) {
@@ -191,6 +196,7 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
     $('.sg-pattern').each(
         (index, element) => {
           var patternId = $(element).attr('id');
+          var shouldBeExcluded = false;
           debug('found pattern: ' + patternId);
           var headerElement = $(element).find('.sg-pattern-title > a');
           var header = headerElement.text().trim();
@@ -200,12 +206,18 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           if (stateElement) {
             state = stateElement.text();
             debug('pattern has state: ' + state);
-            header = header.split('\n')[0].trim()
+            header = header.split('\n')[0].trim();
+
+            shouldBeExcluded = this.config_.excludeStates.reduce(
+              (previousValue, currentValue) => {
+                return previousValue || currentValue.test(state);
+              }, shouldBeExcluded);
           }
-          var shouldBeExcluded = this.config_.excludePatterns.reduce(
+          shouldBeExcluded = this.config_.excludePatterns.reduce(
               (previousValue, currentValue) => {
                 return previousValue || currentValue.test(patternId);
-              }, false);
+              }, shouldBeExcluded);
+
           if (shouldBeExcluded) {
             debug('pattern "' + patternId + '" will be excluded');
           }

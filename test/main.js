@@ -191,6 +191,10 @@ describe('main - ', () => {
         shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
 
+    it('should not return patterns that match one of the state regexps',
+        shouldNotReturnPatternsThatMatchOneOfTheStateRegexps
+    );
+
     it('should reject if patterns which are in the patternConfig are missing in the styleguide',
       shouldRejectIfPatternsWhichAreInThePatternConfigAreMissingInTheStyleguide
     );
@@ -700,6 +704,46 @@ describe('main - ', () => {
             "pattern-2": {
               id: "pattern-2",
               name: "Pattern Name 2",
+              screenSizes: []
+            }
+          }
+        }, patternConfig);
+      })
+      .then(done, done);
+  }
+
+
+  function shouldNotReturnPatternsThatMatchOneOfTheStateRegexps(done) {
+    setUpFsMock({
+      'dummyhtml/statesToExclude.html': __dirname + '/dummyhtml/statesToExclude.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {},
+      "excludeStates": [
+        "inprogress",
+        "idea"
+      ]
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/statesToExclude.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        assert.deepEqual({
+          "_patternOrder": [
+            "pattern-3",
+            "pattern-4",
+          ],
+          "patterns": {
+            "pattern-3": {
+              id: "pattern-3",
+              name: "Pattern Name 3",
+              screenSizes: []
+            },
+            "pattern-4": {
+              id: "pattern-4",
+              name: "Pattern Name 4",
               screenSizes: []
             }
           }
