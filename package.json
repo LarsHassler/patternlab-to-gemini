@@ -1,6 +1,5 @@
 {
   "name": "patternlab-to-gemini",
-  "version": "0.3.1",
   "description": "Automatic tranformation of your patternlab into testcases for gemini",
   "engines": {
     "node": ">= 4.4.3"
@@ -16,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LarsHassler/patternlab-to-gemini.git"
+    "url": "https://github.com/LarsHassler/patternlab-to-gemini.git"
   },
   "bugs": {
     "url": "https://github.com/LarsHassler/patternlab-to-gemini/issues"
@@ -45,7 +44,8 @@
     "mock-fs": "^3.11.0",
     "nock": "^8.0.0",
     "rewire": "^2.5.2",
-    "test-console": "^1.0.0"
+    "test-console": "^1.0.0",
+    "semantic-release": "^4.3.5"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint src/** test/*",
@@ -56,7 +56,8 @@
     "preversion": "npm run test",
     "postversion": "git push --tags",
     "prepublish": "npm run test",
-    "ci": "npm run lint && npm run coverage"
+    "ci": "npm run lint && npm run coverage",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "keywords": [
     "test",
