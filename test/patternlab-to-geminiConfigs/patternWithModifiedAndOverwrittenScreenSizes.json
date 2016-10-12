@@ -11,14 +11,10 @@
   },
   "patterns": {
     "pattern-1": {
-      "id": "pattern-no-more",
-      "name": "Pattern which is no longer part of the styleguide",
       "screenSizes": ["desktop"],
       "additionalScreenSizes": ["tablet"]
     },
     "pattern-2": {
-      "id": "pattern-no-more",
-      "name": "Pattern which is no longer part of the styleguide",
       "screenSizes": ["desktop"],
       "excludeScreenSizes": ["tablet"]
     }

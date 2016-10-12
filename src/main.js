@@ -116,6 +116,7 @@ PatternlabToNode.prototype.init_ = function() {
     this.config_.excludePatterns.forEach((pattern, index) => {
       this.config_.excludePatterns[index] = new RegExp(pattern);
     });
+
     // transform all strings in excludeStates config to regular expressions
     this.config_.excludeStates.forEach((pattern, index) => {
       this.config_.excludeStates[index] = new RegExp(pattern);
@@ -355,7 +356,9 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         for (var patternId in oldPatternConfig.patterns) {
           /* istanbul ignore else */
           if (oldPatternConfig.patterns.hasOwnProperty(patternId)) {
-            newPatterns[patternId] = oldPatternConfig.patterns[patternId];
+            newPatterns[patternId] = extend(
+              newPatterns[patternId],
+              oldPatternConfig.patterns[patternId]);
           }
         }
       })
