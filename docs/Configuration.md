@@ -3,8 +3,9 @@
 > For a detailed example also take a look at the example.config.json in the project root.
 
 All relative paths will be resolve in relation to the main config file.
-Required variables are marked with a :exclamation:. Variables marked with a :skull:
-are deprecated and will be removed with the next major release.
+Required variables are marked with a :exclamation:.
+Variables marked with a :skull: are deprecated and will be removed in the near
+future.
 
 #### :exclamation: patternlabUrl (default: http://localhost:3000)
 
@@ -16,7 +17,7 @@ The domain where the patternlab styleguide is located.
 
 #### :exclamation: screenSizes
 
-A collection of screen sizes with will be used for the screen shots. 
+A collection of screen sizes with will be used for the screen shots.
 The key will be used for the filename of the screen shot.
 Beware that the screen shot might be smaller due to the captured html element.
 They can be referenced in [defaultSizes](#defaultSizes) and pattern specific
@@ -37,7 +38,7 @@ settings [screenSizes](#screenSizes), [additionalScreenSizes](#additionalScreenS
 An array containing keys of the [screenSizes](#exclamation-screensizes).
 For all of these sizes every pattern will be taken a screen shot of,
 if not defined otherwise in the pattern specific configuration.
-See [screenSizes](#screenSizes), [additionalScreenSizes](#additionalScreenSizes) 
+See [screenSizes](#screenSizes), [additionalScreenSizes](#additionalScreenSizes)
 and [excludeScreenSizes](#excludeScreenSizes) for details.
 
 ```json
@@ -54,9 +55,21 @@ An array containing regular expressions to exclude patterns for the tests.
 ]
 ```
 
+#### excludeStates
+
+An array containing regular expressions to exclude patterns by an assigned state
+See http://patternlab.io/docs/pattern-states.html.
+
+```json
+"excludeStates": [
+  "inprogress",
+  "ideas",
+]
+```
+
 #### outputFile (default: ./patternlabTests.js)
 
-The path to the file where the generated tests will be stored. 
+The path to the file where the generated tests will be stored.
 
 ```json
 "patternConfigFile": "./patternlabTests.js"
@@ -97,7 +110,7 @@ The path to the file where the templates for the tests.
 
 > These settings previously were part of the [patternconfigfile](#patternconfigfile).
 
-#### screenSizes 
+#### screenSizes
 
 An array of the globally defined [screenSizes](#exclamation-screensizes). This will
 overwrite the screen shot sizes for this pattern.
@@ -113,10 +126,10 @@ overwrite the screen shot sizes for this pattern.
 ```
 
 > :warning: Can not be used with [additionalScreenSizes](#additionalScreenSizes) or
-[excludeScreenSizes](#excludeScreenSizes) on the same pattern. 
-Pattern screen shot sizes can either be overwritten or modified, but not both. 
+[excludeScreenSizes](#excludeScreenSizes) on the same pattern.
+Pattern screen shot sizes can either be overwritten or modified, but not both.
 
-#### additionalScreenSizes 
+#### additionalScreenSizes
 
 An array of the globally defined [screenSizes](#exclamation-screensizes). These
 screen shots will be taken in addition to the [defaultSizes](#defaultSizes).
@@ -131,13 +144,13 @@ screen shots will be taken in addition to the [defaultSizes](#defaultSizes).
 }
 ```
 
-> :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern. 
+> :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern.
 Pattern screen shot sizes can either be overwritten or modified, but not both.
 
 #### excludeScreenSizes
 
 An array of the globally defined [screenSizes](#exclamation-screensizes). The
-screen shots in these sizes will not be taken if the are part of the 
+screen shots in these sizes will not be taken if the are part of the
 [defaultSizes](#defaultSizes).
 
 ```json
@@ -150,5 +163,5 @@ screen shots in these sizes will not be taken if the are part of the
 }
 ```
 
-> :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern. 
+> :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern.
 Pattern screen shot sizes can either be overwritten or modified, but not both.
