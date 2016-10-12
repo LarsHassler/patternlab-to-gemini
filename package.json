@@ -53,9 +53,6 @@
     "pretest": "npm run lint -- --rule 'mocha/no-exclusive-tests: 0'  --rule 'mocha/no-skipped-tests: 0'",
     "test": "./node_modules/.bin/_mocha -R spec test/",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec test/",
-    "preversion": "npm run test",
-    "postversion": "git push --tags",
-    "prepublish": "npm run test",
     "ci": "npm run lint && npm run coverage",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
