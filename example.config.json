@@ -29,5 +29,9 @@
   "excludePatterns": [
     "^templates"
   ],
+  "excludeStates": [
+    "^idea",
+    "wip"
+  ],
   "patterns": null
 }
