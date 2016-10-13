@@ -30,10 +30,10 @@ The action that's being performed during the test.
 See [available Actions](#available-actions) for valid actions.
 This field is required.
 
-#### selector (default '> *')
+#### selector (default '*')
 
 An optional selector for the element, inside the pattern, the action is
-performed on. Defaults to the first children inside the pattern.
+performed on. Defaults to '*', which will be the first children inside the pattern.
 
 ## hover
 
