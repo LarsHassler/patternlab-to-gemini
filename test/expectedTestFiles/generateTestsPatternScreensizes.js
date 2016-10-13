@@ -10,6 +10,7 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
         });
   });
 
+
   gemini.suite('Pattern Name 2', function(suite) {
     suite
         .setCaptureElements(['#pattern-2 .sg-pattern-example'])
@@ -20,5 +21,6 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
           actions.setWindowSize(1024, 768);
         });
   });
+
 
 });

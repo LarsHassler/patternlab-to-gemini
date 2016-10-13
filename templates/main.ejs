@@ -9,5 +9,19 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>);
         })<% }); %>;
   });
+<% pattern.actions.forEach(function(action) { %>
+
+  gemini.suite('<%= pattern.name %> --- <%= action.name %>', function(suite) {
+    suite
+        .before(function(actions, find) {
+          this.element = find('#<%= pattern.id %> .sg-pattern-example > <%= action.selector %>')
+        })
+        .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% pattern.sizes.forEach(function(size) { %>
+        .capture('<%= size.name %>', function(actions, find) {
+          actions.setWindowSize(<%= size.width %>, <%= size.height %>)
+            <%= action.steps %>;
+        })<% }); %>;
+  });
+  <% }); %>
 <% }); %>
 });
