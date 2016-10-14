@@ -247,10 +247,12 @@ describe('main - ', () => {
         shouldFailIfNoNameWasGiven
       );
 
-      it('should set the default selector for actions' //shouldSetTheDefaultSelectorForActions
+      it('should set the default selector for actions',
+        shouldSetTheDefaultSelectorForActions
       );
 
-      it('should not overwrite a given selector' //shouldNotOverwriteAGivenSelector
+      it('should not overwrite a given selector',
+        shouldNotOverwriteAGivenSelector
       );
 
       it('should add correct steps for hover' //shouldAddCorrectStepsForHover
@@ -687,6 +689,54 @@ describe('main - ', () => {
           'wrong error message',
           'PatternlabToNode - config error - pattern-1 is missing action name',
           error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldSetTheDefaultSelectorForActions(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionWithoutSelector.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong selector for action',
+          '*',
+          patternConfig.patterns['pattern-1'].actions[0].selector
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldNotOverwriteAGivenSelector(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionWithSelector.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong selector for action',
+          'myDummSelector',
+          patternConfig.patterns['pattern-1'].actions[0].selector
         );
       })
       .then(done, done);
