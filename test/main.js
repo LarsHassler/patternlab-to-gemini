@@ -288,6 +288,10 @@ describe('main - ', () => {
       shouldWorkWithMultipleActions
     );
 
+    it('should work with action with selectors',
+      shouldWorkWithActionWithSelectors
+    );
+
   });
 
 
@@ -489,6 +493,56 @@ describe('main - ', () => {
                   "name": "focused",
                   "selector": "*",
                   "steps": ".focus(this.element)"
+                }
+              ]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+
+
+  function shouldWorkWithActionWithSelectors(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedPatternActionsWithSelector.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsPatternActionsWithSelector.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop"],
+              "actions": [
+                {
+                  "action": "hover",
+                  "name": "hovered",
+                  "selector": "button",
+                  "steps": ".moveMouse(this.element)"
                 }
               ]
             },
