@@ -204,6 +204,7 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           var stateElement = $(element).find('.sg-pattern-state');
           var state = null;
 
+          /* istanbul ignore else */
           if (stateElement) {
             state = stateElement.text();
             debug('pattern has state: ' + state);
@@ -316,6 +317,49 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
 };
 
 
+PatternlabToNode.prototype.parseAction = function(pattern) {
+
+  const validActions = ['hover', 'focus'];
+
+  /* istanbul ignore else */
+  if (pattern.actions &&
+    pattern.actions.length) {
+    pattern.actions.forEach((action) => {
+      if (!action.name) {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+            pattern.id + ' is missing action name'
+        );
+      }
+
+      if (!action.action) {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+            pattern.id + ' is missing action identifier'
+        );
+      }
+
+      action.selector = action.selector || '*';
+
+      if (action.action === 'hover') {
+        action.steps = '.mouseMove(this.element)';
+      }
+      else if (action.action === 'focus') {
+        action.steps = '.focus(this.element)';
+      } else {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+          pattern.id + ' has unknown action identifier ' +
+          '"' + action.action + '", ' +
+          'use ("' + validActions.join('", "') + '")'
+        );
+      }
+    })
+  }
+};
+
+
+
 /**
  * @return {Promise.<>}
  */
@@ -361,14 +405,18 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               oldPatternConfig.patterns[patternId]);
           }
         }
+
       })
       .then(() => {
         const patternsWithOverwritesAndAdditionsOrExlcudes = [];
         const notDefinedScreens = [];
         const removedAllScreens = [];
+
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
+
+            this.parseAction(newPatterns[patternId]);
 
             // check if both screenSizes and overwritten or modified screen
             // sizes are defined
@@ -485,6 +533,7 @@ PatternlabToNode.prototype.generateTests = function() {
             var patternSettings = {
               'id': patternId,
               'name': config.patterns[patternId].name,
+              'actions': config.patterns[patternId].actions || [],
               'sizes': []
             };
             config.patterns[patternId].screenSizes.forEach((screenSizeId) => {

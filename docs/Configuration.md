@@ -165,3 +165,25 @@ screen shots in these sizes will not be taken if the are part of the
 
 > :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern.
 Pattern screen shot sizes can either be overwritten or modified, but not both.
+
+#### actions
+
+An array of actions which should be used to generate test cases. Each action will
+be transformed into a new test suite.
+For more details see the [Actions Documentation](Actions.md).
+
+```
+{
+    "patterns": {
+        "pattern-id": {
+            "actions": [
+                {
+                    "name": "hovered",
+                    "action": "hover",
+                    "opt_selector": "> *"
+                }
+            ]
+        }
+    }
+}
+```

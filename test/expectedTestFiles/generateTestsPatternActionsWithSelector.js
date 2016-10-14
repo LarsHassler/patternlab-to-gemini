@@ -7,9 +7,19 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
         .setCaptureElements(['#pattern-1 .sg-pattern-example'])
         .capture('desktop', function(actions, find) {
           actions.setWindowSize(1440, 900);
+        });
+  });
+
+
+  gemini.suite('Pattern Name 1 --- hovered', function(suite) {
+    suite
+        .before(function(actions, find) {
+          this.element = find('#pattern-1 .sg-pattern-example > button')
         })
-        .capture('tablet', function(actions, find) {
-          actions.setWindowSize(1024, 768);
+        .setCaptureElements(['#pattern-1 .sg-pattern-example'])
+        .capture('desktop', function(actions, find) {
+          actions.setWindowSize(1440, 900)
+            .moveMouse(this.element);
         });
   });
 
@@ -19,9 +29,6 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
         .setCaptureElements(['#pattern-2 .sg-pattern-example'])
         .capture('desktop', function(actions, find) {
           actions.setWindowSize(1440, 900);
-        })
-        .capture('tablet', function(actions, find) {
-          actions.setWindowSize(1024, 768);
         });
   });
 

@@ -34,7 +34,7 @@
     "request": "^2.74.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
+    "@remobid/js-lib-asserts": "^1.0.0",
     "coveralls": "^2.11.12",
     "eslint": "^3.3.1",
     "eslint-plugin-mocha": "^4.3.0",
@@ -44,8 +44,8 @@
     "mock-fs": "^3.11.0",
     "nock": "^8.0.0",
     "rewire": "^2.5.2",
-    "test-console": "^1.0.0",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^4.3.5",
+    "test-console": "^1.0.0"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint src/** test/*",
