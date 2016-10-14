@@ -203,33 +203,61 @@ describe('main - ', () => {
         shouldMergeOldAndNewPatterns
     );
 
-    it('should reject if a custom screen size was found but not defined',
-      shouldRejectIfACustomScreenSizeWasFoundButNotDefined
-    );
+    describe('pattern screen options - ', function() {
+      it('should reject if a custom screen size was found but not defined',
+        shouldRejectIfACustomScreenSizeWasFoundButNotDefined
+      );
 
-    it('should reject if a pattern has both size overwrites and additions or excludes',
-      shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
-    );
+      it('should reject if a pattern has both size overwrites and additions or excludes',
+        shouldRejectIfAPatternHasBothSizeOverwritesAndAdditionsOrExcludes
+      );
 
-    it('should reject if a pattern excludes all screenSizes',
-      shouldRejectIfAPatternExcludesAllScreenSizes
-    );
+      it('should reject if a pattern excludes all screenSizes',
+        shouldRejectIfAPatternExcludesAllScreenSizes
+      );
 
-    it('should reject if a pattern overwrites with empty ScreenSizes',
-      shouldRejectIfAPatternOverwirtesWithEmptyScreenSizes
-    );
+      it('should reject if a pattern overwrites with empty ScreenSizes',
+        shouldRejectIfAPatternOverwirtesWithEmptyScreenSizes
+      );
 
-    it('should add additional screen sizes',
-      shouldAddAdditionalScreenSizes
-    );
+      it('should add additional screen sizes',
+        shouldAddAdditionalScreenSizes
+      );
 
-    it('should remove screen sizes',
-      shouldRemoveScreenSizes
-    );
+      it('should remove screen sizes',
+        shouldRemoveScreenSizes
+      );
 
-    it('should overwrite screen sizes',
-      shouldOverwriteScreenSizes
-    );
+      it('should overwrite screen sizes',
+        shouldOverwriteScreenSizes
+      );
+    });
+
+    describe('actions - ', function() {
+
+      it('should fail if no action was given',
+        shouldFailIfNoActionWasGiven
+      );
+
+      it('should fail for unknown actions',
+        shouldFailForUnknownActions
+      );
+
+      it('should fail if no name was given' //shouldFailIfNoNameWasGiven
+      );
+
+      it('should set the default selector for actions' //shouldSetTheDefaultSelectorForActions
+      );
+
+      it('should not overwrite a given selector' //shouldNotOverwriteAGivenSelector
+      );
+
+      it('should add correct steps for hover' //shouldAddCorrectStepsForHover
+      );
+
+      it('should add correct steps for focus' //shouldAddCorrectStepsForFocus
+      );
+    });
 
   });
 
@@ -249,6 +277,9 @@ describe('main - ', () => {
 
     it('should work with specific pattern sizes',
       shouldWorkWithSpecificPatternSizes
+    );
+
+    it('should work with multiple actions'// shouldWorkWithMultipleActions
     );
 
   });
@@ -556,6 +587,56 @@ describe('main - ', () => {
       }, (error) => {
         assert.equal(
           'PatternlabToNode - config error - The following patterns are no longer part of the styleguide: "pattern-no-more"! Please check if they have been renamed or remove them from the config',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldFailIfNoActionWasGiven(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/missingActionIdentifier.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - pattern-1 is missing action identifier',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldFailForUnknownActions(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/unkownActionIdentifier.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        assert.equal(
+          'PatternlabToNode - config error - pattern-1 has unknown action identifier "unknownAction", use ("hover", "focus")',
           error.message
         );
       })

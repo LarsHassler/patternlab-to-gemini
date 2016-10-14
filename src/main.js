@@ -204,6 +204,7 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           var stateElement = $(element).find('.sg-pattern-state');
           var state = null;
 
+          /* istanbul ignore else */
           if (stateElement) {
             state = stateElement.text();
             debug('pattern has state: ' + state);
@@ -316,6 +317,43 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
 };
 
 
+PatternlabToNode.prototype.parseAction = function(pattern) {
+
+  const validActions = ['hover', 'focus'];
+
+  /* istanbul ignore else */
+  if (pattern.actions &&
+    pattern.actions.length) {
+    pattern.actions.forEach((action) => {
+      if (!action.action) {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+            pattern.id + ' is missing action identifier'
+        );
+      }
+      if (validActions.indexOf(action.action) === -1) {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+            pattern.id + ' has unknown action identifier ' +
+            '"' + action.action + '", ' +
+            'use ("' + validActions.join('", "') + '")'
+        );
+      }
+
+      action.selector = action.selector || '*';
+
+      if (action.action === 'hover') {
+        action.steps = '.mouseMove(this.element)';
+      }
+      else if (action.action === 'focus') {
+        action.steps = '.focus(this.element)';
+      }
+    })
+  }
+};
+
+
+
 /**
  * @return {Promise.<>}
  */
@@ -362,27 +400,17 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
           }
         }
 
-        // TODO: implement
-        // var actions = config.patterns[patternId].actions || [];
-        // if (actions.length) {
-        //   actions.forEach((action) => {
-        //     action.selector = '*';
-        //     if (action.action === 'hover') {
-        //       action.steps = '.mouseMove(this.element)';
-        //     }
-        //     else if (action.action === 'focus') {
-        //       action.steps = '.focus(this.element)';
-        //     }
-        //   })
-        // }
       })
       .then(() => {
         const patternsWithOverwritesAndAdditionsOrExlcudes = [];
         const notDefinedScreens = [];
         const removedAllScreens = [];
+
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
+
+            this.parseAction(newPatterns[patternId]);
 
             // check if both screenSizes and overwritten or modified screen
             // sizes are defined
