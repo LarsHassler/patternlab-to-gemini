@@ -24,7 +24,7 @@
  * dependency
  * --------------------------------------------------------------- */
 
-const assert = require('chai').assert;
+const asserts = require('@remobid/js-lib-asserts');
 const exec = require('child_process').exec;
 const rewire = require('rewire');
 const testStdErr = require('test-console').stderr;
@@ -147,7 +147,10 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename, '--debug'])
       .then(() => {
         resetConsole();
-        assert.equal('patternlab-to-gemini:*', debugScope, 'wrong debug scope set or not set at all');
+        asserts.assertEquals(
+          'wrong debug scope set or not set at all',
+          'patternlab-to-gemini:*',
+          debugScope);
       }, (err) => {
         resetConsole();
         throw err;
@@ -181,7 +184,10 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '--config', randomFilename, '-d'])
       .then(() => {
         resetConsole();
-        assert.equal('patternlab-to-gemini:*', debugScope, 'wrong debug scope set or not set at all');
+        asserts.assertEquals(
+          'wrong debug scope set or not set at all',
+          'patternlab-to-gemini:*',
+          debugScope);
       }, (err) => {
         resetConsole();
         throw err;
@@ -190,11 +196,15 @@ describe('cli - ', () => {
   }
 
   function shouldThrowAnErrorIfNoConfigFileWasProvided(done) {
-    assert.throws(
+    const error = asserts.assertThrows(
         function() {
           patternlabToNodeCli(["node", "/bin/patternlab-to-gemini"])
-        },
-        'please provide a config file via the --config (-c) flag'
+        }
+    );
+    asserts.assertEquals(
+      'wrong error message',
+      'please provide a config file via the --config (-c) flag',
+      error.message
     );
     resetConsole();
     done();
@@ -205,7 +215,11 @@ describe('cli - ', () => {
     var randomFilename = 'filenameConfigFlag' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
       p2g: function(configfile) {
-        assert.equal(configfile, process.cwd() + '/' + randomFilename, 'wrong configfile set');
+        asserts.assertEquals(
+          'wrong configfile set',
+          process.cwd() + '/' + randomFilename,
+          configfile
+        );
         return {
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
@@ -233,7 +247,11 @@ describe('cli - ', () => {
     var randomFilename = 'filenameCFlag' + new Date().getTime();
     var rewired = patternlabToNodeCli.__set__({
       p2g: function(configfile) {
-        assert.equal(configfile, process.cwd() + '/' + randomFilename, 'wrong configfile set');
+        asserts.assertEquals(
+          'wrong configfile set',
+          process.cwd() + '/' + randomFilename,
+          configfile
+        );
         return {
           generateTests: function() {
             return new Promise((resolve) => { resolve(); });
@@ -280,8 +298,9 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
         resetConsole();
-        assert.equal(
-          randomErrorMessage + '\n',
+        asserts.assertArrayEquals(
+          'wrong stderr',
+          [randomErrorMessage + '\n'],
           lastTestsStderr
         );
       }, (err) => {
@@ -313,8 +332,9 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
         resetConsole();
-        assert.equal(
-          'done\n',
+        asserts.assertArrayEquals(
+          'wrong stdout',
+          ['done\n'],
           lastTestsStdout
         );
       }, (err) => {
@@ -349,7 +369,8 @@ describe('cli - ', () => {
     patternlabToNodeCli(["node", "/bin/patternlab-to-gemini", '-c', randomFilename])
       .then(() => {
         resetConsole();
-        assert.deepEqual(
+        asserts.assertArrayEquals(
+          'wrong stdout',
           [
             randomMessage + '\n\n',
             'done\n'
@@ -369,7 +390,8 @@ describe('cli - ', () => {
       if (error) {
         done(error);
       } else {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong version printed',
           packageJson.version + '\n',
           stdout
         );

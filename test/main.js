@@ -24,7 +24,7 @@
  * dependency
  * --------------------------------------------------------------- */
 
-const assert = require('chai').assert;
+const asserts = require('@remobid/js-lib-asserts');
 const exampleConfig = require('../example.config.json');
 const fs = require('fs');
 const mock_fs = require('mock-fs');
@@ -322,7 +322,12 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve')
       }, (error) => {
-        assert.equal('PatternlabToNode - rendering error - there was an error while rendering "' + path.resolve('noExistingTemplateFile') + '"', error.message);
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - rendering error - ' +
+              'there was an error while rendering "' +
+              path.resolve('noExistingTemplateFile') + '"',
+          error.message);
       })
       .then(done, done);
   }
@@ -358,10 +363,10 @@ describe('main - ', () => {
     };
     instanceToTest.generateTests()
       .then(() => {
-        assert.equal(
-            fs.readFileSync('patternlabTests.js').toString(),
-            fs.readFileSync('expectedTest.js').toString(),
-            "wrong testFile generated"
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
         )
       })
       .then(done, done);
@@ -398,10 +403,10 @@ describe('main - ', () => {
     };
     instanceToTest.generateTests()
       .then(() => {
-        assert.equal(
-            fs.readFileSync('patternlabTests.js').toString(),
-            fs.readFileSync('expectedTest.js').toString(),
-            "wrong testFile generated"
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
         )
       })
       .then(done, done);
@@ -438,10 +443,10 @@ describe('main - ', () => {
     };
     instanceToTest.generateTests()
       .then(() => {
-        assert.equal(
-            fs.readFileSync('patternlabTests.js').toString(),
-            fs.readFileSync('expectedTest.js').toString(),
-            "wrong testFile generated"
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
         )
       })
       .then(done, done);
@@ -467,10 +472,11 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
-            'PatternlabToNode - config error - could not find config file ' +
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - could not find config file ' +
             '"./noExtits"',
-            error.message
+          error.message
         );
       })
       .then(done, done);
@@ -493,10 +499,11 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
-            'PatternlabToNode - config error - could not find config file ' +
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - could not find config file ' +
             '"../test/"',
-            error.message
+          error.message
         );
       })
       .then(done, done);
@@ -520,24 +527,28 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              screenSizes: ['desktop']
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              screenSizes: ['desktop']
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                screenSizes: ['desktop']
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                screenSizes: ['desktop']
+              }
             }
-          }
-        }, patternConfig);
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -560,10 +571,14 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then(() => {
-        assert.deepEqual([
-          'Deprecating Warning: patternConfigFile is deprecated. ' +
-          'It will be removed in 1.0.0. Please use "patterns" instead.'
-        ], instanceToTest.getWarnings());
+        asserts.assertArrayEquals(
+          'wrong warnings set',
+          [
+            'Deprecating Warning: patternConfigFile is deprecated. ' +
+            'It will be removed in 1.0.0. Please use "patterns" instead.'
+          ],
+          instanceToTest.getWarnings()
+        );
       })
       .then(done, done);
   }
@@ -585,8 +600,13 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
-          'PatternlabToNode - config error - The following patterns are no longer part of the styleguide: "pattern-no-more"! Please check if they have been renamed or remove them from the config',
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - ' +
+              'The following patterns are no longer part of the styleguide: ' +
+              '"pattern-no-more"! ' +
+              'Please check if they have been renamed or' +
+              ' remove them from the config',
           error.message
         );
       })
@@ -610,7 +630,8 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong error message',
           'PatternlabToNode - config error - pattern-1 is missing action identifier',
           error.message
         );
@@ -635,7 +656,8 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong error message',
           'PatternlabToNode - config error - pattern-1 has unknown action identifier "unknownAction", use ("hover", "focus")',
           error.message
         );
@@ -660,7 +682,8 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong error message',
           'PatternlabToNode - config error - ' +
               'The following screenSizes are used in patterns, but are not defined: ' +
               'unknownSize_1, unknownSize_2, ' +
@@ -688,7 +711,8 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not resolve');
       }, (error) => {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong error message',
           'PatternlabToNode - config error - ' +
               'The following patterns have both overwrites and additionalScreenSizes or excludeScreenSizes defined: ' +
               'pattern-1, pattern-2' +
@@ -726,26 +750,30 @@ describe('main - ', () => {
     var instanceToTest = new patternlabToNode('config.json');
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              data: randomInfo,
-              screenSizes: []
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              data: randomInfo2,
-              screenSizes: []
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                data: randomInfo,
+                screenSizes: []
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                data: randomInfo2,
+                screenSizes: []
+              }
             }
-          }
-        }, patternConfig);
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -767,24 +795,28 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              screenSizes: []
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              screenSizes: []
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                screenSizes: []
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                screenSizes: []
+              }
             }
-          }
-        }, patternConfig);
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -807,24 +839,28 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-3",
-            "pattern-4",
-          ],
-          "patterns": {
-            "pattern-3": {
-              id: "pattern-3",
-              name: "Pattern Name 3",
-              screenSizes: []
-            },
-            "pattern-4": {
-              id: "pattern-4",
-              name: "Pattern Name 4",
-              screenSizes: []
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-3",
+              "pattern-4",
+            ],
+            "patterns": {
+              "pattern-3": {
+                id: "pattern-3",
+                name: "Pattern Name 3",
+                screenSizes: []
+              },
+              "pattern-4": {
+                id: "pattern-4",
+                name: "Pattern Name 4",
+                screenSizes: []
+              }
             }
-          }
-        }, patternConfig);
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -849,25 +885,29 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              data: randomInfo,
-              screenSizes: []
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              screenSizes: []
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                data: randomInfo,
+                screenSizes: []
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                screenSizes: []
+              }
             }
-          }
-        }, patternConfig);
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -903,24 +943,28 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual({
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              screenSizes: ['desktop']
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              screenSizes: ['desktop', 'tablet']
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                screenSizes: ['desktop']
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                screenSizes: ['desktop', 'tablet']
+              }
             }
-          }
-        }, patternConfig);
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -960,25 +1004,29 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual(patternConfig, {
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              screenSizes: ['desktop', 'tablet']
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              additionalScreenSizes: ['additionalSize'],
-              screenSizes: ['desktop', 'tablet', 'additionalSize']
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                screenSizes: ['desktop', 'tablet']
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                additionalScreenSizes: ['additionalSize'],
+                screenSizes: ['desktop', 'tablet', 'additionalSize']
+              }
             }
-          }
-        });
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -1013,25 +1061,29 @@ describe('main - ', () => {
     );
     instanceToTest.getPatternsConfiguration()
       .then((patternConfig) => {
-        assert.deepEqual(patternConfig, {
-          "_patternOrder": [
-            "pattern-1",
-            "pattern-2"
-          ],
-          "patterns": {
-            "pattern-1": {
-              id: "pattern-1",
-              name: "Pattern Name 1",
-              screenSizes: ['desktop', 'tablet']
-            },
-            "pattern-2": {
-              id: "pattern-2",
-              name: "Pattern Name 2",
-              excludeScreenSizes: ['tablet'],
-              screenSizes: ['desktop']
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                screenSizes: ['desktop', 'tablet']
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                excludeScreenSizes: ['tablet'],
+                screenSizes: ['desktop']
+              }
             }
-          }
-        });
+          },
+          patternConfig
+        );
       })
       .then(done, done);
   }
@@ -1066,9 +1118,10 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not have resolved');
       }, (error) => {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong error message',
           'PatternlabToNode - config error - ' +
-          'The following patterns have no screens: pattern-2',
+              'The following patterns have no screens: pattern-2',
           error.message
         );
       })
@@ -1105,9 +1158,10 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not have resolved');
       }, (error) => {
-        assert.equal(
+        asserts.assertEquals(
+          'wrong error message',
           'PatternlabToNode - config error - ' +
-          'The following patterns have no screens: pattern-2',
+              'The following patterns have no screens: pattern-2',
           error.message
         );
       })
@@ -1126,10 +1180,11 @@ describe('main - ', () => {
       }, (error) => {
         // We just test if execptions from nock are properly bubbled up.
         // This would normally be an underlying layer exception.
-        assert.equal(
-            'Nock: Not allow net connect ' +
+        asserts.assertEquals(
+          'wrong error message',
+          'Nock: Not allow net connect ' +
             'for "localhost:3000/styleguide/html/styleguide.html"',
-            error.message
+          error.message
         );
       })
       .then(done, done);
@@ -1149,13 +1204,15 @@ describe('main - ', () => {
     // TODO: replace with public api call
     instanceToTest.init_()
       .then(() => {
-        assert.equal(
-            '/^' + randomString + '/',
-            instanceToTest.config_.excludePatterns[0]
+        asserts.assertEquals(
+          'wrong regexp for pattern 1',
+          '/^' + randomString + '/',
+          instanceToTest.config_.excludePatterns[0].toString()
         );
-        assert.equal(
-            '/' + randomString + '$/',
-            instanceToTest.config_.excludePatterns[1]
+        asserts.assertEquals(
+          'wrong regexp for pattern 2',
+          '/' + randomString + '$/',
+          instanceToTest.config_.excludePatterns[1].toString()
         );
       })
       .then(done, done);
@@ -1177,11 +1234,12 @@ describe('main - ', () => {
       }, (error) => {
           // We just test if execptions from nock are properly bubbled up.
           // This would normally be an underlying layer exception.
-        assert.equal(
-              'PatternlabToNode - scraping error - ' +
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - scraping error - ' +
               '"http://localhost:3000/styleguide/html/styleguide.html" could not be found',
-              error.message
-          );
+          error.message
+        );
       })
       .then(done, done);
   }
@@ -1202,11 +1260,12 @@ describe('main - ', () => {
       }, (error) => {
           // We just test if execptions from nock are properly bubbled up.
           // This would normally be an underlying layer exception.
-        assert.equal(
-              'PatternlabToNode - scraping error - ' +
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - scraping error - ' +
               'unknown error (statusCode was: 999)',
-              error.message
-          );
+          error.message
+        );
       })
       .then(done, done);
   }
@@ -1224,10 +1283,11 @@ describe('main - ', () => {
     // TODO: replace with public api call
     instanceToTest.getStyleguide_()
       .then((bodyHtml) => {
-        assert.equal(
-              randomBody,
-              bodyHtml
-          );
+        asserts.assertEquals(
+          'wrong html returned',
+          randomBody,
+          bodyHtml
+        );
       })
       .then(done, done);
   }
@@ -1246,10 +1306,11 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not have resolved');
       }, (error) => {
-        assert.equal(
-              'PatternlabToNode - scraping error - no pattern found',
-              error.message
-          );
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - scraping error - no pattern found',
+          error.message
+        );
       })
       .then(done, done);
   }
@@ -1268,10 +1329,11 @@ describe('main - ', () => {
       .then(() => {
         throw new Error('should not have resolved');
       }, (error) => {
-        assert.equal(
-              'PatternlabToNode - scraping error - pattern without an id found',
-              error.message
-          );
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - scraping error - pattern without an id found',
+          error.message
+        );
       })
       .then(done, done);
   }
@@ -1288,16 +1350,20 @@ describe('main - ', () => {
     // TODO: replace with public api call
     instanceToTest.scrapePatternlab_(dummyHtml)
       .then((patterns) => {
-        assert.deepEqual([
-          {
-            id: "pattern-1",
-            name: "Pattern Name 1"
-          },
-          {
-            id: "pattern-2",
-            name: "Pattern Name 2"
-          }
-        ], patterns)
+        asserts.assertArrayEquals(
+          'wrong patterns returned',
+          [
+            {
+              id: "pattern-1",
+              name: "Pattern Name 1"
+            },
+            {
+              id: "pattern-2",
+              name: "Pattern Name 2"
+            }
+          ],
+          patterns
+      )
       })
       .then(done, done);
   }
@@ -1306,73 +1372,114 @@ describe('main - ', () => {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config.patternlabUrl;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('http://localhost:3000', instanceToTest.config_.patternlabUrl);
+    asserts.assertEquals(
+      'wrong patternlabUrl',
+      'http://localhost:3000',
+      instanceToTest.config_.patternlabUrl
+    );
   }
 
   function defaultoutputFileShouldPointToFile() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config.outputFile;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal('./patternlabTests.js', instanceToTest.config_.outputFile);
+    asserts.assertEquals(
+      'wrong outputfile',
+      './patternlabTests.js',
+      instanceToTest.config_.outputFile
+    );
   }
 
   function defaultTemplateFileShouldPointToFile() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config.templateFile;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal(path.resolve(__dirname, '../templates/main.ejs'), instanceToTest.config_.templateFile);
+    asserts.assertEquals(
+      'wrong templateFile',
+      path.resolve(__dirname, '../templates/main.ejs'),
+      instanceToTest.config_.templateFile
+    );
   }
 
   function shouldExcludeNoPatternByDefault() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config.excludePatterns;
     var instanceToTest = new patternlabToNode(config);
-    assert.equal(0, instanceToTest.config_.excludePatterns.length);
+    asserts.assertEquals(
+      'wrong number of excluded patterns',
+      0,
+      instanceToTest.config_.excludePatterns.length
+    );
   }
 
   function shouldOverwriteTheConfigurationWithAGivenConfigObject() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     var instanceToTest = new patternlabToNode(config);
-    assert.deepEqual(instanceToTest.config_, config);
+    asserts.assertObjectEquals(
+      'wrong config set',
+      instanceToTest.config_,
+      config
+    );
   }
 
   function shouldOverwriteTheConfigurationWithAGivenFilename() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     var instanceToTest = new patternlabToNode(__dirname + '/../example.config.json');
-    assert.deepEqual(instanceToTest.config_, config);
+    asserts.assertObjectEquals(
+      'wrong config set',
+      instanceToTest.config_,
+      config
+    );
   }
 
   function shouldFailIfThereAreNoScreenSizesDefined() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     delete config.screenSizes;
-    assert.throws(() => {
+    const error = asserts.assertThrows(() => {
       /* eslint-disable no-new */
       new patternlabToNode(config);
 
       /* eslint-enable no-new */
-    }, null, /missing screenSizes/);
+    });
+    asserts.assertEquals(
+      'wrong error message',
+      'PatternlabToNode - config error - missing screenSizes',
+      error.message
+    );
   }
 
   function shouldFailIfPatternsAndPatternConfigFileAreDefined() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     config.patterns = {};
-    assert.throws(() => {
+    const error = asserts.assertThrows(() => {
       /* eslint-disable no-new */
       new patternlabToNode(config);
 
       /* eslint-enable no-new */
-    }, null, /Please use either the patternConfigFile or the patterns settings/);
+    });
+    asserts.assertEquals(
+      'wrong error message',
+      'PatternlabToNode - config error - Please use either the patternConfigFile or the patterns settings',
+      error.message
+    );
   }
 
   function shouldFailIfAScreenSizeWasReferencedWhichIsNotDefined() {
     var config = JSON.parse(JSON.stringify(exampleConfig));
     config.defaultSizes = ['notExistingScreenSize_1', 'unknownScreenSize_2'];
-    assert.throws(() => {
+    const error = asserts.assertThrows(() => {
       /* eslint-disable no-new */
       new patternlabToNode(config);
 
       /* eslint-enable no-new */
-    }, null, /The following default screenSizes are not defined: notExistingScreenSize_1, unknownScreenSize_2/);
+    });
+
+
+    asserts.assertEquals(
+      'wrong error message',
+      'PatternlabToNode - config error - The following default screenSizes are not defined: notExistingScreenSize_1, unknownScreenSize_2',
+      error.message
+    );
   }
 
   /* ------------------------------------------------------------------
