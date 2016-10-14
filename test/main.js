@@ -259,7 +259,8 @@ describe('main - ', () => {
         shouldAddCorrectStepsForHover
       );
 
-      it('should add correct steps for focus' //shouldAddCorrectStepsForFocus
+      it('should add correct steps for focus',
+        shouldAddCorrectStepsForFocus
       );
     });
 
@@ -761,6 +762,30 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.mouseMove(this.element)',
+          patternConfig.patterns['pattern-1'].actions[0].steps
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddCorrectStepsForFocus(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionFocus.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong steps for action',
+          '.focus(this.element)',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
       })
