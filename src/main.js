@@ -325,6 +325,13 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
   if (pattern.actions &&
     pattern.actions.length) {
     pattern.actions.forEach((action) => {
+      if (!action.name) {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+            pattern.id + ' is missing action name'
+        );
+      }
+
       if (!action.action) {
         throw new Error(
           'PatternlabToNode - config error - ' +

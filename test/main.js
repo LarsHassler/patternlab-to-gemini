@@ -243,7 +243,8 @@ describe('main - ', () => {
         shouldFailForUnknownActions
       );
 
-      it('should fail if no name was given' //shouldFailIfNoNameWasGiven
+      it('should fail if no name was given',
+        shouldFailIfNoNameWasGiven
       );
 
       it('should set the default selector for actions' //shouldSetTheDefaultSelectorForActions
@@ -659,6 +660,32 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong error message',
           'PatternlabToNode - config error - pattern-1 has unknown action identifier "unknownAction", use ("hover", "focus")',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldFailIfNoNameWasGiven(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/missingActionName.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - pattern-1 is missing action name',
           error.message
         );
       })
