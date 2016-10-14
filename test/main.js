@@ -284,7 +284,8 @@ describe('main - ', () => {
       shouldWorkWithSpecificPatternSizes
     );
 
-    it('should work with multiple actions'// shouldWorkWithMultipleActions
+    it('should work with multiple actions',
+      shouldWorkWithMultipleActions
     );
 
   });
@@ -441,6 +442,60 @@ describe('main - ', () => {
               "id": "pattern-2",
               "name": "Pattern Name 2",
               "screenSizes": ["desktop", "tablet"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithMultipleActions(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedMultiplePatternActions.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsMultiplePatternActions.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop"],
+              "actions": [
+                {
+                  "action": "hover",
+                  "name": "hovered",
+                  "selector": "*",
+                  "steps": ".moveMouse(this.element)"
+                },
+                {
+                  "action": "focus",
+                  "name": "focused",
+                  "selector": "*",
+                  "steps": ".focus(this.element)"
+                }
+              ]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop"]
             }
           }
         });
