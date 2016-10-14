@@ -331,6 +331,8 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
             pattern.id + ' is missing action identifier'
         );
       }
+
+      /* istanbul ignore else */
       if (validActions.indexOf(action.action) === -1) {
         throw new Error(
           'PatternlabToNode - config error - ' +
