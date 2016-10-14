@@ -361,6 +361,20 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
               oldPatternConfig.patterns[patternId]);
           }
         }
+
+        // TODO: implement
+        // var actions = config.patterns[patternId].actions || [];
+        // if (actions.length) {
+        //   actions.forEach((action) => {
+        //     action.selector = '*';
+        //     if (action.action === 'hover') {
+        //       action.steps = '.mouseMove(this.element)';
+        //     }
+        //     else if (action.action === 'focus') {
+        //       action.steps = '.focus(this.element)';
+        //     }
+        //   })
+        // }
       })
       .then(() => {
         const patternsWithOverwritesAndAdditionsOrExlcudes = [];
@@ -485,6 +499,7 @@ PatternlabToNode.prototype.generateTests = function() {
             var patternSettings = {
               'id': patternId,
               'name': config.patterns[patternId].name,
+              'actions': config.patterns[patternId].actions || [],
               'sizes': []
             };
             config.patterns[patternId].screenSizes.forEach((screenSizeId) => {
