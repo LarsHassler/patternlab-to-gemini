@@ -339,16 +339,6 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
         );
       }
 
-      /* istanbul ignore else */
-      if (validActions.indexOf(action.action) === -1) {
-        throw new Error(
-          'PatternlabToNode - config error - ' +
-            pattern.id + ' has unknown action identifier ' +
-            '"' + action.action + '", ' +
-            'use ("' + validActions.join('", "') + '")'
-        );
-      }
-
       action.selector = action.selector || '*';
 
       if (action.action === 'hover') {
@@ -356,6 +346,13 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
       }
       else if (action.action === 'focus') {
         action.steps = '.focus(this.element)';
+      } else {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+          pattern.id + ' has unknown action identifier ' +
+          '"' + action.action + '", ' +
+          'use ("' + validActions.join('", "') + '")'
+        );
       }
     })
   }
