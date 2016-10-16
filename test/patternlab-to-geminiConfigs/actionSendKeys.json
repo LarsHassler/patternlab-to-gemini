@@ -1,0 +1,19 @@
+{
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "patterns": {
+    "pattern-1": {
+      "actions": [
+        {
+          "action": "sendKeys",
+          "name": "action 1",
+          "keys": "dummyString"
+        }
+      ]
+    }
+  }
+}

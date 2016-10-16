@@ -262,6 +262,17 @@ describe('main - ', () => {
       it('should add correct steps for focus',
         shouldAddCorrectStepsForFocus
       );
+
+      describe('sendKeys - ', function() {
+
+        it('should fail if keys are missing',
+          shouldFailIfKeysAreMissing
+        );
+
+        it('should add correct steps for send keys',
+          shouldAddCorrectStepsForSendKeys
+        );
+      });
     });
 
   });
@@ -772,7 +783,33 @@ describe('main - ', () => {
       }, (error) => {
         asserts.assertEquals(
           'wrong error message',
-          'PatternlabToNode - config error - pattern-1 has unknown action identifier "unknownAction", use ("hover", "focus")',
+          'PatternlabToNode - config error - pattern-1 has unknown action identifier "unknownAction", use ("hover", "focus", "sendKeys")',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldFailIfKeysAreMissing(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/missingKeysOptionForSendKeys.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - pattern-1 is missing "keys" option required for sendKeys',
           error.message
         );
       })
@@ -871,6 +908,30 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.mouseMove(this.element)',
+          patternConfig.patterns['pattern-1'].actions[0].steps
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddCorrectStepsForSendKeys(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionSendKeys.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong steps for action',
+          '.sendKeys(this.element, \'dummyString\')',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
       })
