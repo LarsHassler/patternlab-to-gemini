@@ -16,6 +16,11 @@
         {
           "action": "focus",
           "name": "focused"
+        },
+        {
+          "action": "sendKeys",
+          "name": "sendKeys",
+          "keys": "inputString"
         }
       ]
     }

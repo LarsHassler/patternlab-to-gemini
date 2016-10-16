@@ -504,6 +504,12 @@ describe('main - ', () => {
                   "name": "focused",
                   "selector": "> *",
                   "steps": ".focus(this.element)"
+                },
+                {
+                  "action": "sendKeys",
+                  "name": "sendKeys",
+                  "selector": "> *",
+                  "steps": ".sendKeys(this.element, 'inputString')"
                 }
               ]
             },

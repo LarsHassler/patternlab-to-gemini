@@ -37,6 +37,19 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
   });
 
 
+  gemini.suite('Pattern Name 1 --- sendKeys', function(suite) {
+    suite
+        .before(function(actions, find) {
+          this.element = find('#pattern-1 .sg-pattern-example > *')
+        })
+        .setCaptureElements(['#pattern-1 .sg-pattern-example'])
+        .capture('desktop', function(actions, find) {
+          actions.setWindowSize(1440, 900)
+            .sendKeys(this.element, 'inputString');
+        });
+  });
+
+
   gemini.suite('Pattern Name 2', function(suite) {
     suite
         .setCaptureElements(['#pattern-2 .sg-pattern-example'])
