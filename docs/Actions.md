@@ -13,7 +13,7 @@ into separate test suites.
 {
     "name": "hovered",
     "action": "hover",
-    "selector": "> *"
+    "selector": "input"
 }
 ```
 

@@ -14,7 +14,7 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
   gemini.suite('Pattern Name 1 --- hovered', function(suite) {
     suite
         .before(function(actions, find) {
-          this.element = find('#pattern-1 .sg-pattern-example > button')
+          this.element = find('#pattern-1 .sg-pattern-example button')
         })
         .setCaptureElements(['#pattern-1 .sg-pattern-example'])
         .capture('desktop', function(actions, find) {

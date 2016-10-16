@@ -339,7 +339,7 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
         );
       }
 
-      action.selector = action.selector || '*';
+      action.selector = action.selector || '> *';
 
       if (action.action === 'hover') {
         action.steps = '.mouseMove(this.element)';
