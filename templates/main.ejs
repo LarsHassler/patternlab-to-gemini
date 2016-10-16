@@ -7,7 +7,7 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
         .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% pattern.sizes.forEach(function(size) { %>
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>);
-        })<% });;;; %>;
+        })<% }); %>;
   });
 <% pattern.actions.forEach(function(action) { %>
 
@@ -20,8 +20,8 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>)
             <%= action.steps %>;
-        })<% });;;;; %>;
+        })<% }); %>;
   });
-<% });;;;; %>
-<% });;; %>
+<% }); %>
+<% }); %>
 });
