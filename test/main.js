@@ -485,13 +485,13 @@ describe('main - ', () => {
                 {
                   "action": "hover",
                   "name": "hovered",
-                  "selector": "*",
+                  "selector": "> *",
                   "steps": ".moveMouse(this.element)"
                 },
                 {
                   "action": "focus",
                   "name": "focused",
-                  "selector": "*",
+                  "selector": "> *",
                   "steps": ".focus(this.element)"
                 }
               ]
@@ -822,7 +822,7 @@ describe('main - ', () => {
       .then((patternConfig) => {
         asserts.assertEquals(
           'wrong selector for action',
-          '*',
+          '> *',
           patternConfig.patterns['pattern-1'].actions[0].selector
         );
       })
