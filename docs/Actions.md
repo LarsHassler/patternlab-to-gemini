@@ -6,6 +6,7 @@ into separate test suites.
 ## Available Actions
 - [hover](#hover)
 - [focus](#focus)
+- [sendKeys](#sendKeys)
 
 ## Options for all patterns
 
@@ -43,3 +44,12 @@ over the element.
 ## focus
 
 A particular element within a pattern will be tested while it is focused.
+
+## sendKeys
+
+Sends keyboard events an element before it beeing tested.
+Custom options are: **keys**
+
+#### :exclamation: keys
+
+A String which will be sent to the element. This field is required.

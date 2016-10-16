@@ -319,7 +319,7 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
 
 PatternlabToNode.prototype.parseAction = function(pattern) {
 
-  const validActions = ['hover', 'focus'];
+  const validActions = ['hover', 'focus', 'sendKeys'];
 
   /* istanbul ignore else */
   if (pattern.actions &&
@@ -346,7 +346,17 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
       }
       else if (action.action === 'focus') {
         action.steps = '.focus(this.element)';
-      } else {
+      }
+      else if (action.action === 'sendKeys') {
+        if (!action.keys) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            pattern.id + ' is missing "keys" option required for sendKeys'
+          );
+        }
+        action.steps = '.sendKeys(this.element, \'' + action.keys + '\')';
+      }
+      else {
         throw new Error(
           'PatternlabToNode - config error - ' +
           pattern.id + ' has unknown action identifier ' +
