@@ -41,6 +41,12 @@ performed on. Defaults to '*', which will be the first children inside the patte
 A particular element within a pattern will be tested while the mouse is hovering
 over the element.
 
+#### pseudoClass
+
+An optional class name which should be used instead of an actual mouseMove. See
+#22 for more details.
+
+
 ## focus
 
 A particular element within a pattern will be tested while it is focused.
