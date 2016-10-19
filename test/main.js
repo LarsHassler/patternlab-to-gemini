@@ -255,13 +255,24 @@ describe('main - ', () => {
         shouldNotOverwriteAGivenSelector
       );
 
-      it('should add correct steps for hover',
-        shouldAddCorrectStepsForHover
-      );
-
       it('should add correct steps for focus',
         shouldAddCorrectStepsForFocus
       );
+
+      describe('hover - ', function() {
+
+        it('should add the correct steps for hover if pseudo class is set',
+          shouldAddTheCorrectStepsForHoverIfPseudoClassIsSet
+        );
+        it('should add the correct steps for hover if pseudo class and selector are set',
+          shouldAddTheCorrectStepsForHoverIfPseudoClassAndSelectorAreSet
+        );
+
+        it('should add correct steps for hover',
+          shouldAddCorrectStepsForHover
+        );
+
+      });
 
       describe('sendKeys - ', function() {
 
@@ -914,6 +925,58 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.mouseMove(this.element)',
+          patternConfig.patterns['pattern-1'].actions[0].steps
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddTheCorrectStepsForHoverIfPseudoClassIsSet(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionHoverWithPseudoClass.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong steps for action',
+          '.executeJS(function() {\n' +
+          '  window.document.querySelector(\'#pattern-1 .sg-pattern-example > *\').classList.add(\':hover\')\n' +
+          '})',
+          patternConfig.patterns['pattern-1'].actions[0].steps
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddTheCorrectStepsForHoverIfPseudoClassAndSelectorAreSet(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionHoverWithPseudoClassWithSelector.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong steps for action',
+          '.executeJS(function() {\n' +
+          '  window.document.querySelector(\'#pattern-1 .sg-pattern-example .custom-selector\').classList.add(\':hover\')\n' +
+          '})',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
       })
