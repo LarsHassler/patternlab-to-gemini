@@ -342,7 +342,13 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
       action.selector = action.selector || '> *';
 
       if (action.action === 'hover') {
-        action.steps = '.mouseMove(this.element)';
+        if (action.pseudoClass) {
+          action.steps = `.executeJS(function() {
+  window.document.querySelector('#${pattern.id} .sg-pattern-example ${action.selector}').classList.add('${action.pseudoClass}')
+})`;
+        } else {
+          action.steps = '.mouseMove(this.element)';
+        }
       }
       else if (action.action === 'focus') {
         action.steps = '.focus(this.element)';
