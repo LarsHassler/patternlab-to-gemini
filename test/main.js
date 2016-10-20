@@ -241,9 +241,6 @@ describe('main - ', () => {
       it('should reject if the array element is neither a string nor a browser object' //shouldRejectIFTheArrayElementIsNeitherAStringNorABrowserObject
       );
 
-      it('should work with nothing defined' //shouldWorkWithNothingDefined
-      );
-
       it('should work with strings' // shouldWorkWithStrings
       );
 
@@ -283,9 +280,6 @@ describe('main - ', () => {
         );
 
         it('should reject if the array element is neither a string nor a browser object' //action_shouldRejectIFTheArrayElementIsNeitherAStringNorABrowserObject
-        );
-
-        it('should work with nothing defined' //action_shouldWorkWithNothingDefined
         );
 
         it('should work with strings' //action_shouldWorkWithStrings
