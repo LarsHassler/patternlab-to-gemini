@@ -546,10 +546,14 @@ PatternlabToNode.prototype.generateTests = function() {
             'sizes': []
           };
           config._patternOrder.forEach((patternId) => {
+            var actions = config.patterns[patternId].actions || [];
+            actions.forEach(action => {
+              action.skipBrowsers = action.skipBrowsers || [];
+            });
             var patternSettings = {
               'id': patternId,
               'name': config.patterns[patternId].name,
-              'actions': config.patterns[patternId].actions || [],
+              'actions': actions,
               'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };
