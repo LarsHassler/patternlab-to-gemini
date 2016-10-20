@@ -370,6 +370,34 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
         );
       }
 
+      if (action.skipBrowsers) {
+        if (!(action.skipBrowsers instanceof Array)) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            pattern.id + ' action "' + action.action + '" skipBrowsers is not an array'
+          );
+        }
+
+        action.skipBrowsers.forEach((browser, index) => {
+          if (typeof browser === 'string') {
+            action.skipBrowsers[index] = {
+              regexp: browser,
+              comment: "skipped via patternlab-to-gemini config"
+            }
+          }
+          else if (browser instanceof Object) {
+            browser.comment = browser.comment ||
+              "skipped via patternlab-to-gemini config";
+          }
+          else {
+            throw new Error(
+              'PatternlabToNode - config error - ' +
+              pattern.id + ' action "' + action.action + '" skipBrowsers entry ' + index + ' is not valid'
+            );
+          }
+        })
+      }
+
       action.selector = action.selector || '> *';
 
       if (action.action === 'hover') {
