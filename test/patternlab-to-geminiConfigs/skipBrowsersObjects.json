@@ -1,0 +1,21 @@
+{
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "patterns": {
+    "pattern-1": {
+      "skipBrowsers": [
+        {
+          "regexp": "chrome",
+          "comment": "chrome disabled"
+        },
+        {
+          "regexp": "ff"
+        }
+      ]
+    }
+  }
+}

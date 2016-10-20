@@ -235,16 +235,20 @@ describe('main - ', () => {
 
     describe('skipBrowsers - ', function() {
 
-      it('should reject if its not an array' //shouldRejectIfItsNotAnArray
+      it('should reject if its not an array',
+        shouldRejectIfItsNotAnArray
       );
 
-      it('should reject if the array element is neither a string nor a browser object' //shouldRejectIFTheArrayElementIsNeitherAStringNorABrowserObject
+      it('should reject if the array element is neither a string nor a browser object',
+        shouldRejectIfTheArrayElementIsNeitherAStringNorABrowserObject
       );
 
-      it('should work with strings' // shouldWorkWithStrings
+      it('should work with strings',
+        shouldWorkWithStrings
       );
 
-      it('should work with object definitions' //shouldWorkWithObjectDefinitions
+      it('should work with object definitions',
+        shouldWorkWithObjectDefinitions
       );
     });
 
@@ -279,7 +283,7 @@ describe('main - ', () => {
         it('should reject if its not an array' //action_shouldRejectIfItsNotAnArray
         );
 
-        it('should reject if the array element is neither a string nor a browser object' //action_shouldRejectIFTheArrayElementIsNeitherAStringNorABrowserObject
+        it('should reject if the array element is neither a string nor a browser object' //action_shouldRejectIfTheArrayElementIsNeitherAStringNorABrowserObject
         );
 
         it('should work with strings' //action_shouldWorkWithStrings
@@ -924,6 +928,124 @@ describe('main - ', () => {
           'PatternlabToNode - config error - pattern-1 is missing action identifier',
           error.message
         );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRejectIfItsNotAnArray(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/skipBrowsersNotAnArray.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - pattern-1 skipBrowsers is not an array',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldRejectIfTheArrayElementIsNeitherAStringNorABrowserObject(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/skipBrowsersElementInvalid.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - pattern-1 skipBrowsers entry 2 is not valid',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldWorkWithStrings(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/skipBrowsersStrings.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertArrayEquals(
+          'wrong skipBrowsers returned',
+          [
+            {
+              regexp: "chrome",
+              comment: "skipped via patternlab-to-gemini config"
+            },
+            {
+              regexp: "ff",
+              comment: "skipped via patternlab-to-gemini config"
+            },
+          ],
+          patternConfig.patterns["pattern-1"].skipBrowsers
+        )
+      })
+      .then(done, done);
+  }
+
+
+  function shouldWorkWithObjectDefinitions(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/skipBrowsersObjects.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertArrayEquals(
+          'wrong skipBrowsers returned',
+          [
+            {
+              "regexp": "chrome",
+              "comment": "chrome disabled"
+            },
+            {
+              "regexp": "ff",
+              comment: "skipped via patternlab-to-gemini config"
+            }
+          ],
+          patternConfig.patterns["pattern-1"].skipBrowsers
+        )
       })
       .then(done, done);
   }

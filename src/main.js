@@ -317,6 +317,37 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
 };
 
 
+PatternlabToNode.prototype.parseSkipBrowsers = function(pattern) {
+  if (pattern.skipBrowsers) {
+    if (!(pattern.skipBrowsers instanceof Array)) {
+      throw new Error(
+        'PatternlabToNode - config error - ' +
+        pattern.id + ' skipBrowsers is not an array'
+      );
+    }
+
+    pattern.skipBrowsers.forEach((browser, index) => {
+      if (typeof browser === 'string') {
+        pattern.skipBrowsers[index] = {
+          regexp: browser,
+          comment: "skipped via patternlab-to-gemini config"
+        }
+      }
+      else if (browser instanceof Object) {
+        browser.comment = browser.comment ||
+          "skipped via patternlab-to-gemini config";
+      }
+      else {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+          pattern.id + ' skipBrowsers entry ' + index + ' is not valid'
+        );
+      }
+    })
+  }
+};
+
+
 PatternlabToNode.prototype.parseAction = function(pattern) {
 
   const validActions = ['hover', 'focus', 'sendKeys'];
@@ -431,6 +462,8 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
+
+            this.parseSkipBrowsers(newPatterns[patternId]);
 
             this.parseAction(newPatterns[patternId]);
 
