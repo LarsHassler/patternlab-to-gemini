@@ -187,3 +187,26 @@ For more details see the [Actions Documentation](Actions.md).
     }
 }
 ```
+
+#### skipBrowsers
+
+An array of browsers for which the pattern should not be tested. The browsers are
+either defined just as a regexp string or as an object, containing a comment and
+the regexp.
+These have to match an browser id of your gemini config.
+
+```
+{
+    "patterns": {
+        "pattern-id": {
+            "skipBrowsers": [
+                "chrome",
+                {
+                    "comment": "ie10 does not properly handle this pattern",
+                    "browser": "internetExplorer10"
+                }
+            ]
+        }
+    }
+}
+```

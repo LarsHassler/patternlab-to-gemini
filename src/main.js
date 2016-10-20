@@ -317,6 +317,37 @@ PatternlabToNode.prototype.loadPatternConfig_ = function() {
 };
 
 
+PatternlabToNode.prototype.parseSkipBrowsers = function(pattern) {
+  if (pattern.skipBrowsers) {
+    if (!(pattern.skipBrowsers instanceof Array)) {
+      throw new Error(
+        'PatternlabToNode - config error - ' +
+        pattern.id + ' skipBrowsers is not an array'
+      );
+    }
+
+    pattern.skipBrowsers.forEach((browser, index) => {
+      if (typeof browser === 'string') {
+        pattern.skipBrowsers[index] = {
+          regexp: browser,
+          comment: "skipped via patternlab-to-gemini config"
+        }
+      }
+      else if (browser instanceof Object) {
+        browser.comment = browser.comment ||
+          "skipped via patternlab-to-gemini config";
+      }
+      else {
+        throw new Error(
+          'PatternlabToNode - config error - ' +
+          pattern.id + ' skipBrowsers entry ' + index + ' is not valid'
+        );
+      }
+    })
+  }
+};
+
+
 PatternlabToNode.prototype.parseAction = function(pattern) {
 
   const validActions = ['hover', 'focus', 'sendKeys'];
@@ -337,6 +368,34 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
           'PatternlabToNode - config error - ' +
             pattern.id + ' is missing action identifier'
         );
+      }
+
+      if (action.skipBrowsers) {
+        if (!(action.skipBrowsers instanceof Array)) {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+            pattern.id + ' action "' + action.action + '" skipBrowsers is not an array'
+          );
+        }
+
+        action.skipBrowsers.forEach((browser, index) => {
+          if (typeof browser === 'string') {
+            action.skipBrowsers[index] = {
+              regexp: browser,
+              comment: "skipped via patternlab-to-gemini config"
+            }
+          }
+          else if (browser instanceof Object) {
+            browser.comment = browser.comment ||
+              "skipped via patternlab-to-gemini config";
+          }
+          else {
+            throw new Error(
+              'PatternlabToNode - config error - ' +
+              pattern.id + ' action "' + action.action + '" skipBrowsers entry ' + index + ' is not valid'
+            );
+          }
+        })
       }
 
       action.selector = action.selector || '> *';
@@ -431,6 +490,8 @@ PatternlabToNode.prototype.getPatternsConfiguration = function() {
         for (var patternId in newPatterns) {
           /* istanbul ignore else */
           if (newPatterns.hasOwnProperty(patternId)) {
+
+            this.parseSkipBrowsers(newPatterns[patternId]);
 
             this.parseAction(newPatterns[patternId]);
 
@@ -546,10 +607,15 @@ PatternlabToNode.prototype.generateTests = function() {
             'sizes': []
           };
           config._patternOrder.forEach((patternId) => {
+            var actions = config.patterns[patternId].actions || [];
+            actions.forEach(action => {
+              action.skipBrowsers = action.skipBrowsers || [];
+            });
             var patternSettings = {
               'id': patternId,
               'name': config.patterns[patternId].name,
-              'actions': config.patterns[patternId].actions || [],
+              'actions': actions,
+              'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };
             config.patterns[patternId].screenSizes.forEach((screenSizeId) => {
@@ -566,6 +632,7 @@ PatternlabToNode.prototype.generateTests = function() {
               this.config_.templateFile);
           ejs.renderFile(templateFilePath, data, {}, function(err, str) {
             if (err) {
+              debug(err);
               var error = new Error('PatternlabToNode - rendering error - ' +
                 'there was an error while rendering "' + templateFilePath + '"');
               reject(error);
