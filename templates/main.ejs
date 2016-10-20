@@ -3,7 +3,8 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
   patternlabSuite.setUrl('/styleguide/html/styleguide.html');
 <% patterns.forEach(function(pattern) { %>
   gemini.suite('<%= pattern.name %>', function(suite) {
-    suite
+    suite<% pattern.skipBrowsers.forEach(function(browser) { %>
+        .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %>
         .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% pattern.sizes.forEach(function(size) { %>
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>);

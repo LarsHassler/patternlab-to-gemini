@@ -550,6 +550,7 @@ PatternlabToNode.prototype.generateTests = function() {
               'id': patternId,
               'name': config.patterns[patternId].name,
               'actions': config.patterns[patternId].actions || [],
+              'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };
             config.patterns[patternId].screenSizes.forEach((screenSizeId) => {
@@ -566,6 +567,7 @@ PatternlabToNode.prototype.generateTests = function() {
               this.config_.templateFile);
           ejs.renderFile(templateFilePath, data, {}, function(err, str) {
             if (err) {
+              debug(err);
               var error = new Error('PatternlabToNode - rendering error - ' +
                 'there was an error while rendering "' + templateFilePath + '"');
               reject(error);
