@@ -14,7 +14,8 @@ into separate test suites.
 {
     "name": "hovered",
     "action": "hover",
-    "selector": "input"
+    "selector": "input",
+    "skipBrowsers": []
 }
 ```
 
@@ -35,6 +36,11 @@ This field is required.
 
 An optional selector for the element, inside the pattern, the action is
 performed on. Defaults to '*', which will be the first children inside the pattern.
+
+#### skipBrowsers
+
+An array of browsers to skip this action for.
+See [Configuration](Configuration.md#skipBrowsers) for details on how to use this.
 
 ## hover
 
