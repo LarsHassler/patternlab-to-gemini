@@ -233,6 +233,24 @@ describe('main - ', () => {
       );
     });
 
+    describe('skipBrowsers - ', function() {
+
+      it('should reject if its not an array' //shouldRejectIfItsNotAnArray
+      );
+
+      it('should reject if the array element is neither a string nor a browser object' //shouldRejectIFTheArrayElementIsNeitherAStringNorABrowserObject
+      );
+
+      it('should work with nothing defined' //shouldWorkWithNothingDefined
+      );
+
+      it('should work with strings' // shouldWorkWithStrings
+      );
+
+      it('should work with object definitions' //shouldWorkWithObjectDefinitions
+      );
+    });
+
     describe('actions - ', function() {
 
       it('should fail if no action was given',
@@ -258,6 +276,24 @@ describe('main - ', () => {
       it('should add correct steps for focus',
         shouldAddCorrectStepsForFocus
       );
+
+      describe('skipBrowsers - ', function() {
+
+        it('should reject if its not an array' //action_shouldRejectIfItsNotAnArray
+        );
+
+        it('should reject if the array element is neither a string nor a browser object' //action_shouldRejectIFTheArrayElementIsNeitherAStringNorABrowserObject
+        );
+
+        it('should work with nothing defined' //action_shouldWorkWithNothingDefined
+        );
+
+        it('should work with strings' //action_shouldWorkWithStrings
+        );
+
+        it('should work with object definitions' //action_shouldWorkWithObjectDefinitions
+        );
+      });
 
       describe('hover - ', function() {
 
@@ -312,6 +348,12 @@ describe('main - ', () => {
 
     it('should work with action with selectors',
       shouldWorkWithActionWithSelectors
+    );
+
+    it('should work with skipping multiple browsers' //shouldWorkWithSkippingMultipleBrowsers
+    );
+
+    it('should work with skipping browsers for actions' //shouldWorkWithSkippingBrowsersForActions
     );
 
   });
