@@ -42,7 +42,7 @@
     "istanbul": "^0.4.4",
     "mocha": "^3.0.2",
     "mock-fs": "^3.11.0",
-    "nock": "^8.0.0",
+    "nock": "^9.0.0",
     "rewire": "^2.5.2",
     "semantic-release": "^4.3.5",
     "test-console": "^1.0.0"
