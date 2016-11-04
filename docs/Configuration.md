@@ -177,11 +177,7 @@ For more details see the [Actions Documentation](Actions.md).
     "patterns": {
         "pattern-id": {
             "actions": [
-                {
-                    "name": "hovered",
-                    "action": "hover",
-                    "opt_selector": "> *"
-                }
+                ...action settings...
             ]
         }
     }
