@@ -110,6 +110,22 @@ The path to the file where the templates for the tests.
 
 > These settings previously were part of the [patternconfigfile](#patternconfigfile).
 
+#### loadOnSinglePage (default: false)
+
+If the screenshot of this pattern should be taken on a single page instead of
+the default styleguide page.
+This is necessary for patterns that have elements that are fixed or absolutely
+positioned.
+> :warning: If this is active the [selectors](#selectors) config has to be set also
+
+#### selectors
+
+An array of custom selectors which are use for the screenshot. 
+By default we use the `.sg-pattern-example` inside the `#pattern-id`.
+But for patterns which are [loadOnSinglePage](#loadOnSinglePage-default-false)
+it's necessary, because there the pattern is not wrapped and instead it is just
+rendered as child nodes of the body.
+
 #### screenSizes
 
 An array of the globally defined [screenSizes](#exclamation-screensizes). This will
