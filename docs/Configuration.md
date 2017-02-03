@@ -45,6 +45,18 @@ and [excludeScreenSizes](#excludeScreenSizes) for details.
 "defaultSizes": ["yourScreenSize-1", "yourScreenSize-2"]
 ```
 
+#### loadOnSinglePage (default: false)
+
+A boolean to determine if the screenshots should be taken on the rendered pages
+of the single patterns or if the screenshots should be taken on the styleguide
+page.
+
+This can also be set only on [specific patterns](#loadOnSinglePage-default-false--if-global-loadOnSinglePage-is-also-false)
+
+```json
+"loadOnSinglePage": false
+```
+
 #### excludePatterns
 
 An array containing regular expressions to exclude patterns for the tests.
@@ -110,13 +122,16 @@ The path to the file where the templates for the tests.
 
 > These settings previously were part of the [patternconfigfile](#patternconfigfile).
 
-#### loadOnSinglePage (default: false)
+#### loadOnSinglePage (default: false - if global loadOnSinglePage is also false)
 
 If the screenshot of this pattern should be taken on a single page instead of
 the default styleguide page.
 This is necessary for patterns that have elements that are fixed or absolutely
 positioned.
 > :warning: If this is active the [selectors](#selectors) config has to be set also
+
+> :warning: If the [global loadOnSinglePage](#loadonsinglepage-default-false) is activated this is 
+always true, and can't be overwritten
 
 #### selectors
 
