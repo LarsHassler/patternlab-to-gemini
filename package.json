@@ -48,6 +48,7 @@
     "test-console": "^1.0.0"
   },
   "scripts": {
+    "watch": "npm run test -- -w",
     "lint": "./node_modules/.bin/eslint src/** test/*",
     "pre-commit": "npm run lint",
     "pretest": "npm run lint -- --rule 'mocha/no-exclusive-tests: 0'  --rule 'mocha/no-skipped-tests: 0'",
