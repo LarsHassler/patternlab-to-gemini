@@ -330,6 +330,14 @@ describe('main - ', () => {
 
       describe('loadOnSinglePage - ', function() {
 
+        it("should throw an error if a pattern has no selector but global loadOnSinglePage is active",
+          shouldThrowAnErrorIfAPatternHasNoSelectorButGlobalLoadOnSinglePageIsActive
+        );
+
+        it("should throw an error if a pattern has no selector but loadOnSinglePage is set",
+          shouldThrowAnErrorIfAPatternHasNoSelectorButLoadOnSinglePageIsSet
+        );
+
         it("should overwrite the selector if the pattern is set to loadOnSinglePage",
           shouldOverwriteTheSelectorIfThePatternIsSetToLoadOnASinglePage
         );
@@ -1433,6 +1441,57 @@ describe('main - ', () => {
           'wrong selector for action',
           'body myDummSelector',
           patternConfig.patterns['pattern-1'].actions[0].selector
+        );
+      })
+      .then(done, done);
+  }
+
+  function shouldThrowAnErrorIfAPatternHasNoSelectorButGlobalLoadOnSinglePageIsActive(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionWhileGlobalLoadOnSinglePageMissingSelector.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - pattern-1 action "hover" need selector in "loadOnSinglePage" mode',
+          error.message
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldThrowAnErrorIfAPatternHasNoSelectorButLoadOnSinglePageIsSet(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionWhileLoadOnSinglePageMissingSelector.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then(() => {
+        throw new Error('should not resolve');
+      }, (error) => {
+        asserts.assertEquals(
+          'wrong error message',
+          'PatternlabToNode - config error - pattern-1 action "hover" need selector in "loadOnSinglePage" mode',
+          error.message
         );
       })
       .then(done, done);
