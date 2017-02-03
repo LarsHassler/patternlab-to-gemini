@@ -302,12 +302,17 @@ describe('main - ', () => {
         it('should add the correct steps for hover if pseudo class is set',
           shouldAddTheCorrectStepsForHoverIfPseudoClassIsSet
         );
+
         it('should add the correct steps for hover if pseudo class and selector are set',
           shouldAddTheCorrectStepsForHoverIfPseudoClassAndSelectorAreSet
         );
 
         it('should add correct steps for hover',
           shouldAddCorrectStepsForHover
+        );
+
+        it("should add the correct steps for hover if load on a single page is active",
+          shouldAddTheCorrectStepsForHoverIfLoadOnASinglePageIsActive
         );
 
       });
@@ -322,6 +327,19 @@ describe('main - ', () => {
           shouldAddCorrectStepsForSendKeys
         );
       });
+
+      describe('loadOnSinglePage - ', function() {
+
+        it("should overwrite the selector if the pattern is set to loadOnSinglePage",
+          shouldOverwriteTheSelectorIfThePatternIsSetToLoadOnASinglePage
+        );
+
+        it("should overwrite the selector if the global loadOnSinglePage is activated",
+          shouldOverwriteTheSelectorIfTheGlobalLoadOnSinglePageIsActivated
+        );
+
+      });
+
     });
 
   });
@@ -358,6 +376,14 @@ describe('main - ', () => {
 
     it('should work with skipping browsers for actions',
       shouldWorkWithSkippingBrowsersForActions
+    );
+
+    it("should work with global loadOnSinglePage",
+      shouldWorkWithGlobalLoadOnSinglePage
+    );
+
+    it("should work with single pattern set to loadOnSinglePage",
+      shouldWorkWithSinglePatternSetToLoadOnSinglePage
     );
 
   });
@@ -553,19 +579,19 @@ describe('main - ', () => {
                 {
                   "action": "hover",
                   "name": "hovered",
-                  "selector": "> *",
+                  "selector": "#pattern-1 .sg-pattern-example > *",
                   "steps": ".moveMouse(this.element)"
                 },
                 {
                   "action": "focus",
                   "name": "focused",
-                  "selector": "> *",
+                  "selector": "#pattern-1 .sg-pattern-example > *",
                   "steps": ".focus(this.element)"
                 },
                 {
                   "action": "sendKeys",
                   "name": "sendKeys",
-                  "selector": "> *",
+                  "selector": "#pattern-1 .sg-pattern-example > *",
                   "steps": ".sendKeys(this.element, 'inputString')"
                 }
               ]
@@ -614,7 +640,7 @@ describe('main - ', () => {
                 {
                   "action": "hover",
                   "name": "hovered",
-                  "selector": "button",
+                  "selector": "#pattern-1 .sg-pattern-example button",
                   "steps": ".moveMouse(this.element)"
                 }
               ]
@@ -714,7 +740,7 @@ describe('main - ', () => {
                 {
                   "action": "hover",
                   "name": "hovered",
-                  "selector": "button",
+                  "selector": "#pattern-1 .sg-pattern-example button",
                   "steps": ".moveMouse(this.element)",
                   "skipBrowsers": [
                     {
@@ -738,6 +764,94 @@ describe('main - ', () => {
         });
       })
     };
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+
+  function shouldWorkWithGlobalLoadOnSinglePage(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/globalLoadOnSinglePage.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsGlobalLoadOnSinglePage.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "url": "link-to-pattern1.html",
+              "screenSizes": ["desktop"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "url": "link-to-pattern2.html",
+              "screenSizes": ["desktop"]
+            }
+          }
+        });
+      })
+    };
+
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithSinglePatternSetToLoadOnSinglePage(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/singlePatternLoadOnSinglePage.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsSinglePatternLoadOnSinglePage.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "url": "link-to-pattern1.html",
+              "screenSizes": ["desktop"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "url": "link-to-pattern2.html",
+              "loadOnSinglePage": true,
+              "screenSizes": ["desktop"]
+            }
+          }
+        });
+      })
+    };
+
     instanceToTest.generateTests()
       .then(() => {
         asserts.assertEquals(
@@ -1269,7 +1383,7 @@ describe('main - ', () => {
       .then((patternConfig) => {
         asserts.assertEquals(
           'wrong selector for action',
-          '> *',
+          '#pattern-1 .sg-pattern-example > *',
           patternConfig.patterns['pattern-1'].actions[0].selector
         );
       })
@@ -1293,7 +1407,55 @@ describe('main - ', () => {
       .then((patternConfig) => {
         asserts.assertEquals(
           'wrong selector for action',
-          'myDummSelector',
+          '#pattern-1 .sg-pattern-example myDummSelector',
+          patternConfig.patterns['pattern-1'].actions[0].selector
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldOverwriteTheSelectorIfThePatternIsSetToLoadOnASinglePage(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionWhileLoadOnSinglePage.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong selector for action',
+          'body myDummSelector',
+          patternConfig.patterns['pattern-1'].actions[0].selector
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldOverwriteTheSelectorIfTheGlobalLoadOnSinglePageIsActivated(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionWhileGlobalLoadOnSinglePage.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong selector for action',
+          'body myDummSelector',
           patternConfig.patterns['pattern-1'].actions[0].selector
         );
       })
@@ -1369,6 +1531,32 @@ describe('main - ', () => {
           'wrong steps for action',
           '.executeJS(function() {\n' +
           '  window.document.querySelector(\'#pattern-1 .sg-pattern-example .custom-selector\').classList.add(\':hover\')\n' +
+          '})',
+          patternConfig.patterns['pattern-1'].actions[0].steps
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddTheCorrectStepsForHoverIfLoadOnASinglePageIsActive(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionHoverWithPseudoClassWithSelectorLoadOnSinglePage.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong steps for action',
+          '.executeJS(function() {\n' +
+          '  window.document.querySelector(\'body .custom-selector\').classList.add(\':hover\')\n' +
           '})',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );

@@ -1,0 +1,21 @@
+{
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "patterns": {
+    "pattern-1": {
+      "loadOnSinglePage": true,
+      "actions": [
+        {
+          "action": "hover",
+          "name": "action 1",
+          "pseudoClass": ":hover",
+          "selector": ".custom-selector"
+        }
+      ]
+    }
+  }
+}
