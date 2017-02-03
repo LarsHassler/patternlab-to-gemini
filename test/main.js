@@ -835,11 +835,13 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 screenSizes: ['desktop']
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 screenSizes: ['desktop']
               }
             }
@@ -1518,12 +1520,14 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 data: randomInfo,
                 screenSizes: []
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 data: randomInfo2,
                 screenSizes: []
               }
@@ -1563,11 +1567,13 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 screenSizes: []
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 screenSizes: []
               }
             }
@@ -1607,11 +1613,13 @@ describe('main - ', () => {
               "pattern-3": {
                 id: "pattern-3",
                 name: "Pattern Name 3",
+                url: "link-to-pattern3.html",
                 screenSizes: []
               },
               "pattern-4": {
                 id: "pattern-4",
                 name: "Pattern Name 4",
+                url: "link-to-pattern4.html",
                 screenSizes: []
               }
             }
@@ -1653,12 +1661,14 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 data: randomInfo,
                 screenSizes: []
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 screenSizes: []
               }
             }
@@ -1711,11 +1721,13 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 screenSizes: ['desktop']
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 screenSizes: ['desktop', 'tablet']
               }
             }
@@ -1772,11 +1784,13 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 screenSizes: ['desktop', 'tablet']
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 additionalScreenSizes: ['additionalSize'],
                 screenSizes: ['desktop', 'tablet', 'additionalSize']
               }
@@ -1829,11 +1843,13 @@ describe('main - ', () => {
               "pattern-1": {
                 id: "pattern-1",
                 name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
                 screenSizes: ['desktop', 'tablet']
               },
               "pattern-2": {
                 id: "pattern-2",
                 name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
                 excludeScreenSizes: ['tablet'],
                 screenSizes: ['desktop']
               }
@@ -2112,11 +2128,13 @@ describe('main - ', () => {
           [
             {
               id: "pattern-1",
-              name: "Pattern Name 1"
+              name: "Pattern Name 1",
+              url: "link-to-pattern1.html"
             },
             {
               id: "pattern-2",
-              name: "Pattern Name 2"
+              name: "Pattern Name 2",
+              url: "link-to-pattern2.html"
             }
           ],
           patterns

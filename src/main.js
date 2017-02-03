@@ -227,7 +227,8 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           if (!shouldBeExcluded) {
             patterns.push({
               id: patternId,
-              name: header
+              name: header,
+              url: headerElement.attr('href')
             });
           }
         }
@@ -615,6 +616,8 @@ PatternlabToNode.prototype.generateTests = function() {
             var patternSettings = {
               'id': patternId,
               'name': config.patterns[patternId].name,
+              'url': '/styleguide/html/' + config.patterns[patternId].url ||
+                  null,
               'actions': actions,
               'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
