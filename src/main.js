@@ -71,6 +71,7 @@ var PatternlabToNode = function(options) {
     excludePatterns: [],
     excludeStates: [],
     defaultSizes: null,
+    loadOnSinglePage: false,
     patterns: null
   }, settings);
 
@@ -226,7 +227,8 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           if (!shouldBeExcluded) {
             patterns.push({
               id: patternId,
-              name: header
+              name: header,
+              url: headerElement.attr('href')
             });
           }
         }
@@ -400,10 +402,23 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
 
       action.selector = action.selector || '> *';
 
+      if (this.config_.loadOnSinglePage || pattern.loadOnSinglePage) {
+        if (action.selector !== "> *") {
+          action.selector = `body ${action.selector}`
+        } else {
+          throw new Error(
+            'PatternlabToNode - config error - ' +
+              pattern.id + ' action "' + action.action + '" need selector in "loadOnSinglePage" mode'
+          );
+        }
+      } else {
+        action.selector = `#${pattern.id} .sg-pattern-example ${action.selector}`
+      }
+
       if (action.action === 'hover') {
         if (action.pseudoClass) {
           action.steps = `.executeJS(function() {
-  window.document.querySelector('#${pattern.id} .sg-pattern-example ${action.selector}').classList.add('${action.pseudoClass}')
+  window.document.querySelector('${action.selector}').classList.add('${action.pseudoClass}')
 })`;
         } else {
           action.steps = '.mouseMove(this.element)';
@@ -603,18 +618,32 @@ PatternlabToNode.prototype.generateTests = function() {
         debug(config);
         return new Promise((resolve, reject) => {
           var data = {
+            'config': {
+              loadOnSinglePage: this.config_.loadOnSinglePage
+            },
             'patterns': [],
             'sizes': []
           };
           config._patternOrder.forEach((patternId) => {
+            var loadOnSinglePage = this.config_.loadOnSinglePage ||
+              config.patterns[patternId].loadOnSinglePage;
             var actions = config.patterns[patternId].actions || [];
             actions.forEach(action => {
               action.skipBrowsers = action.skipBrowsers || [];
             });
+            var captureElements = '[\'#' + patternId + ' .sg-pattern-example\']';
+            if (config.patterns[patternId].captureElements) {
+              captureElements = '[\'' +
+                config.patterns[patternId].captureElements.join('\', \'') + '\']'
+            }
             var patternSettings = {
               'id': patternId,
+              'loadOnSinglePage': loadOnSinglePage,
               'name': config.patterns[patternId].name,
+              'url': '/styleguide/html/' + config.patterns[patternId].url ||
+                  null,
               'actions': actions,
+              'captureElements': loadOnSinglePage ? '\'body\'' : captureElements,
               'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };

@@ -1,11 +1,12 @@
 
 gemini.suite('Patternlab - ', function(patternlabSuite) {
-  patternlabSuite.setUrl('/styleguide/html/styleguide.html');
+<% if (!config.loadOnSinglePage) { %>  patternlabSuite.setUrl('/styleguide/html/styleguide.html');<% } %>
 <% patterns.forEach(function(pattern) { %>
   gemini.suite('<%= pattern.name %>', function(suite) {
     suite<% pattern.skipBrowsers.forEach(function(browser) { %>
-        .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %>
-        .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% pattern.sizes.forEach(function(size) { %>
+        .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %><% if (pattern.loadOnSinglePage) { %>
+        .setUrl('<%= pattern.url %>')<% } %>
+        .setCaptureElements(<%- pattern.captureElements %>)<% pattern.sizes.forEach(function(size) { %>
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>);
         })<% }); %>;
@@ -14,11 +15,12 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
 
   gemini.suite('<%= pattern.name %> --- <%= action.name %>', function(suite) {
     suite<% action.skipBrowsers.forEach(function(browser) { %>
-        .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %>
+        .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %><% if (pattern.loadOnSinglePage) { %>
+        .setUrl('<%= pattern.url %>')<% } %>
         .before(function(actions, find) {
-          this.element = find('#<%= pattern.id %> .sg-pattern-example <%- action.selector; %>')
+          this.element = find('<%- action.selector; %>')
         })
-        .setCaptureElements(['#<%= pattern.id %> .sg-pattern-example'])<% pattern.sizes.forEach(function(size) { %>
+        .setCaptureElements(<%- pattern.captureElements %>)<% pattern.sizes.forEach(function(size) { %>
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>)
             <%- action.steps %>;

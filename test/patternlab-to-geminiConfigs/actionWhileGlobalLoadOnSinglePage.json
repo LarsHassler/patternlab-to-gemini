@@ -1,0 +1,20 @@
+{
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    }
+  },
+  "loadOnSinglePage": true,
+  "patterns": {
+    "pattern-1": {
+      "actions": [
+        {
+          "action": "hover",
+          "name": "action 1",
+          "selector": "myDummSelector"
+        }
+      ]
+    }
+  }
+}
