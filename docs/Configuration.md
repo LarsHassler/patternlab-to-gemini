@@ -171,6 +171,13 @@ screen shots will be taken in addition to the [defaultSizes](#defaultSizes).
 > :warning: Can not be used with [screenSizes](#screenSizes) on the same pattern.
 Pattern screen shot sizes can either be overwritten or modified, but not both.
 
+#### captureElements
+
+An array of custom selectors which are use for the screenshot. 
+By default we use the `.sg-pattern-example` inside the `#pattern-id`,
+or the `body` if [loadOnSinglePage](#loadOnSinglePage-default-false--if-global-loadOnSinglePage-is-also-false)
+is active.
+
 #### excludeScreenSizes
 
 An array of the globally defined [screenSizes](#exclamation-screensizes). The
