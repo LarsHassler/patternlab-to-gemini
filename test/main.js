@@ -362,6 +362,10 @@ describe('main - ', () => {
         shouldGenerateTheCorrectTestFile
     );
 
+    it('should work with multiple capture elements',
+      shouldWorkWithMultipleCaptureElements
+    );
+
     it('should work with defined screen sizes and a subset as defaults',
       shouldWorkWithDefinedScreenSizesAndDefaults
     );
@@ -468,6 +472,48 @@ describe('main - ', () => {
               "id": "pattern-2",
               "name": "Pattern Name 2",
               "screenSizes": ["desktop", "tablet"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithMultipleCaptureElements(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/generateTestsConfig.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsMultipleCaptureElements.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop", "tablet"],
+              "captureElements": [".element1", "#element2"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"],
+              "captureElements": ["#elements3 > *", ".element4"]
             }
           }
         });

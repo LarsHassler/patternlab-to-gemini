@@ -631,7 +631,13 @@ PatternlabToNode.prototype.generateTests = function() {
             actions.forEach(action => {
               action.skipBrowsers = action.skipBrowsers || [];
             });
-            var captureElements = '[\'#' + patternId + ' .sg-pattern-example\']';
+
+            var captureElements;
+            if (loadOnSinglePage) {
+              captureElements = '\'body\''
+            } else {
+              captureElements = '[\'#' + patternId + ' .sg-pattern-example\']';
+            }
             if (config.patterns[patternId].captureElements) {
               captureElements = '[\'' +
                 config.patterns[patternId].captureElements.join('\', \'') + '\']'
@@ -640,10 +646,9 @@ PatternlabToNode.prototype.generateTests = function() {
               'id': patternId,
               'loadOnSinglePage': loadOnSinglePage,
               'name': config.patterns[patternId].name,
-              'url': '/styleguide/html/' + config.patterns[patternId].url ||
-                  null,
+              'url': '/styleguide/html/' + config.patterns[patternId].url,
               'actions': actions,
-              'captureElements': loadOnSinglePage ? '\'body\'' : captureElements,
+              'captureElements': captureElements,
               'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };
