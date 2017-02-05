@@ -52,8 +52,8 @@ over the element.
 
 #### pseudoClass
 
-An optional class name which should be used instead of an actual mouseMove. See
-#22 for more details.
+An optional class name which should be used instead of an actual mouseMove.
+See #22 for more details.
 
 
 ## focus
