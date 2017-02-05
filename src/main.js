@@ -444,6 +444,10 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
           'use ("' + validActions.join('", "') + '")'
         );
       }
+
+      if (action.delay) {
+        action.steps += '.wait(' + action.delay + ')';
+      }
     })
   }
 };
