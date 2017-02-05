@@ -45,6 +45,11 @@ rendered as child nodes of the body.
 An array of browsers to skip this action for.
 See [Configuration](Configuration.md#skipBrowsers) for details on how to use this.
 
+#### delay
+
+A number of milliseconds to wait before the screenshot is taken. Useful for
+css transitions and animations.
+
 ## hover
 
 A particular element within a pattern will be tested while the mouse is hovering
