@@ -36,6 +36,9 @@ This field is required.
 
 An optional selector for the element, inside the pattern, the action is
 performed on. Defaults to '*', which will be the first children inside the pattern.
+But for patterns which are [loadOnSinglePage](#loadOnSinglePage-default-false)
+it's necessary, because there the pattern is not wrapped and instead it is just
+rendered as child nodes of the body.
 
 #### skipBrowsers
 

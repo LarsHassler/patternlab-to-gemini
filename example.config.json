@@ -26,6 +26,7 @@
     }
   },
   "defaultSizes": null,
+  "loadOnSinglePage": false,
   "excludePatterns": [
     "^templates"
   ],

@@ -28,7 +28,7 @@
   "dependencies": {
     "cheerio": "^0.22.0",
     "commander": "^2.9.0",
-    "debug": "^2.2.0",
+    "debug": "^2.4.1",
     "ejs": "^2.5.1",
     "extend": "^3.0.0",
     "request": "^2.74.0"
@@ -48,6 +48,7 @@
     "test-console": "^1.0.0"
   },
   "scripts": {
+    "watch": "npm run test -- -w",
     "lint": "./node_modules/.bin/eslint src/** test/*",
     "pre-commit": "npm run lint",
     "pretest": "npm run lint -- --rule 'mocha/no-exclusive-tests: 0'  --rule 'mocha/no-skipped-tests: 0'",
