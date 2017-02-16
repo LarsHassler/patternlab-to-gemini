@@ -6,6 +6,7 @@ into separate test suites.
 ## Available Actions
 - [hover](#hover)
 - [focus](#focus)
+- [click](#click)
 - [sendKeys](#sendKeys)
 
 ## Options for all patterns
@@ -64,6 +65,10 @@ See #22 for more details.
 ## focus
 
 A particular element within a pattern will be tested while it is focused.
+
+## click
+
+A particular element within a pattern will be clicked and then tested.
 
 ## sendKeys
 

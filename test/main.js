@@ -278,6 +278,10 @@ describe('main - ', () => {
         shouldAddCorrectStepsForFocus
       );
 
+      it('should add correct steps for click',
+        shouldAddCorrectStepsForClick
+      );
+
       it("should add correct steps for delay",
         shouldAddCorrectStepsForDelay
       );
@@ -1769,6 +1773,30 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.focus(this.element)',
+          patternConfig.patterns['pattern-1'].actions[0].steps
+        );
+      })
+      .then(done, done);
+  }
+
+
+  function shouldAddCorrectStepsForClick(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/actionClicked.json'),
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode(
+        'config.json'
+    );
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertEquals(
+          'wrong steps for action',
+          '.click(this.element)',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
       })
