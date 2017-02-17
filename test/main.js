@@ -1796,7 +1796,7 @@ describe('main - ', () => {
       .then((patternConfig) => {
         asserts.assertEquals(
           'wrong steps for action',
-          '.click(this.element)',
+          '.click(this.element).mouseMove("body", {x:0, y:0})',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
       })
