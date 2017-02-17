@@ -428,7 +428,7 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
         action.steps = '.focus(this.element)';
       }
       else if (action.action === 'click') {
-        action.steps = '.click(this.element)';
+        action.steps = '.click(this.element).mouseMove("body", {x:0, y:0})';
       }
       else if (action.action === 'sendKeys') {
         if (!action.keys) {
