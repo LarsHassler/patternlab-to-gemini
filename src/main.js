@@ -667,11 +667,19 @@ PatternlabToNode.prototype.generateTests = function() {
                 height: this.config_.screenSizes[screenSizeId].height
               });
             });
-            if (!data.patterns['Patternlab']) {
-              data.suites.push('Patternlab');
-              data.patterns['Patternlab'] = [];
+
+            var suiteName = 'Patternlab';
+            if (this.config_.groupTestsByType) {
+              var patternMatch = patternId.match(/^[^-]*/)[0];
+              suiteName = patternMatch.charAt(0).toUpperCase() +
+                  patternMatch.slice(1);
             }
-            data.patterns['Patternlab'].push(patternSettings);
+
+            if (!data.patterns[suiteName]) {
+              data.suites.push(suiteName);
+              data.patterns[suiteName] = [];
+            }
+            data.patterns[suiteName].push(patternSettings);
           });
           var templateFilePath = path.resolve(
               this.getConfigFilePath_(),
