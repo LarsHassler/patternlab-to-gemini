@@ -72,6 +72,7 @@ var PatternlabToNode = function(options) {
     excludeStates: [],
     defaultSizes: null,
     loadOnSinglePage: false,
+    groupTestsByType: false,
     patterns: null
   }, settings);
 
