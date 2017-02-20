@@ -57,6 +57,16 @@ This can also be set only on [specific patterns](#loadOnSinglePage-default-false
 "loadOnSinglePage": false
 ```
 
+#### groupTestsByType (default: false)
+
+A boolean to determine if the tests should be grouped by pattern type. By default
+this is off and so the tests are all under one parentSuite in gemini named
+ "Patternlab"
+
+```json
+"groupTestsByType": false
+```
+
 #### excludePatterns
 
 An array containing regular expressions to exclude patterns for the tests.

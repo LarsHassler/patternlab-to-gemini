@@ -27,6 +27,7 @@
   },
   "defaultSizes": null,
   "loadOnSinglePage": false,
+  "groupTestsByType": false,
   "excludePatterns": [
     "^templates"
   ],

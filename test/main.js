@@ -410,6 +410,10 @@ describe('main - ', () => {
       shouldWorkWithSinglePatternSetToLoadOnSinglePage
     );
 
+    it('should work with groupTestsByType',
+      shouldWorkWithGroupTestsByType
+    );
+
   });
 
 
@@ -961,6 +965,63 @@ describe('main - ', () => {
               "name": "Pattern Name 2",
               "url": "link-to-pattern2.html",
               "loadOnSinglePage": true,
+              "screenSizes": ["desktop"]
+            }
+          }
+        });
+      })
+    };
+
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithGroupTestsByType(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/groupTestsByType.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTestsGroupTestsByType.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "atoms-pattern-1",
+            "atoms-pattern-2",
+            "molecules-pattern-3",
+            "molecules-pattern-4"
+          ],
+          "patterns": {
+            "atoms-pattern-1": {
+              "id": "atoms-pattern-1",
+              "name": "Pattern Name 1",
+              "url": "atoms-link-to-pattern1.html",
+              "screenSizes": ["desktop"]
+            },
+            "atoms-pattern-2": {
+              "id": "atoms-pattern-2",
+              "name": "Pattern Name 2",
+              "url": "atoms-link-to-pattern2.html",
+              "screenSizes": ["desktop"]
+            },
+            "molecules-pattern-3": {
+              "id": "molecules-pattern-3",
+              "name": "Pattern Name 3",
+              "url": "molecules-link-to-pattern1.html",
+              "screenSizes": ["desktop"]
+            },
+            "molecules-pattern-4": {
+              "id": "molecules-pattern-4",
+              "name": "Pattern Name 4",
+              "url": "molecules-link-to-pattern2.html",
               "screenSizes": ["desktop"]
             }
           }

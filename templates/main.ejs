@@ -1,7 +1,7 @@
 
-gemini.suite('Patternlab - ', function(patternlabSuite) {
+<% suites.forEach(function(suiteName) { %>gemini.suite('<%= suiteName %> - ', function(patternlabSuite) {
 <% if (!config.loadOnSinglePage) { %>  patternlabSuite.setUrl('/styleguide/html/styleguide.html');<% } %>
-<% patterns.forEach(function(pattern) { %>
+<% patterns[suiteName].forEach(function(pattern) { %>
   gemini.suite('<%= pattern.name %>', function(suite) {
     suite<% pattern.skipBrowsers.forEach(function(browser) { %>
         .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %><% if (pattern.loadOnSinglePage) { %>
@@ -29,3 +29,5 @@ gemini.suite('Patternlab - ', function(patternlabSuite) {
 <% }); %>
 <% }); %>
 });
+
+<% }); %>
