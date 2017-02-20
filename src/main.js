@@ -629,8 +629,7 @@ PatternlabToNode.prototype.generateTests = function() {
               loadOnSinglePage: this.config_.loadOnSinglePage
             },
             'suiteName': 'Patternlab',
-            'patterns': [],
-            'sizes': []
+            'patterns': []
           };
           config._patternOrder.forEach((patternId) => {
             var loadOnSinglePage = this.config_.loadOnSinglePage ||
