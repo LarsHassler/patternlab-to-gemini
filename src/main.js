@@ -628,8 +628,8 @@ PatternlabToNode.prototype.generateTests = function() {
             'config': {
               loadOnSinglePage: this.config_.loadOnSinglePage
             },
-            'suiteName': 'Patternlab',
-            'patterns': []
+            'suites': [],
+            'patterns': {}
           };
           config._patternOrder.forEach((patternId) => {
             var loadOnSinglePage = this.config_.loadOnSinglePage ||
@@ -666,7 +666,11 @@ PatternlabToNode.prototype.generateTests = function() {
                 height: this.config_.screenSizes[screenSizeId].height
               });
             });
-            data.patterns.push(patternSettings);
+            if (!data.patterns['Patternlab']) {
+              data.suites.push('Patternlab');
+              data.patterns['Patternlab'] = [];
+            }
+            data.patterns['Patternlab'].push(patternSettings);
           });
           var templateFilePath = path.resolve(
               this.getConfigFilePath_(),
