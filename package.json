@@ -44,7 +44,7 @@
     "mock-fs": "^4.0.0",
     "nock": "^9.0.0",
     "rewire": "^2.5.2",
-    "semantic-release": "^4.3.5",
+    "semantic-release": "^6.3.6",
     "test-console": "^1.0.0"
   },
   "scripts": {
