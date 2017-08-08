@@ -1732,7 +1732,7 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.executeJS(function() {\n' +
-          '  window.document.querySelector(\'#pattern-1 .sg-pattern-example > *\').classList.add(\':hover\')\n' +
+          '  window.document.querySelector(\'#pattern-1 .sg-pattern-example > *\').className += \' :hover\'\n' +
           '})',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
@@ -1758,7 +1758,7 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.executeJS(function() {\n' +
-          '  window.document.querySelector(\'#pattern-1 .sg-pattern-example .custom-selector\').classList.add(\':hover\')\n' +
+          '  window.document.querySelector(\'#pattern-1 .sg-pattern-example .custom-selector\').className += \' :hover\'\n' +
           '})',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );
@@ -1784,7 +1784,7 @@ describe('main - ', () => {
         asserts.assertEquals(
           'wrong steps for action',
           '.executeJS(function() {\n' +
-          '  window.document.querySelector(\'body .custom-selector\').classList.add(\':hover\')\n' +
+          '  window.document.querySelector(\'body .custom-selector\').className += \' :hover\'\n' +
           '})',
           patternConfig.patterns['pattern-1'].actions[0].steps
         );

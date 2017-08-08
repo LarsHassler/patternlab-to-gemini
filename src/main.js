@@ -419,7 +419,7 @@ PatternlabToNode.prototype.parseAction = function(pattern) {
       if (action.action === 'hover') {
         if (action.pseudoClass) {
           action.steps = `.executeJS(function() {
-  window.document.querySelector('${action.selector}').classList.add('${action.pseudoClass}')
+  window.document.querySelector('${action.selector}').className += ' ${action.pseudoClass}'
 })`;
         } else {
           action.steps = '.mouseMove(this.element)';
