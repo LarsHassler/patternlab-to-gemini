@@ -26,7 +26,7 @@
   "main": "./src/main.js",
   "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
   "dependencies": {
-    "cheerio": "^0.22.0",
+    "cheerio": "^1.0.0-rc.2",
     "commander": "^2.9.0",
     "debug": "^2.4.1",
     "ejs": "^2.5.1",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@remobid/js-lib-asserts": "^1.0.0",
     "coveralls": "2.13.1",
-    "eslint": "^3.3.1",
+    "eslint": "^4.1.0",
     "eslint-plugin-mocha": "^4.3.0",
     "git-hooks": "^1.1.5",
     "istanbul": "^0.4.4",
@@ -44,7 +44,7 @@
     "mock-fs": "^4.0.0",
     "nock": "^9.0.0",
     "rewire": "^2.5.2",
-    "semantic-release": "^4.3.5",
+    "semantic-release": "^6.3.6",
     "test-console": "^1.0.0"
   },
   "scripts": {
