@@ -222,6 +222,10 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
                 return previousValue || currentValue.test(patternId);
               }, shouldBeExcluded);
 
+          if (!shouldBeExcluded && this.config_.excludeImplicit) {
+            shouldBeExcluded = !this.config_.patterns[patternId]
+          }
+
           if (shouldBeExcluded) {
             debug('pattern "' + patternId + '" will be excluded');
           }

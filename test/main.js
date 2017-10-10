@@ -191,6 +191,11 @@ describe('main - ', () => {
         shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
     );
 
+    it('should not return patterns that are not defined in the patterns if ' +
+        'exclude implicit is set',
+        shouldNotReturnPatternsThatAreNotDefinedInThePatternsIfExcludeImplicitIsSet
+    );
+
     it('should not return patterns that match one of the state regexps',
         shouldNotReturnPatternsThatMatchOneOfTheStateRegexps
     );
@@ -2013,6 +2018,52 @@ describe('main - ', () => {
       "excludePatterns": [
         'exclude'
       ]
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patternsToExclude.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
+                screenSizes: []
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
+                screenSizes: []
+              }
+            }
+          },
+          patternConfig
+        );
+      })
+      .then(done, done);
+  }
+
+  function shouldNotReturnPatternsThatAreNotDefinedInThePatternsIfExcludeImplicitIsSet(done) {
+    setUpFsMock({
+      'dummyhtml/patternsToExclude.html': __dirname + '/dummyhtml/patternsToExclude.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {},
+      "excludeImplicit": true,
+      "patterns": {
+        "pattern-1": {},
+        "pattern-2": {}
+      }
     });
     setUpPatternlabResponse(
         'http://localhost:3000',
