@@ -654,6 +654,13 @@ PatternlabToNode.prototype.generateTests = function() {
               captureElements = '[\'' +
                 config.patterns[patternId].captureElements.join('\', \'') + '\']'
             }
+            let ignoreElements = null
+            if (config.patterns[patternId].ignoreElements) {
+              ignoreElements = JSON.stringify(
+                config.patterns[patternId].ignoreElements
+                  .map(selector => { return { every: selector } })
+              )
+            }
             var patternSettings = {
               'id': patternId,
               'loadOnSinglePage': loadOnSinglePage,
@@ -661,6 +668,7 @@ PatternlabToNode.prototype.generateTests = function() {
               'url': '/styleguide/html/' + config.patterns[patternId].url,
               'actions': actions,
               'captureElements': captureElements,
+              'ignoreElements': ignoreElements,
               'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };

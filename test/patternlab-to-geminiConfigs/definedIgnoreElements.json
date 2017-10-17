@@ -1,0 +1,23 @@
+{
+  "patternlabUrl": "http://localhost:3000",
+  "patternConfigFile": "patternConfig.json",
+  "screenSizes": {
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    },
+    "tablet": {
+      "width": 1024,
+      "height": 768
+    }
+  },
+  "defaultSizes": ["desktop", "tablet"],
+  "patterns": {
+    "pattern-1": {
+      "ignoreElements": [".ignore-selector-1"]
+    },
+    "pattern-2": {
+      "ignoreElements": [".ignore-selector-2", ".ignore-selector-3"]
+    }
+  }
+}

@@ -6,7 +6,8 @@
     suite<% pattern.skipBrowsers.forEach(function(browser) { %>
         .skip(/<%= browser.regexp %>/, '<%- browser.comment.replace("'", "\'") %>')<% }); %><% if (pattern.loadOnSinglePage) { %>
         .setUrl('<%= pattern.url %>')<% } %>
-        .setCaptureElements(<%- pattern.captureElements %>)<% pattern.sizes.forEach(function(size) { %>
+        .setCaptureElements(<%- pattern.captureElements %>)<% if (pattern.ignoreElements) { %>
+        .ignoreElements(<%- pattern.ignoreElements %>)<% } %><% pattern.sizes.forEach(function(size) { %>
         .capture('<%= size.name %>', function(actions, find) {
           actions.setWindowSize(<%= size.width %>, <%= size.height %>);
         })<% }); %>;
