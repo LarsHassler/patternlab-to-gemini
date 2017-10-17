@@ -200,6 +200,10 @@ By default we use the `.sg-pattern-example` inside the `#pattern-id`,
 or the `body` if [loadOnSinglePage](#loadOnSinglePage-default-false--if-global-loadOnSinglePage-is-also-false)
 is active.
 
+#### ignoreElements
+
+An array of custom selectors which are ignored when comparing screenshots. 
+
 #### excludeScreenSizes
 
 An array of the globally defined [screenSizes](#exclamation-screensizes). The
