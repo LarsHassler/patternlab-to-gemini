@@ -76,6 +76,18 @@ An array containing regular expressions to exclude patterns for the tests.
   "^templates"
 ]
 ```
+#### excludeImplicit (default: false)
+
+A switch to change the behavior how to process patterns.
+By default if a pattern is found in the markup, which is not defined in the 
+`patterns` section of the patternlab-to-gemini configuration, it will be 
+screenshotted in all defined screensizes.
+If this is set to `true` only the patterns which are defined in the 
+patternlab-to-gemini config are screenshotted.
+
+```json
+"excludeImplicit": true
+```
 
 #### excludeStates
 
