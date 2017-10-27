@@ -73,6 +73,7 @@ var PatternlabToNode = function(options) {
     defaultSizes: null,
     loadOnSinglePage: false,
     groupTestsByType: false,
+    caseSensitive: true,
     patterns: null
   }, settings);
 
@@ -232,7 +233,7 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
           if (!shouldBeExcluded) {
             patterns.push({
               id: patternId,
-              name: header,
+              name: this.config_.caseSensitive === false ? header.toLowerCase() : header,
               url: headerElement.attr('href')
             });
           }
