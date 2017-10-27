@@ -131,6 +131,17 @@ number of [pattern specific configuration](#pattern-specific-configuration).
 }
 ```
 
+#### caseSensitive (default: true)
+
+Depending on the patternlab version, the headline is sometimes with real 
+capitalization and sometimes just done with css. Which means if you switch it might
+introduce problems. By default patternlab-to-gemini is case-sensitive. With
+this config option it can be disabled.
+  
+```json
+"caseSensitive": false
+```
+
 #### templateFile (default: ./templates/main.js)
 
 The path to the file where the templates for the tests.
