@@ -187,8 +187,17 @@ describe('main - ', () => {
       shouldLoadPatternsFromPatternConfigFile
     );
 
+    it('should load patterns with disabled case sensitive',
+      shouldLoadPatternsWithDisabledCaseSensitive
+    );
+    
     it('should not return patters that match one of the exclude regexps',
         shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps
+    );
+
+    it('should not return patterns that are not defined in the patterns if ' +
+        'exclude implicit is set',
+        shouldNotReturnPatternsThatAreNotDefinedInThePatternsIfExcludeImplicitIsSet
     );
 
     it('should not return patterns that match one of the state regexps',
@@ -232,6 +241,10 @@ describe('main - ', () => {
         shouldOverwriteScreenSizes
       );
     });
+
+    it('should add ignore elements',
+        shouldAddIgnoreElements
+    );
 
     describe('skipBrowsers - ', function() {
 
@@ -380,6 +393,10 @@ describe('main - ', () => {
 
     it('should work with specific pattern sizes',
       shouldWorkWithSpecificPatternSizes
+    );
+
+    it('should work with ignore elements',
+      shouldWorkWithIgnoreElements
     );
 
     it('should work with multiple actions',
@@ -610,6 +627,48 @@ describe('main - ', () => {
               "id": "pattern-2",
               "name": "Pattern Name 2",
               "screenSizes": ["desktop", "tablet"]
+            }
+          }
+        });
+      })
+    };
+    instanceToTest.generateTests()
+      .then(() => {
+        asserts.assertEquals(
+          "wrong testFile generated",
+          fs.readFileSync('expectedTest.js').toString(),
+          fs.readFileSync('patternlabTests.js').toString()
+        )
+      })
+      .then(done, done);
+  }
+
+  function shouldWorkWithIgnoreElements(done) {
+    setUpFsMock({
+      "config.json": path.resolve(__dirname, 'patternlab-to-geminiConfigs/definedPatternScreensizes.json'),
+      "expectedTest.js": path.resolve(__dirname, 'expectedTestFiles/generateTetsIgnoreElements.js'),
+      "templates/main.ejs": path.resolve(__dirname, '../templates/main.ejs')
+    });
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration = function() {
+      return new Promise((resolve) => {
+        resolve({
+          "_patternOrder": [
+            "pattern-1",
+            "pattern-2"
+          ],
+          "patterns": {
+            "pattern-1": {
+              "id": "pattern-1",
+              "name": "Pattern Name 1",
+              "screenSizes": ["desktop"],
+              "ignoreElements": [".ignore-selector-1"]
+            },
+            "pattern-2": {
+              "id": "pattern-2",
+              "name": "Pattern Name 2",
+              "screenSizes": ["desktop", "tablet"],
+              "ignoreElements": [".ignore-selector-2", ".ignore-selector-3"]
             }
           }
         });
@@ -2003,6 +2062,64 @@ describe('main - ', () => {
       .then(done, done);
   }
 
+  function shouldLoadPatternsWithDisabledCaseSensitive(done) {
+    var randomInfo = 'data1-' + new Date().getTime();
+    var randomInfo2 = 'data2-' + new Date().getTime();
+    setUpFsMock({
+      'config.json': {
+        "screenSizes": {},
+        "caseSensitive": false,
+        "patternConfigFile": "patternConfigFile.json"
+      },
+      'patternConfigFile.json': {
+        "patterns": {
+          "pattern-1": {
+            data: randomInfo
+          },
+          "pattern-2": {
+            data: randomInfo2
+          }
+        }
+      },
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    setUpPatternlabResponse(
+      'http://localhost:3000',
+      'dummyhtml/patterns.html'
+    );
+    var instanceToTest = new patternlabToNode('config.json');
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "pattern name 1",
+                url: "link-to-pattern1.html",
+                data: randomInfo,
+                screenSizes: []
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "pattern name 2",
+                url: "link-to-pattern2.html",
+                data: randomInfo2,
+                screenSizes: []
+              }
+            }
+          },
+          patternConfig
+        );
+      })
+      .then(done, done);
+  }
+
 
   function shouldNotReturnPattersThatMatchOneOfTheExcludeRegexps(done) {
     setUpFsMock({
@@ -2013,6 +2130,52 @@ describe('main - ', () => {
       "excludePatterns": [
         'exclude'
       ]
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patternsToExclude.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
+                screenSizes: []
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
+                screenSizes: []
+              }
+            }
+          },
+          patternConfig
+        );
+      })
+      .then(done, done);
+  }
+
+  function shouldNotReturnPatternsThatAreNotDefinedInThePatternsIfExcludeImplicitIsSet(done) {
+    setUpFsMock({
+      'dummyhtml/patternsToExclude.html': __dirname + '/dummyhtml/patternsToExclude.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {},
+      "excludeImplicit": true,
+      "patterns": {
+        "pattern-1": {},
+        "pattern-2": {}
+      }
     });
     setUpPatternlabResponse(
         'http://localhost:3000',
@@ -2193,6 +2356,66 @@ describe('main - ', () => {
                 name: "Pattern Name 2",
                 url: "link-to-pattern2.html",
                 screenSizes: ['desktop', 'tablet']
+              }
+            }
+          },
+          patternConfig
+        );
+      })
+      .then(done, done);
+  }
+
+  function shouldAddIgnoreElements(done) {
+    setUpFsMock({
+      'dummyhtml/patterns.html': __dirname + '/dummyhtml/patterns.html'
+    });
+    var instanceToTest = new patternlabToNode({
+      "screenSizes": {
+        'desktop': {
+          width: 1024,
+          height: 768
+        },
+        'tablet': {
+          width: 768,
+          height: 500
+        }
+      },
+      "patterns": {
+        "pattern-1" :{
+          screenSizes: ['desktop']
+        },
+        "pattern-2": {
+          name: "Pattern Name 2",
+          ignoreElements: ['.same-element-selector']
+        }
+      }
+    });
+    setUpPatternlabResponse(
+        'http://localhost:3000',
+        'dummyhtml/patterns.html'
+    );
+    instanceToTest.getPatternsConfiguration()
+      .then((patternConfig) => {
+        asserts.assertObjectEquals(
+          'wrong pattern config',
+          {
+            "_patternOrder": [
+              "pattern-1",
+              "pattern-2"
+            ],
+            "patterns": {
+              "pattern-1": {
+                id: "pattern-1",
+                name: "Pattern Name 1",
+                url: "link-to-pattern1.html",
+                screenSizes: ['desktop']
+              },
+              "pattern-2": {
+                id: "pattern-2",
+                name: "Pattern Name 2",
+                url: "link-to-pattern2.html",
+                screenSizes: ['desktop', 'tablet'],
+                ignoreElements: ['.same-element-selector']
               }
             }
           },

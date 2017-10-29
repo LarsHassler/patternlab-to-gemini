@@ -76,6 +76,18 @@ An array containing regular expressions to exclude patterns for the tests.
   "^templates"
 ]
 ```
+#### excludeImplicit (default: false)
+
+A switch to change the behavior how to process patterns.
+By default if a pattern is found in the markup, which is not defined in the 
+`patterns` section of the patternlab-to-gemini configuration, it will be 
+screenshotted in all defined screensizes.
+If this is set to `true` only the patterns which are defined in the 
+patternlab-to-gemini config are screenshotted.
+
+```json
+"excludeImplicit": true
+```
 
 #### excludeStates
 
@@ -117,6 +129,17 @@ number of [pattern specific configuration](#pattern-specific-configuration).
 "patterns": {
     "pattern-id": {}
 }
+```
+
+#### caseSensitive (default: true)
+
+Depending on the patternlab version, the headline is sometimes with real 
+capitalization and sometimes just done with css. Which means if you switch it might
+introduce problems. By default patternlab-to-gemini is case-sensitive. With
+this config option it can be disabled.
+  
+```json
+"caseSensitive": false
 ```
 
 #### templateFile (default: ./templates/main.js)
@@ -187,6 +210,10 @@ An array of custom selectors which are use for the screenshot.
 By default we use the `.sg-pattern-example` inside the `#pattern-id`,
 or the `body` if [loadOnSinglePage](#loadOnSinglePage-default-false--if-global-loadOnSinglePage-is-also-false)
 is active.
+
+#### ignoreElements
+
+An array of custom selectors which are ignored when comparing screenshots. 
 
 #### excludeScreenSizes
 

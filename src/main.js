@@ -73,6 +73,7 @@ var PatternlabToNode = function(options) {
     defaultSizes: null,
     loadOnSinglePage: false,
     groupTestsByType: false,
+    caseSensitive: true,
     patterns: null
   }, settings);
 
@@ -222,13 +223,17 @@ PatternlabToNode.prototype.scrapePatternlab_ = function(html) {
                 return previousValue || currentValue.test(patternId);
               }, shouldBeExcluded);
 
+          if (!shouldBeExcluded && this.config_.excludeImplicit) {
+            shouldBeExcluded = !this.config_.patterns[patternId]
+          }
+
           if (shouldBeExcluded) {
             debug('pattern "' + patternId + '" will be excluded');
           }
           if (!shouldBeExcluded) {
             patterns.push({
               id: patternId,
-              name: header,
+              name: this.config_.caseSensitive === false ? header.toLowerCase() : header,
               url: headerElement.attr('href')
             });
           }
@@ -650,6 +655,13 @@ PatternlabToNode.prototype.generateTests = function() {
               captureElements = '[\'' +
                 config.patterns[patternId].captureElements.join('\', \'') + '\']'
             }
+            let ignoreElements = null
+            if (config.patterns[patternId].ignoreElements) {
+              ignoreElements = JSON.stringify(
+                config.patterns[patternId].ignoreElements
+                  .map(selector => { return { every: selector } })
+              )
+            }
             var patternSettings = {
               'id': patternId,
               'loadOnSinglePage': loadOnSinglePage,
@@ -657,6 +669,7 @@ PatternlabToNode.prototype.generateTests = function() {
               'url': '/styleguide/html/' + config.patterns[patternId].url,
               'actions': actions,
               'captureElements': captureElements,
+              'ignoreElements': ignoreElements,
               'skipBrowsers': config.patterns[patternId].skipBrowsers || [],
               'sizes': []
             };
