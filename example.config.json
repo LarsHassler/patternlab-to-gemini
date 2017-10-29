@@ -35,5 +35,6 @@
     "^idea",
     "wip"
   ],
+  "caseSensitive": true,
   "patterns": null
 }
