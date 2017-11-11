@@ -43,7 +43,7 @@
     "mocha": "^4.0.1",
     "mock-fs": "^4.0.0",
     "nock": "^9.0.0",
-    "rewire": "^2.5.2",
+    "rewire": "^3.0.0",
     "semantic-release": "^8.0.0",
     "test-console": "^1.0.0"
   },
