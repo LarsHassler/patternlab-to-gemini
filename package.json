@@ -26,7 +26,7 @@
   "main": "./src/main.js",
   "homepage": "https://github.com/LarsHassler/patternlab-to-gemini",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.2",
+    "cheerio": "^1.0.0-rc.3",
     "commander": "^2.9.0",
     "debug": "^3.0.0",
     "ejs": "^2.5.1",
