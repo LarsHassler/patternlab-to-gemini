@@ -31,7 +31,7 @@
     "debug": "^3.0.0",
     "ejs": "^2.5.1",
     "extend": "^3.0.0",
-    "request": "^2.74.0"
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@remobid/js-lib-asserts": "^1.0.0",
